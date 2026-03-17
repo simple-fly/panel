@@ -1,0 +1,2104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Simplefly Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Parkinsans:wght@400;700&family=Raleway:wght@400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--n:#0D1F75;--b:#3A46A0;--pk:#FFB4B4;--pd:#FF7D87;--bg:#F5F6FA;--cd:#fff;--br:rgba(13,31,117,0.12);--mu:#6B7BAE;}
+body{font-family:'Raleway',sans-serif;background:var(--n);}
+#ls{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,#0D1F75 0%,#3A46A0 60%,#FFB4B4 100%);}
+.lc{background:#fff;border-radius:20px;padding:2rem;width:100%;max-width:380px;}
+.ll{display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;}
+.li{width:44px;height:44px;border-radius:12px;background:var(--pk);display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.li img{width:38px;height:27px;object-fit:contain;}
+.lb{font-family:'Parkinsans',sans-serif;font-size:22px;font-weight:700;color:var(--n);}
+.lsb{font-size:12px;color:var(--mu);margin-bottom:1.5rem;}
+.lf{margin-bottom:14px;}
+.lf label{font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;display:block;margin-bottom:4px;}
+.lf input{width:100%;padding:11px 14px;font-size:14px;font-family:'Raleway',sans-serif;border-radius:12px;border:1.5px solid var(--br);background:var(--bg);color:var(--n);outline:none;}
+.lf input:focus{border-color:var(--b);}
+.lbtn{width:100%;padding:13px;font-size:15px;font-family:'Parkinsans',sans-serif;font-weight:700;border-radius:14px;border:none;background:var(--n);color:#fff;cursor:pointer;}
+.lbtn:hover{background:var(--b);}
+.lerr{display:none;background:#FFE8E8;color:#A00D1F;font-size:11px;padding:8px 12px;border-radius:10px;margin-top:10px;}
+.lhint{font-size:11px;color:var(--mu);margin-top:12px;text-align:center;}
+#as{display:none;flex-direction:column;min-height:100vh;background:var(--bg);}
+.tb{background:var(--n);padding:12px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:50;}
+.tbi{width:32px;height:32px;border-radius:9px;background:var(--pk);overflow:hidden;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.tbi img{width:28px;height:20px;object-fit:contain;}
+.tbn{font-family:'Parkinsans',sans-serif;font-size:15px;font-weight:700;color:#fff;}
+.tbg{background:rgba(255,255,255,.15);color:rgba(255,255,255,.8);font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;}
+.tbr{margin-left:auto;display:flex;align-items:center;gap:8px;}
+.ap{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);border-radius:20px;padding:5px 12px;}
+.ad{width:22px;height:22px;border-radius:50%;background:var(--pk);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--n);}
+.an{font-size:11px;color:#fff;font-weight:600;}
+.lo{background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.7);font-size:11px;padding:5px 12px;border-radius:20px;cursor:pointer;font-family:'Raleway',sans-serif;}
+.lay{display:flex;flex:1;}
+.sb{width:185px;background:var(--cd);border-right:1px solid var(--br);flex-shrink:0;padding:16px 0;position:sticky;top:53px;height:calc(100vh - 53px);overflow-y:auto;}
+.sbs{margin-bottom:18px;}
+.sbl{font-size:9px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;padding:0 16px;margin-bottom:5px;display:block;}
+.si{display:flex;align-items:center;gap:9px;padding:8px 16px;cursor:pointer;font-size:12px;font-weight:600;color:var(--mu);border-left:2px solid transparent;border-top:none;border-right:none;border-bottom:none;background:none;width:100%;text-align:left;font-family:'Raleway',sans-serif;}
+.si svg{width:14px;height:14px;stroke:currentColor;flex-shrink:0;}
+.si:hover{color:var(--n);background:var(--bg);}
+.si.on{color:var(--n);background:rgba(13,31,117,.05);border-left:2px solid var(--n);}
+.sc{margin-left:auto;background:var(--n);color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;}
+.sc.or{background:var(--pd);}
+.mn{flex:1;padding:22px;overflow-y:auto;}
+.pg{display:none;}.pg.on{display:block;}
+.ph{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;}
+.pt{font-family:'Parkinsans',sans-serif;font-size:19px;font-weight:700;color:var(--n);}
+.ps{font-size:11px;color:var(--mu);margin-top:2px;}
+.br2{display:flex;gap:8px;flex-wrap:wrap;}
+.bp{background:var(--n);color:#fff;font-size:12px;font-weight:700;padding:9px 16px;border-radius:12px;border:none;cursor:pointer;font-family:'Parkinsans',sans-serif;display:inline-flex;align-items:center;gap:6px;}
+.bp svg{width:13px;height:13px;stroke:#fff;}
+.bp:hover{background:var(--b);}
+.bs{background:var(--cd);color:var(--n);font-size:12px;font-weight:600;padding:8px 14px;border-radius:11px;border:1px solid var(--br);cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-family:'Raleway',sans-serif;}
+.bs svg{width:13px;height:13px;stroke:var(--n);}
+.bs:hover{background:var(--bg);}
+.bd{background:#FFE8E8;color:#A00D1F;font-size:12px;font-weight:700;padding:8px 14px;border-radius:11px;border:1px solid #F7C1C1;cursor:pointer;font-family:'Raleway',sans-serif;}
+.sg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px;}
+.sk{background:var(--cd);border-radius:14px;border:1px solid var(--br);padding:15px;}
+.skl{font-size:10px;color:var(--mu);font-weight:600;text-transform:uppercase;margin-bottom:6px;}
+.skn{font-family:'Parkinsans',sans-serif;font-size:26px;font-weight:700;color:var(--n);}
+.sks{font-size:10px;color:var(--mu);margin-top:4px;}
+.al{background:#E8F5E9;border:1px solid #A5D6A7;border-radius:12px;padding:10px 15px;font-size:11px;color:#1B5E20;display:flex;align-items:center;gap:8px;margin-bottom:16px;}
+.al svg{width:14px;height:14px;stroke:#1B5E20;flex-shrink:0;}
+.sd{font-family:'Parkinsans',sans-serif;font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;padding:12px 0 7px;display:flex;align-items:center;gap:8px;}
+.sd::after{content:'';flex:1;height:1px;background:var(--br);}
+.vr{background:var(--cd);border-radius:14px;border:1px solid var(--br);padding:13px 16px;margin-bottom:8px;display:flex;align-items:center;gap:13px;}
+.vr:hover{border-color:rgba(13,31,117,.3);}
+.av{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Parkinsans',sans-serif;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;}
+.vi{flex:1;min-width:0;}
+.vn{font-family:'Parkinsans',sans-serif;font-size:13px;font-weight:700;color:var(--n);}
+.vd{font-size:10px;color:var(--mu);margin-top:1px;}
+.vt{font-size:9px;color:var(--mu);}
+.vpw{width:88px;flex-shrink:0;}
+.vpl{font-size:9px;color:var(--mu);text-align:center;margin-bottom:3px;}
+.vp{height:5px;background:rgba(13,31,117,.08);border-radius:3px;overflow:hidden;}
+.vpf{height:100%;background:linear-gradient(90deg,var(--n),var(--pd));border-radius:3px;}
+.vs{font-size:9px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0;}
+.vs-ok{background:#E8F5E9;color:#1B5E20;}
+.vs-up{background:#E8EAF6;color:var(--n);}
+.vs-pa{background:rgba(13,31,117,.07);color:var(--mu);}
+.va{display:flex;gap:6px;flex-shrink:0;}
+.ia{width:30px;height:30px;border-radius:9px;border:1px solid var(--br);background:var(--cd);cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.ia svg{width:13px;height:13px;stroke:var(--mu);}
+.ia:hover{background:var(--bg);border-color:var(--n);}
+.ia.ea{background:var(--n);border-color:var(--n);}
+.ia.ea svg{stroke:#fff;}
+.ia.ca{background:var(--b);border-color:var(--b);}
+.ia.ca svg{stroke:#fff;}
+.ft{display:flex;gap:7px;margin-bottom:13px;flex-wrap:wrap;}
+.fb{padding:6px 13px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--br);background:var(--cd);color:var(--mu);font-family:'Raleway',sans-serif;}
+.fb.on{background:var(--n);color:#fff;border-color:var(--n);}
+.fc{background:var(--cd);border-radius:16px;border:1px solid var(--br);padding:20px;margin-bottom:14px;}
+.fct{font-family:'Parkinsans',sans-serif;font-size:13px;font-weight:700;color:var(--n);margin-bottom:14px;display:flex;align-items:center;gap:7px;}
+.fct svg{width:15px;height:15px;stroke:var(--n);}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.fg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.ff{display:flex;flex-direction:column;gap:4px;}
+.ff.ful{grid-column:1/-1;}
+.ff label{font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.4px;}
+.ff input,.ff select,.ff textarea{padding:9px 12px;font-size:12px;font-family:'Raleway',sans-serif;border-radius:10px;border:1px solid var(--br);background:var(--bg);color:var(--n);width:100%;outline:none;}
+.ff input:focus,.ff select:focus,.ff textarea:focus{border-color:var(--b);background:#fff;}
+.ff textarea{resize:vertical;min-height:65px;line-height:1.5;}
+.fa{display:flex;gap:8px;margin-top:16px;justify-content:flex-end;flex-wrap:wrap;}
+.fts{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;border-bottom:1px solid var(--br);padding-bottom:13px;}
+.fth{padding:7px 15px;border-radius:10px;font-size:11px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--mu);font-family:'Raleway',sans-serif;}
+.fth.on{background:var(--n);color:#fff;}
+.ib{background:var(--cd);border-radius:14px;border:1px solid var(--br);margin-bottom:12px;overflow:hidden;}
+.ibh{background:rgba(13,31,117,.03);padding:11px 15px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--br);}
+.ibl{font-family:'Parkinsans',sans-serif;font-size:12px;font-weight:700;color:var(--n);display:flex;align-items:center;gap:7px;}
+.ibl svg{width:13px;height:13px;stroke:var(--n);}
+.ibr{background:none;border:none;cursor:pointer;font-size:11px;color:var(--mu);font-family:'Raleway',sans-serif;font-weight:600;padding:4px 8px;}
+.ibr:hover{color:#A00D1F;}
+.ibb{padding:16px;}
+.dv{height:1px;background:var(--br);margin:13px 0;}
+.ab{width:100%;padding:11px;border:1.5px dashed rgba(13,31,117,.2);border-radius:13px;background:none;cursor:pointer;font-size:12px;font-weight:600;color:var(--b);font-family:'Raleway',sans-serif;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:7px;}
+.ab:hover{border-color:var(--n);color:var(--n);}
+.ab svg{width:14px;height:14px;stroke:currentColor;}
+.eh{background:var(--n);border-radius:14px;padding:16px;margin-bottom:16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.eav{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-family:'Parkinsans',sans-serif;font-size:15px;font-weight:700;color:#fff;flex-shrink:0;background:rgba(255,255,255,.15);}
+.ei{flex:1;}
+.en{font-family:'Parkinsans',sans-serif;font-size:15px;font-weight:700;color:#fff;}
+.ed2{font-size:11px;color:rgba(255,255,255,.6);margin-top:2px;}
+.et{background:rgba(255,255,255,.15);color:#fff;font-size:9px;font-weight:700;padding:3px 10px;border-radius:20px;}
+.ep{font-family:'Parkinsans',sans-serif;font-size:22px;font-weight:700;color:var(--pk);}
+.epl{font-size:9px;color:rgba(255,255,255,.5);}
+.epb{width:80px;height:4px;background:rgba(255,255,255,.15);border-radius:2px;overflow:hidden;margin-top:4px;}
+.epf{height:100%;background:var(--pk);border-radius:2px;}
+.id{background:var(--cd);border-radius:13px;border:1px solid var(--br);padding:12px 14px;margin-bottom:7px;display:flex;align-items:flex-start;gap:12px;}
+.dn{width:34px;height:34px;border-radius:10px;background:var(--n);display:flex;align-items:center;justify-content:center;font-family:'Parkinsans',sans-serif;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;}
+.dn.past{background:var(--mu);}
+.dn.today{background:var(--pd);}
+.di{flex:1;}
+.dt{font-family:'Parkinsans',sans-serif;font-size:13px;font-weight:700;color:var(--n);}
+.dc{font-size:10px;color:var(--mu);margin-top:1px;}
+.dd2{font-size:10px;color:var(--mu);margin-top:4px;line-height:1.5;}
+.de{width:26px;height:26px;border-radius:7px;border:1px solid var(--br);background:var(--cd);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.de svg{width:11px;height:11px;stroke:var(--mu);}
+.pc{background:var(--cd);border-radius:14px;border:1px solid var(--br);padding:14px 16px;margin-bottom:9px;}
+.pt2{display:flex;align-items:flex-start;gap:12px;margin-bottom:9px;}
+.pav{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-family:'Parkinsans',sans-serif;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;}
+.pin{flex:1;}
+.pnu{font-size:9px;font-weight:700;color:var(--mu);margin-bottom:1px;}
+.pnm{font-family:'Parkinsans',sans-serif;font-size:13px;font-weight:700;color:var(--n);}
+.pds{font-size:10px;color:var(--mu);}
+.pr{display:flex;flex-direction:column;align-items:flex-end;gap:5px;}
+.pp{font-family:'Parkinsans',sans-serif;font-size:15px;font-weight:700;color:var(--n);}
+.ppx{font-size:9px;color:var(--mu);}
+.sp{font-size:9px;font-weight:700;padding:3px 9px;border-radius:20px;}
+.s-sol{background:#F3E8FF;color:#5B0DA0;}
+.s-cre{background:#E8EAF6;color:var(--n);}
+.s-env{background:#FFF8E1;color:#7A5200;}
+.s-mod{background:#FFF0E0;color:#7A3800;}
+.s-con{background:#E8F5E9;color:#1B5E20;}
+.s-via{background:var(--n);color:#fff;}
+.pf{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.pm{font-size:10px;color:var(--mu);flex:1;}
+.pac{display:flex;gap:5px;}
+.ib2{width:28px;height:28px;border-radius:8px;border:1px solid var(--br);background:var(--cd);cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.ib2 svg{width:12px;height:12px;stroke:var(--mu);}
+.ib2:hover{background:var(--bg);}
+.pl{display:flex;margin-bottom:16px;border-radius:12px;overflow:hidden;border:1px solid var(--br);}
+.pp2{flex:1;text-align:center;padding:10px 4px;background:var(--cd);border-right:1px solid var(--br);}
+.pp2:last-child{border-right:none;}
+.pp2.hi{background:var(--n);}
+.ppn{font-family:'Parkinsans',sans-serif;font-size:19px;font-weight:700;color:var(--n);line-height:1;}
+.pp2.hi .ppn{color:#fff;}
+.ppl{font-size:7px;font-weight:700;color:var(--mu);text-transform:uppercase;margin-top:2px;}
+.pp2.hi .ppl{color:rgba(255,255,255,.7);}
+.cr{background:var(--cd);border-radius:14px;border:1px solid var(--br);padding:13px 16px;margin-bottom:8px;display:flex;align-items:center;gap:13px;}
+.bg{font-size:9px;font-weight:700;padding:3px 9px;border-radius:20px;}
+.b-ok{background:#E8F5E9;color:#1B5E20;}
+.b-inf{background:#E8EAF6;color:var(--n);}
+.b-pa{background:rgba(13,31,117,.07);color:var(--mu);}
+.nar{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-top:6px;}
+.nar input{padding:9px 11px;font-size:12px;font-family:'Raleway',sans-serif;border-radius:10px;border:1px solid var(--br);background:var(--bg);color:var(--n);outline:none;}
+.nab{padding:9px 14px;background:var(--n);color:#fff;border:none;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Raleway',sans-serif;white-space:nowrap;}
+.nprow{display:flex;align-items:center;gap:9px;background:var(--bg);border-radius:10px;padding:9px 12px;border:1px solid var(--br);margin-bottom:6px;}
+.npnm{font-size:12px;font-weight:600;color:var(--n);flex:1;}
+.npsd{font-size:10px;color:var(--mu);}
+.npdel{background:none;border:none;cursor:pointer;font-size:17px;color:var(--mu);padding:0 4px;}
+.dr{display:grid;grid-template-columns:1fr 1fr 32px;gap:8px;margin-bottom:6px;}
+.dr input{padding:8px 10px;font-size:12px;font-family:'Raleway',sans-serif;border-radius:9px;border:1px solid var(--br);background:var(--bg);color:var(--n);outline:none;}
+.dr button{width:32px;height:36px;border-radius:9px;border:1px solid var(--br);background:var(--cd);cursor:pointer;font-size:16px;color:var(--mu);}
+.tb2{background:var(--n);border-radius:13px;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;margin-top:12px;}
+.tl{font-size:11px;color:rgba(255,255,255,.6);}
+.tp{font-size:10px;color:var(--pk);margin-top:2px;}
+.tn{font-family:'Parkinsans',sans-serif;font-size:22px;font-weight:700;color:#fff;}
+.mo{position:fixed;inset:0;background:rgba(13,31,117,.3);display:none;align-items:center;justify-content:center;z-index:200;padding:20px;}
+.mo.open{display:flex;}
+.md{background:var(--cd);border-radius:20px;padding:24px;width:100%;max-width:420px;max-height:85vh;overflow-y:auto;}
+.mh{font-family:'Parkinsans',sans-serif;font-size:16px;font-weight:700;color:var(--n);margin-bottom:5px;}
+.ms{font-size:12px;color:var(--mu);margin-bottom:16px;}
+.mc{background:var(--bg);border-radius:11px;padding:12px;margin-bottom:14px;}
+.mct{font-size:12px;font-weight:700;color:var(--n);margin-bottom:8px;}
+.mi{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--mu);margin-bottom:5px;}
+.mik{width:16px;height:16px;border-radius:4px;background:#E8F5E9;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.mik svg{width:10px;height:10px;stroke:#1B5E20;}
+.mf{margin-bottom:11px;}
+.mf label{font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;display:block;margin-bottom:4px;}
+.mf input,.mf select{width:100%;padding:9px 12px;font-size:12px;font-family:'Raleway',sans-serif;border-radius:10px;border:1px solid var(--br);background:var(--bg);color:var(--n);outline:none;}
+.m2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.ma{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;}
+.em{text-align:center;padding:40px;color:var(--mu);}
+.em p{font-size:13px;}
+.ld{text-align:center;padding:40px;color:var(--mu);font-size:13px;}
+.ld::before{content:'';display:block;width:32px;height:32px;border:3px solid var(--br);border-top-color:var(--n);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.tst{position:fixed;bottom:22px;right:22px;background:var(--n);color:#fff;padding:12px 18px;border-radius:14px;font-size:12px;font-weight:600;font-family:'Parkinsans',sans-serif;display:none;z-index:999;}
+@media(max-width:768px){.sb{display:none;}.sg{grid-template-columns:1fr 1fr;}.vpw{display:none;}.fg3{grid-template-columns:1fr 1fr;}}
+
+.upload-section{margin-top:14px;background:var(--bg);border-radius:12px;padding:13px;}
+.upload-section-title{font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;margin-bottom:8px;}
+.upload-zone-big{display:flex;align-items:center;gap:10px;background:var(--cd);border:1.5px dashed rgba(13,31,117,.25);border-radius:12px;padding:13px 16px;cursor:pointer;width:100%;}
+.upload-zone-big:hover{border-color:var(--n);background:#fafbff;}
+.uz-icon{font-size:22px;}
+.uz-label{font-size:13px;font-weight:600;color:var(--n);}
+.doc-uploaded{display:flex;align-items:center;gap:8px;background:var(--cd);border-radius:10px;padding:9px 12px;border:1px solid #A5D6A7;margin-bottom:8px;font-size:12px;color:var(--n);}
+.doc-up-nm{flex:1;font-weight:600;}
+.doc-up-ver{background:var(--n);color:#fff;font-size:10px;font-weight:700;padding:4px 10px;border-radius:8px;text-decoration:none;font-family:'Parkinsans',sans-serif;}
+.itin-edit-card{background:var(--cd);border-radius:14px;border:1px solid var(--br);margin-bottom:10px;overflow:hidden;}
+.itin-edit-header{background:var(--n);padding:11px 16px;display:flex;align-items:center;gap:12px;}
+.itin-edit-num{font-family:'Parkinsans',sans-serif;font-size:14px;font-weight:700;color:var(--pk);flex-shrink:0;width:30px;}
+.itin-edit-fecha{font-size:12px;color:rgba(255,255,255,.8);font-weight:600;text-transform:capitalize;}
+.itin-edit-field{padding:10px 16px 0;}
+.itin-edit-field:last-child{padding-bottom:14px;}
+.itin-edit-lbl{font-size:9px;font-weight:700;color:var(--mu);text-transform:uppercase;display:block;margin-bottom:4px;}
+.itin-tit-inp,.itin-com-inp{width:100%;padding:9px 12px;font-size:12px;font-family:'Raleway',sans-serif;border-radius:10px;border:1px solid var(--br);background:var(--bg);color:var(--n);outline:none;}
+.itin-com-inp{min-height:55px;resize:vertical;line-height:1.5;}
+
+
+.ap-wrap{position:relative;width:100%;}
+.ap-inp{width:100%;padding:9px 12px;font-size:12px;font-family:'Raleway',sans-serif;border-radius:10px;border:1px solid var(--br);background:var(--bg);color:var(--n);outline:none;}
+.ap-inp:focus{border-color:var(--b);background:#fff;}
+.ap-dropdown{position:absolute;top:100%;left:0;right:0;background:var(--cd);border:1px solid var(--br);border-radius:12px;box-shadow:0 4px 20px rgba(13,31,117,.12);z-index:100;max-height:220px;overflow-y:auto;}
+.ap-item{padding:9px 13px;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:12px;}
+.ap-item:hover{background:var(--bg);}
+.ap-code{font-family:'Parkinsans',sans-serif;font-weight:700;color:var(--n);font-size:13px;min-width:38px;}
+.ap-name{color:var(--mu);}
+.tramo-card{background:rgba(13,31,117,.03);border-radius:12px;padding:13px;margin-bottom:8px;border:1px solid var(--br);}
+.tramo-header{margin-bottom:10px;}
+.tramo-body{}
+.tramo-num{font-family:'Parkinsans',sans-serif;font-size:11px;font-weight:700;color:var(--b);text-transform:uppercase;letter-spacing:.5px;}
+.tramos-cont{margin-bottom:14px;}
+.escala-separator{display:flex;align-items:center;gap:8px;margin:8px 0;padding:0 4px;}
+.escala-label{font-size:11px;font-weight:700;color:var(--pd);background:#FFE8E8;padding:4px 12px;border-radius:20px;}
+</style>
+</head>
+<body>
+
+
+<div id="ls">
+  <div class="lc">
+    <div class="ll">
+      <div class="li"><img id="iso1" alt="Simplefly"/></div>
+      <span class="lb">Simplefly</span>
+    </div>
+    <div class="lsb">Ingresa con tu cuenta de agente</div>
+    <div class="lf"><label>Email</label><input type="email" id="lem" placeholder="bruno@simplefly.com"/></div>
+    <div class="lf"><label>Contrasena</label><input type="password" id="lpw" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;"/></div>
+    <button class="lbtn" id="lbtn">Ingresar al panel</button>
+    <div class="lerr" id="lerr">Completa email y contrasena</div>
+    <div class="lhint">Solo acceso autorizado</div>
+  </div>
+</div>
+
+<div id="as">
+  <div class="tb">
+    <div class="tbi"><img id="iso2" alt=""/></div>
+    <span class="tbn">Simplefly</span>
+    <span class="tbg">Panel de administracion</span>
+    <div class="tbr">
+      <div class="ap"><div class="ad" id="ado">BR</div><span class="an" id="anm">Bruno</span></div>
+      <button class="lo" id="lout">Salir</button>
+    </div>
+  </div>
+  <div class="lay">
+    <div class="sb">
+      <div class="sbs">
+        <span class="sbl">Principal</span>
+        <button class="si on" id="si-da"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard</button>
+        <button class="si" id="si-vi"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>Viajes<span class="sc" id="c-vi">0</span></button>
+        <button class="si" id="si-pr"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>Presupuestos<span class="sc or" id="c-pr">0</span></button>
+        <button class="si" id="si-cl"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Clientes<span class="sc" id="c-cl">0</span></button>
+      </div>
+      <div class="sbs">
+        <span class="sbl">Crear</span>
+        <button class="si" id="si-nv"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Nuevo viaje</button>
+        <button class="si" id="si-nc"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>Nuevo cliente</button>
+        <button class="si" id="si-np"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>Nuevo presupuesto</button>
+      </div>
+    </div>
+    <div class="mn">
+
+      <div id="p-da" class="pg on">
+        <div class="ph">
+          <div><div class="pt" id="dg">Buen dia</div><div class="ps" id="dd"></div></div>
+          <div class="br2">
+            <button class="bs" id="d-np">Presupuesto</button>
+            <button class="bp" id="d-nv"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Nuevo viaje</button>
+          </div>
+        </div>
+        <div class="sg">
+          <div class="sk"><div class="skl">Activos</div><div class="skn" id="s-ac">-</div><div class="sks">En curso</div></div>
+          <div class="sk"><div class="skl">Proximos</div><div class="skn" id="s-px">-</div><div class="sks">30 dias</div></div>
+          <div class="sk"><div class="skl">Clientes</div><div class="skn" id="s-cl">-</div><div class="sks">Registrados</div></div>
+          <div class="sk"><div class="skl">Presupuestos</div><div class="skn" id="s-pr">-</div><div class="sks">Activos</div></div>
+        </div>
+        <div class="al"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07"/><path d="M1 1l22 22"/></svg>Viajes activos y presupuestos pendientes</div>
+        <div id="dc"><div class="ld"></div></div>
+      </div>
+
+      <div id="p-vi" class="pg">
+        <div class="ph"><div><div class="pt">Viajes</div><div class="ps" id="vi-s">Cargando...</div></div><button class="bp" id="vi-nv"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Nuevo viaje</button></div>
+        <div class="ft">
+          <button class="fb on" data-f="todos">Todos</button>
+          <button class="fb" data-f="Activo">En curso</button>
+          <button class="fb" data-f="Proximo">Proximos</button>
+          <button class="fb" data-f="Finalizado">Finalizados</button>
+        </div>
+        <div id="vl"><div class="ld"></div></div>
+      </div>
+
+      <div id="p-ed" class="pg">
+        <div class="ph">
+          <div><div class="pt">Editar viaje</div><div class="ps" id="ed-s">-</div></div>
+          <div class="br2">
+            <button class="bs" id="ed-bk">Volver</button>
+            <button class="bd" id="ed-dl">Eliminar viaje</button>
+            <button class="bp" id="ed-sv"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Guardar</button>
+          </div>
+        </div>
+        <div class="eh" id="ed-hd"></div>
+        <div class="fts">
+          <button class="fth on" data-et="1">Datos generales</button>
+          <button class="fth" data-et="2">Vuelos</button>
+          <button class="fth" data-et="3">Hoteles</button>
+          <button class="fth" data-et="4">Actividades</button>
+          <button class="fth" data-et="5">Itinerario</button>
+        </div>
+        <div id="et-1"></div>
+        <div id="et-2" style="display:none"></div>
+        <div id="et-3" style="display:none"></div>
+        <div id="et-4" style="display:none"></div>
+        <div id="et-5" style="display:none"></div>
+      </div>
+
+      <div id="p-nv" class="pg">
+        <div class="ph"><div><div class="pt">Nuevo viaje</div><div class="ps">Completa los 5 pasos</div></div><button class="bs" id="nv-cx">Cancelar</button></div>
+        <div class="fts">
+          <button class="fth on" data-nt="1">1. Cliente</button>
+          <button class="fth" data-nt="2">2. Vuelos</button>
+          <button class="fth" data-nt="3">3. Hoteles</button>
+          <button class="fth" data-nt="4">4. Actividades</button>
+          <button class="fth" data-nt="5">5. Itinerario</button>
+        </div>
+        <div id="nt-1">
+          <div class="fc"><div class="fct"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Cliente</div>
+          <div class="fg">
+            <div class="ff"><label>Cliente existente</label><select id="nv-cs"></select></div>
+            <div class="ff"><label>Nombre</label><input type="text" id="nv-nm" placeholder="Maria Gonzalez"/></div>
+            <div class="ff"><label>Email</label><input type="email" id="nv-em" placeholder="cliente@email.com"/></div>
+            <div class="ff"><label>Telefono</label><input type="text" id="nv-tl" placeholder="+54 9 261 000 0000"/></div>
+          </div></div>
+          <div class="fc"><div class="fct"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>Datos del viaje</div>
+          <div class="fg">
+            <div class="ff ful"><label>Nombre del paquete</label><input type="text" id="nv-de" placeholder="Europa del Este 14 noches"/></div>
+            <div class="ff"><label>Fecha inicio</label><input type="date" id="nv-fi"/></div>
+            <div class="ff"><label>Fecha fin</label><input type="date" id="nv-ff"/></div>
+            <div class="ff"><label>Agente</label><input type="text" id="nv-ag" placeholder="Bruno Raina"/></div>
+            <div class="ff"><label>Estado</label><select id="nv-es"><option value="Proximo">Proximo</option><option value="Activo">Activo</option></select></div>
+            <div class="ff ful"><label>Descripcion</label><textarea id="nv-ds" placeholder="Descripcion del viaje..."></textarea></div>
+          </div></div>
+          <div class="fa"><button class="bp" data-ng="2">Continuar: Vuelos</button></div>
+        </div>
+        <div id="nt-2" style="display:none">
+          <div id="nvc"></div>
+          <button class="ab" id="nv-av"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Agregar vuelo</button>
+          <div class="fa"><button class="bs" data-ng="1">Anterior</button><button class="bp" data-ng="3">Continuar: Hoteles</button></div>
+        </div>
+        <div id="nt-3" style="display:none">
+          <div id="nhc"></div>
+          <button class="ab" id="nv-ah"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Agregar hotel</button>
+          <div class="fa"><button class="bs" data-ng="2">Anterior</button><button class="bp" data-ng="4">Continuar: Actividades</button></div>
+        </div>
+        <div id="nt-4" style="display:none">
+          <div id="nac"></div>
+          <button class="ab" id="nv-aa"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Agregar actividad</button>
+          <div class="fa"><button class="bs" data-ng="3">Anterior</button><button class="bp" data-ng="5">Continuar: Itinerario</button></div>
+        </div>
+        <div id="nt-5" style="display:none" style="display:none">
+          <div id="nic"></div>
+          <button class="ab" id="nv-ad"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Agregar dia</button>
+          <div class="fa"><button class="bs" data-ng="4">Anterior</button><button class="bp" id="nv-cr"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Crear viaje</button></div>
+        </div>
+      </div>
+
+      <div id="p-nc" class="pg">
+        <div class="ph"><div><div class="pt">Nuevo cliente</div></div><button class="bs" id="nc-bk">Volver</button></div>
+        <div class="fc"><div class="fct"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Datos del cliente</div>
+        <div class="fg">
+          <div class="ff"><label>Nombre</label><input type="text" id="nc-nm" placeholder="Maria Gonzalez"/></div>
+          <div class="ff"><label>Email</label><input type="email" id="nc-em" placeholder="maria@email.com"/></div>
+          <div class="ff"><label>Telefono</label><input type="text" id="nc-tl" placeholder="+54 9 261 000 0000"/></div>
+          <div class="ff"><label>Documento</label><input type="text" id="nc-dc" placeholder="DNI / Pasaporte"/></div>
+        </div></div>
+        <div class="fa"><button class="bs" id="nc-cx">Cancelar</button><button class="bp" id="nc-sv"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Guardar cliente</button></div>
+      </div>
+
+      <div id="p-cl" class="pg">
+        <div class="ph"><div><div class="pt">Clientes</div><div class="ps" id="cl-s">Cargando...</div></div><button class="bp" id="cl-nw"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Nuevo cliente</button></div>
+        <div id="cll"><div class="ld"></div></div>
+      </div>
+
+      <div id="p-pr" class="pg">
+        <div class="ph"><div><div class="pt">Presupuestos</div><div class="ps" id="pr-s">Cargando...</div></div><button class="bp" id="pr-nw"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Nuevo</button></div>
+        <div class="pl">
+          <div class="pp2"><div class="ppn" id="pp-so">0</div><div class="ppl">Solicitado</div></div>
+          <div class="pp2"><div class="ppn" id="pp-cr">0</div><div class="ppl">Creado</div></div>
+          <div class="pp2"><div class="ppn" id="pp-en">0</div><div class="ppl">Enviado</div></div>
+          <div class="pp2"><div class="ppn" id="pp-mo">0</div><div class="ppl">Modificado</div></div>
+          <div class="pp2 hi"><div class="ppn" id="pp-co">0</div><div class="ppl">Confirmado</div></div>
+          <div class="pp2"><div class="ppn" id="pp-vi">0</div><div class="ppl">Viaje creado</div></div>
+        </div>
+        <div id="prl"><div class="ld"></div></div>
+      </div>
+
+      <div id="p-np" class="pg">
+        <div class="ph"><div><div class="pt">Nuevo presupuesto</div></div><button class="bs" id="np-bk">Volver</button></div>
+        <div class="fc"><div class="fct"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Cliente y destino</div>
+        <div class="fg">
+          <div class="ff"><label>Cliente</label><select id="np-cl"></select></div>
+          <div class="ff"><label>Destino</label><input type="text" id="np-de" placeholder="Europa del Este"/></div>
+          <div class="ff"><label>Fecha inicio</label><input type="date" id="np-fi"/></div>
+          <div class="ff"><label>Fecha fin</label><input type="date" id="np-ff"/></div>
+          <div class="ff"><label>Noches</label><input type="number" id="np-no" placeholder="14" min="1"/></div>
+          <div class="ff"><label>Pasajeros</label><input type="number" id="np-px" value="2" min="1"/></div>
+          <div class="ff"><label>Agente</label><input type="text" id="np-ag" placeholder="Bruno Raina"/></div>
+          <div class="ff"><label>Estado</label><select id="np-es"><option>Creado</option><option>Enviado</option><option>Solicitado</option></select></div>
+          <div class="ff"><label>Validez</label><input type="date" id="np-va"/></div>
+        </div></div>
+        <div class="fc"><div class="fct">Vuelos incluidos</div>
+          <div id="np-vl"></div>
+          <div class="nar"><input id="np-vr" placeholder="EZE a BUD (AR 141)"/><input id="np-va2" placeholder="Aerolineas Argentinas"/><button class="nab" id="np-bv">+ Agregar</button></div>
+        </div>
+        <div class="fc"><div class="fct">Hoteles incluidos</div>
+          <div id="np-hl"></div>
+          <div class="nar"><input id="np-hn" placeholder="Corinthia Hotel Budapest"/><input id="np-hc" placeholder="Budapest - 2 noches"/><button class="nab" id="np-bh">+ Agregar</button></div>
+        </div>
+        <div class="fc"><div class="fct">Actividades incluidas</div>
+          <div id="np-al"></div>
+          <div class="nar"><input id="np-an" placeholder="Excursion Budapest"/><input id="np-ad" placeholder="Dia 2 - 09:00 a 22:00"/><button class="nab" id="np-ba">+ Agregar</button></div>
+        </div>
+        <div class="fc"><div class="fct">Desglose de precios</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 32px;gap:8px;margin-bottom:8px;">
+            <div style="font-size:9px;font-weight:700;color:var(--mu);text-transform:uppercase;">Concepto</div>
+            <div style="font-size:9px;font-weight:700;color:var(--mu);text-transform:uppercase;">Precio / pax</div>
+            <div></div>
+          </div>
+          <div id="np-dr">
+            <div class="dr"><input value="Vuelos internacionales"/><input id="np-d1" placeholder="USD 0"/><button class="np-del-dr">x</button></div>
+            <div class="dr"><input value="Hoteles"/><input id="np-d2" placeholder="USD 0"/><button class="np-del-dr">x</button></div>
+            <div class="dr"><input value="Actividades"/><input id="np-d3" placeholder="USD 0"/><button class="np-del-dr">x</button></div>
+            <div class="dr"><input value="Traslados"/><input id="np-d4" placeholder="USD 0"/><button class="np-del-dr">x</button></div>
+            <div class="dr"><input value="Seguro de viaje"/><input id="np-d5" placeholder="USD 0"/><button class="np-del-dr">x</button></div>
+          </div>
+          <button class="ab" id="np-bd" style="margin-top:4px;margin-bottom:0"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Agregar concepto</button>
+          <div style="border-top:1px solid var(--br);padding-top:13px;margin-top:13px;">
+            <div class="fg" style="margin-bottom:12px;">
+              <div class="ff"><label>Precio por persona</label><input type="text" id="np-pp" placeholder="USD 5.615"/></div>
+              <div class="ff"><label>Pasajeros</label><input type="number" id="np-px2" value="2" min="1"/></div>
+            </div>
+            <div class="tb2">
+              <div><div class="tl">PRECIO TOTAL</div><div class="tp" id="np-pl">2 personas</div></div>
+              <div class="tn" id="np-tot">-</div>
+            </div>
+          </div>
+          <div class="ff" style="margin-top:13px;"><label>Condiciones</label>
+            <textarea id="np-co" style="padding:9px 11px;font-size:12px;font-family:'Raleway',sans-serif;border-radius:10px;border:1px solid var(--br);background:var(--bg);color:var(--n);resize:vertical;min-height:70px;width:100%;">Presupuesto sujeto a disponibilidad. Para confirmar se requiere el 30% de sena.</textarea>
+          </div>
+        </div>
+        <div class="fa"><button class="bs" id="np-cx">Cancelar</button><button class="bp" id="np-sv"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Guardar presupuesto</button></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="mo" id="cm">
+  <div class="md">
+    <div class="mh">Copiar viaje</div>
+    <div class="ms" id="cm-s">Duplica el viaje para otro pasajero.</div>
+    <div class="mc">
+      <div class="mct">Se copia automaticamente:</div>
+      <div class="mi"><div class="mik"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>Vuelos, hoteles, actividades e itinerario</div>
+      <div class="mi"><div class="mik"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>Tips del agente</div>
+    </div>
+    <div class="mf"><label>Nuevo nombre del viaje</label><input id="cm-nm" placeholder="Europa del Este - Ana Lopez"/></div>
+    <div class="mf"><label>Email del nuevo pasajero</label><input id="cm-em" placeholder="nuevo@email.com"/></div>
+    <div class="m2">
+      <div class="mf"><label>Fecha inicio</label><input type="date" id="cm-fi"/></div>
+      <div class="mf"><label>Fecha fin</label><input type="date" id="cm-ff"/></div>
+    </div>
+    <div class="ma">
+      <button class="bs" id="cm-cx">Cancelar</button>
+      <button class="bp" id="cm-ok">Copiar viaje</button>
+    </div>
+  </div>
+</div>
+
+<div class="tst" id="tst"></div>
+<script>
+document.getElementById("iso1").src="data:image/png;base64,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";
+document.getElementById("iso2").src="data:image/png;base64,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";
+</script>
+
+<script>
+// Top ~300 airports worldwide with IATA code, city, country, timezone
+var AIRPORTS = [
+  {c:'EZE',n:'Buenos Aires - Ezeiza',city:'Buenos Aires',tz:'America/Argentina/Buenos_Aires'},
+  {c:'AEP',n:'Buenos Aires - Aeroparque',city:'Buenos Aires',tz:'America/Argentina/Buenos_Aires'},
+  {c:'COR',n:'Córdoba',city:'Córdoba',tz:'America/Argentina/Cordoba'},
+  {c:'MDZ',n:'Mendoza',city:'Mendoza',tz:'America/Argentina/Mendoza'},
+  {c:'ROS',n:'Rosario',city:'Rosario',tz:'America/Argentina/Buenos_Aires'},
+  {c:'BRC',n:'Bariloche',city:'Bariloche',tz:'America/Argentina/Buenos_Aires'},
+  {c:'USH',n:'Ushuaia',city:'Ushuaia',tz:'America/Argentina/Buenos_Aires'},
+  {c:'IGR',n:'Iguazú',city:'Iguazú',tz:'America/Argentina/Buenos_Aires'},
+  {c:'SCL',n:'Santiago de Chile',city:'Santiago',tz:'America/Santiago'},
+  {c:'GRU',n:'São Paulo - Guarulhos',city:'São Paulo',tz:'America/Sao_Paulo'},
+  {c:'GIG',n:'Río de Janeiro - Galeão',city:'Río de Janeiro',tz:'America/Sao_Paulo'},
+  {c:'BSB',n:'Brasilia',city:'Brasilia',tz:'America/Sao_Paulo'},
+  {c:'BOG',n:'Bogotá',city:'Bogotá',tz:'America/Bogota'},
+  {c:'LIM',n:'Lima',city:'Lima',tz:'America/Lima'},
+  {c:'MVD',n:'Montevideo',city:'Montevideo',tz:'America/Montevideo'},
+  {c:'ASU',n:'Asunción',city:'Asunción',tz:'America/Asuncion'},
+  {c:'GYE',n:'Guayaquil',city:'Guayaquil',tz:'America/Guayaquil'},
+  {c:'UIO',n:'Quito',city:'Quito',tz:'America/Guayaquil'},
+  {c:'CCS',n:'Caracas',city:'Caracas',tz:'America/Caracas'},
+  {c:'HAV',n:'La Habana',city:'La Habana',tz:'America/Havana'},
+  {c:'MEX',n:'Ciudad de México',city:'CDMX',tz:'America/Mexico_City'},
+  {c:'CUN',n:'Cancún',city:'Cancún',tz:'America/Cancun'},
+  {c:'JFK',n:'Nueva York - JFK',city:'Nueva York',tz:'America/New_York'},
+  {c:'EWR',n:'Nueva York - Newark',city:'Nueva York',tz:'America/New_York'},
+  {c:'LGA',n:'Nueva York - LaGuardia',city:'Nueva York',tz:'America/New_York'},
+  {c:'MIA',n:'Miami',city:'Miami',tz:'America/New_York'},
+  {c:'LAX',n:'Los Ángeles',city:'Los Ángeles',tz:'America/Los_Angeles'},
+  {c:'ORD',n:'Chicago - O\'Hare',city:'Chicago',tz:'America/Chicago'},
+  {c:'ATL',n:'Atlanta',city:'Atlanta',tz:'America/New_York'},
+  {c:'DFW',n:'Dallas/Fort Worth',city:'Dallas',tz:'America/Chicago'},
+  {c:'SFO',n:'San Francisco',city:'San Francisco',tz:'America/Los_Angeles'},
+  {c:'BOS',n:'Boston',city:'Boston',tz:'America/New_York'},
+  {c:'IAD',n:'Washington DC - Dulles',city:'Washington',tz:'America/New_York'},
+  {c:'SEA',n:'Seattle',city:'Seattle',tz:'America/Los_Angeles'},
+  {c:'LAS',n:'Las Vegas',city:'Las Vegas',tz:'America/Los_Angeles'},
+  {c:'MCO',n:'Orlando',city:'Orlando',tz:'America/New_York'},
+  {c:'YYZ',n:'Toronto',city:'Toronto',tz:'America/Toronto'},
+  {c:'YVR',n:'Vancouver',city:'Vancouver',tz:'America/Vancouver'},
+  {c:'YUL',n:'Montreal',city:'Montreal',tz:'America/Toronto'},
+  {c:'LHR',n:'Londres - Heathrow',city:'Londres',tz:'Europe/London'},
+  {c:'LGW',n:'Londres - Gatwick',city:'Londres',tz:'Europe/London'},
+  {c:'STN',n:'Londres - Stansted',city:'Londres',tz:'Europe/London'},
+  {c:'CDG',n:'París - Charles de Gaulle',city:'París',tz:'Europe/Paris'},
+  {c:'ORY',n:'París - Orly',city:'París',tz:'Europe/Paris'},
+  {c:'AMS',n:'Amsterdam - Schiphol',city:'Amsterdam',tz:'Europe/Amsterdam'},
+  {c:'FRA',n:'Frankfurt',city:'Frankfurt',tz:'Europe/Berlin'},
+  {c:'MUC',n:'Múnich',city:'Múnich',tz:'Europe/Berlin'},
+  {c:'TXL',n:'Berlín - Tegel',city:'Berlín',tz:'Europe/Berlin'},
+  {c:'BER',n:'Berlín - Brandenburg',city:'Berlín',tz:'Europe/Berlin'},
+  {c:'MAD',n:'Madrid - Barajas',city:'Madrid',tz:'Europe/Madrid'},
+  {c:'BCN',n:'Barcelona',city:'Barcelona',tz:'Europe/Madrid'},
+  {c:'FCO',n:'Roma - Fiumicino',city:'Roma',tz:'Europe/Rome'},
+  {c:'MXP',n:'Milán - Malpensa',city:'Milán',tz:'Europe/Rome'},
+  {c:'LIN',n:'Milán - Linate',city:'Milán',tz:'Europe/Rome'},
+  {c:'VCE',n:'Venecia',city:'Venecia',tz:'Europe/Rome'},
+  {c:'NAP',n:'Nápoles',city:'Nápoles',tz:'Europe/Rome'},
+  {c:'ATH',n:'Atenas',city:'Atenas',tz:'Europe/Athens'},
+  {c:'IST',n:'Estambul - IST',city:'Estambul',tz:'Europe/Istanbul'},
+  {c:'SAW',n:'Estambul - Sabiha',city:'Estambul',tz:'Europe/Istanbul'},
+  {c:'ZRH',n:'Zurich',city:'Zurich',tz:'Europe/Zurich'},
+  {c:'GVA',n:'Ginebra',city:'Ginebra',tz:'Europe/Zurich'},
+  {c:'VIE',n:'Viena',city:'Viena',tz:'Europe/Vienna'},
+  {c:'BUD',n:'Budapest',city:'Budapest',tz:'Europe/Budapest'},
+  {c:'PRG',n:'Praga',city:'Praga',tz:'Europe/Prague'},
+  {c:'WAW',n:'Varsovia',city:'Varsovia',tz:'Europe/Warsaw'},
+  {c:'KRK',n:'Cracovia',city:'Cracovia',tz:'Europe/Warsaw'},
+  {c:'BRU',n:'Bruselas',city:'Bruselas',tz:'Europe/Brussels'},
+  {c:'CPH',n:'Copenhague',city:'Copenhague',tz:'Europe/Copenhagen'},
+  {c:'ARN',n:'Estocolmo - Arlanda',city:'Estocolmo',tz:'Europe/Stockholm'},
+  {c:'OSL',n:'Oslo',city:'Oslo',tz:'Europe/Oslo'},
+  {c:'HEL',n:'Helsinki',city:'Helsinki',tz:'Europe/Helsinki'},
+  {c:'DUB',n:'Dublín',city:'Dublín',tz:'Europe/Dublin'},
+  {c:'LIS',n:'Lisboa',city:'Lisboa',tz:'Europe/Lisbon'},
+  {c:'OPO',n:'Oporto',city:'Oporto',tz:'Europe/Lisbon'},
+  {c:'SVO',n:'Moscú - Sheremetyevo',city:'Moscú',tz:'Europe/Moscow'},
+  {c:'DME',n:'Moscú - Domodedovo',city:'Moscú',tz:'Europe/Moscow'},
+  {c:'LED',n:'San Petersburgo',city:'San Petersburgo',tz:'Europe/Moscow'},
+  {c:'DXB',n:'Dubái',city:'Dubái',tz:'Asia/Dubai'},
+  {c:'AUH',n:'Abu Dhabi',city:'Abu Dhabi',tz:'Asia/Dubai'},
+  {c:'DOH',n:'Doha',city:'Doha',tz:'Asia/Qatar'},
+  {c:'KWI',n:'Kuwait',city:'Kuwait',tz:'Asia/Kuwait'},
+  {c:'RUH',n:'Riad',city:'Riad',tz:'Asia/Riyadh'},
+  {c:'JED',n:'Jeddah',city:'Jeddah',tz:'Asia/Riyadh'},
+  {c:'TLV',n:'Tel Aviv',city:'Tel Aviv',tz:'Asia/Jerusalem'},
+  {c:'CAI',n:'El Cairo',city:'El Cairo',tz:'Africa/Cairo'},
+  {c:'ADD',n:'Addis Abeba',city:'Addis Abeba',tz:'Africa/Addis_Ababa'},
+  {c:'NBO',n:'Nairobi',city:'Nairobi',tz:'Africa/Nairobi'},
+  {c:'JNB',n:'Johannesburgo',city:'Johannesburgo',tz:'Africa/Johannesburg'},
+  {c:'CPT',n:'Ciudad del Cabo',city:'Ciudad del Cabo',tz:'Africa/Johannesburg'},
+  {c:'CMN',n:'Casablanca',city:'Casablanca',tz:'Africa/Casablanca'},
+  {c:'TUN',n:'Túnez',city:'Túnez',tz:'Africa/Tunis'},
+  {c:'ALG',n:'Argel',city:'Argel',tz:'Africa/Algiers'},
+  {c:'LOS',n:'Lagos',city:'Lagos',tz:'Africa/Lagos'},
+  {c:'ACC',n:'Accra',city:'Accra',tz:'Africa/Accra'},
+  {c:'BOM',n:'Mumbai',city:'Mumbai',tz:'Asia/Kolkata'},
+  {c:'DEL',n:'Nueva Delhi',city:'Nueva Delhi',tz:'Asia/Kolkata'},
+  {c:'BLR',n:'Bangalore',city:'Bangalore',tz:'Asia/Kolkata'},
+  {c:'MAA',n:'Chennai',city:'Chennai',tz:'Asia/Kolkata'},
+  {c:'CCU',n:'Calcuta',city:'Calcuta',tz:'Asia/Kolkata'},
+  {c:'HYD',n:'Hyderabad',city:'Hyderabad',tz:'Asia/Kolkata'},
+  {c:'KHI',n:'Karachi',city:'Karachi',tz:'Asia/Karachi'},
+  {c:'ISB',n:'Islamabad',city:'Islamabad',tz:'Asia/Karachi'},
+  {c:'DAC',n:'Dhaka',city:'Dhaka',tz:'Asia/Dhaka'},
+  {c:'CMB',n:'Colombo',city:'Colombo',tz:'Asia/Colombo'},
+  {c:'KTM',n:'Katmandú',city:'Katmandú',tz:'Asia/Kathmandu'},
+  {c:'PEK',n:'Pekín - Capital',city:'Pekín',tz:'Asia/Shanghai'},
+  {c:'PKX',n:'Pekín - Daxing',city:'Pekín',tz:'Asia/Shanghai'},
+  {c:'PVG',n:'Shanghái - Pudong',city:'Shanghái',tz:'Asia/Shanghai'},
+  {c:'SHA',n:'Shanghái - Hongqiao',city:'Shanghái',tz:'Asia/Shanghai'},
+  {c:'CAN',n:'Guangzhou',city:'Guangzhou',tz:'Asia/Shanghai'},
+  {c:'SZX',n:'Shenzhen',city:'Shenzhen',tz:'Asia/Shanghai'},
+  {c:'CTU',n:'Chengdu',city:'Chengdu',tz:'Asia/Shanghai'},
+  {c:'HKG',n:'Hong Kong',city:'Hong Kong',tz:'Asia/Hong_Kong'},
+  {c:'MFM',n:'Macao',city:'Macao',tz:'Asia/Macau'},
+  {c:'TPE',n:'Taipei - Taoyuan',city:'Taipei',tz:'Asia/Taipei'},
+  {c:'NRT',n:'Tokio - Narita',city:'Tokio',tz:'Asia/Tokyo'},
+  {c:'HND',n:'Tokio - Haneda',city:'Tokio',tz:'Asia/Tokyo'},
+  {c:'KIX',n:'Osaka - Kansai',city:'Osaka',tz:'Asia/Tokyo'},
+  {c:'NGO',n:'Nagoya',city:'Nagoya',tz:'Asia/Tokyo'},
+  {c:'CTS',n:'Sapporo',city:'Sapporo',tz:'Asia/Tokyo'},
+  {c:'ICN',n:'Seúl - Incheon',city:'Seúl',tz:'Asia/Seoul'},
+  {c:'GMP',n:'Seúl - Gimpo',city:'Seúl',tz:'Asia/Seoul'},
+  {c:'SIN',n:'Singapur - Changi',city:'Singapur',tz:'Asia/Singapore'},
+  {c:'KUL',n:'Kuala Lumpur',city:'Kuala Lumpur',tz:'Asia/Kuala_Lumpur'},
+  {c:'BKK',n:'Bangkok - Suvarnabhumi',city:'Bangkok',tz:'Asia/Bangkok'},
+  {c:'DMK',n:'Bangkok - Don Mueang',city:'Bangkok',tz:'Asia/Bangkok'},
+  {c:'CGK',n:'Yakarta',city:'Yakarta',tz:'Asia/Jakarta'},
+  {c:'DPS',n:'Bali - Ngurah Rai',city:'Bali',tz:'Asia/Makassar'},
+  {c:'MNL',n:'Manila',city:'Manila',tz:'Asia/Manila'},
+  {c:'SGN',n:'Ho Chi Minh',city:'Ho Chi Minh',tz:'Asia/Ho_Chi_Minh'},
+  {c:'HAN',n:'Hanói',city:'Hanói',tz:'Asia/Bangkok'},
+  {c:'RGN',n:'Yangón',city:'Yangón',tz:'Asia/Rangoon'},
+  {c:'PNH',n:'Phnom Penh',city:'Phnom Penh',tz:'Asia/Phnom_Penh'},
+  {c:'VTE',n:'Vientián',city:'Vientián',tz:'Asia/Vientiane'},
+  {c:'REP',n:'Siem Reap',city:'Siem Reap',tz:'Asia/Phnom_Penh'},
+  {c:'DAD',n:'Da Nang',city:'Da Nang',tz:'Asia/Ho_Chi_Minh'},
+  {c:'SYD',n:'Sídney',city:'Sídney',tz:'Australia/Sydney'},
+  {c:'MEL',n:'Melbourne',city:'Melbourne',tz:'Australia/Melbourne'},
+  {c:'BNE',n:'Brisbane',city:'Brisbane',tz:'Australia/Brisbane'},
+  {c:'PER',n:'Perth',city:'Perth',tz:'Australia/Perth'},
+  {c:'ADL',n:'Adelaide',city:'Adelaide',tz:'Australia/Adelaide'},
+  {c:'AKL',n:'Auckland',city:'Auckland',tz:'Pacific/Auckland'},
+  {c:'CHC',n:'Christchurch',city:'Christchurch',tz:'Pacific/Auckland'},
+  {c:'WLG',n:'Wellington',city:'Wellington',tz:'Pacific/Auckland'},
+  {c:'PPT',n:'Papeete - Tahití',city:'Papeete',tz:'Pacific/Tahiti'},
+  {c:'NAN',n:'Nadi - Fiji',city:'Nadi',tz:'Pacific/Fiji'},
+  {c:'HNL',n:'Honolulú',city:'Honolulú',tz:'Pacific/Honolulu'},
+  {c:'PMI',n:'Palma de Mallorca',city:'Palma',tz:'Europe/Madrid'},
+  {c:'AGP',n:'Málaga',city:'Málaga',tz:'Europe/Madrid'},
+  {c:'SVQ',n:'Sevilla',city:'Sevilla',tz:'Europe/Madrid'},
+  {c:'VLC',n:'Valencia',city:'Valencia',tz:'Europe/Madrid'},
+  {c:'BIO',n:'Bilbao',city:'Bilbao',tz:'Europe/Madrid'},
+  {c:'NCE',n:'Niza',city:'Niza',tz:'Europe/Paris'},
+  {c:'MRS',n:'Marsella',city:'Marsella',tz:'Europe/Paris'},
+  {c:'LYS',n:'Lyon',city:'Lyon',tz:'Europe/Paris'},
+  {c:'TLS',n:'Toulouse',city:'Toulouse',tz:'Europe/Paris'},
+  {c:'BLQ',n:'Bolonia',city:'Bolonia',tz:'Europe/Rome'},
+  {c:'FLR',n:'Florencia',city:'Florencia',tz:'Europe/Rome'},
+  {c:'PMO',n:'Palermo',city:'Palermo',tz:'Europe/Rome'},
+  {c:'CTA',n:'Catania',city:'Catania',tz:'Europe/Rome'},
+  {c:'SKG',n:'Tesalónica',city:'Tesalónica',tz:'Europe/Athens'},
+  {c:'HER',n:'Heraklion - Creta',city:'Creta',tz:'Europe/Athens'},
+  {c:'RHO',n:'Rodas',city:'Rodas',tz:'Europe/Athens'},
+  {c:'CFU',n:'Corfú',city:'Corfú',tz:'Europe/Athens'},
+  {c:'OTP',n:'Bucarest',city:'Bucarest',tz:'Europe/Bucharest'},
+  {c:'SOF',n:'Sofía',city:'Sofía',tz:'Europe/Sofia'},
+  {c:'BEG',n:'Belgrado',city:'Belgrado',tz:'Europe/Belgrade'},
+  {c:'ZAG',n:'Zagreb',city:'Zagreb',tz:'Europe/Zagreb'},
+  {c:'LJU',n:'Ljubljana',city:'Ljubljana',tz:'Europe/Ljubljana'},
+  {c:'SKP',n:'Skopje',city:'Skopje',tz:'Europe/Skopje'},
+  {c:'TIA',n:'Tirana',city:'Tirana',tz:'Europe/Tirane'},
+  {c:'DBV',n:'Dubrovnik',city:'Dubrovnik',tz:'Europe/Zagreb'},
+  {c:'SPU',n:'Split',city:'Split',tz:'Europe/Zagreb'},
+  {c:'TGD',n:'Podgorica',city:'Podgorica',tz:'Europe/Podgorica'},
+  {c:'SJJ',n:'Sarajevo',city:'Sarajevo',tz:'Europe/Sarajevo'},
+  {c:'RIX',n:'Riga',city:'Riga',tz:'Europe/Riga'},
+  {c:'TLL',n:'Tallin',city:'Tallin',tz:'Europe/Tallinn'},
+  {c:'VNO',n:'Vilnius',city:'Vilnius',tz:'Europe/Vilnius'},
+  {c:'MLA',n:'Malta',city:'Malta',tz:'Europe/Malta'},
+  {c:'LCA',n:'Larnaca - Chipre',city:'Larnaca',tz:'Asia/Nicosia'},
+  {c:'NIC',n:'Nicosia - Chipre',city:'Nicosia',tz:'Asia/Nicosia'},
+  {c:'ADB',n:'Izmir',city:'Izmir',tz:'Europe/Istanbul'},
+  {c:'AYT',n:'Antalya',city:'Antalya',tz:'Europe/Istanbul'},
+  {c:'ESB',n:'Ankara',city:'Ankara',tz:'Europe/Istanbul'},
+  {c:'AMM',n:'Amman',city:'Amman',tz:'Asia/Amman'},
+  {c:'BEY',n:'Beirut',city:'Beirut',tz:'Asia/Beirut'},
+  {c:'DAM',n:'Damasco',city:'Damasco',tz:'Asia/Damascus'},
+  {c:'BGW',n:'Bagdad',city:'Bagdad',tz:'Asia/Baghdad'},
+  {c:'THR',n:'Teherán',city:'Teherán',tz:'Asia/Tehran'},
+  {c:'IKA',n:'Teherán - Imam Khomeini',city:'Teherán',tz:'Asia/Tehran'},
+  {c:'GYD',n:'Bakú',city:'Bakú',tz:'Asia/Baku'},
+  {c:'EVN',n:'Ereván',city:'Ereván',tz:'Asia/Yerevan'},
+  {c:'TBS',n:'Tbilisi',city:'Tbilisi',tz:'Asia/Tbilisi'},
+  {c:'ASB',n:'Ashgabat',city:'Ashgabat',tz:'Asia/Ashgabat'},
+  {c:'TAS',n:'Tashkent',city:'Tashkent',tz:'Asia/Tashkent'},
+  {c:'ALA',n:'Almaty',city:'Almaty',tz:'Asia/Almaty'},
+  {c:'NQZ',n:'Nur-Sultan',city:'Nur-Sultan',tz:'Asia/Almaty'},
+  {c:'FRU',n:'Bishkek',city:'Bishkek',tz:'Asia/Bishkek'},
+  {c:'DYU',n:'Dushanbe',city:'Dushanbe',tz:'Asia/Dushanbe'},
+  {c:'KBL',n:'Kabul',city:'Kabul',tz:'Asia/Kabul'},
+  {c:'MLE',n:'Malé - Maldivas',city:'Malé',tz:'Indian/Maldives'},
+  {c:'GAN',n:'Addu - Maldivas',city:'Addu',tz:'Indian/Maldives'},
+  {c:'SEZ',n:'Mahé - Seychelles',city:'Mahé',tz:'Indian/Mahe'},
+  {c:'TNR',n:'Antananarivo',city:'Antananarivo',tz:'Indian/Antananarivo'},
+  {c:'MRU',n:'Mauricio',city:'Mauricio',tz:'Indian/Mauritius'},
+  {c:'RUN',n:'Reunión',city:'Saint-Denis',tz:'Indian/Reunion'},
+  {c:'DAR',n:'Dar es Salaam',city:'Dar es Salaam',tz:'Africa/Dar_es_Salaam'},
+  {c:'EBB',n:'Kampala - Entebbe',city:'Kampala',tz:'Africa/Kampala'},
+  {c:'KGL',n:'Kigali',city:'Kigali',tz:'Africa/Kigali'},
+  {c:'LFW',n:'Lomé',city:'Lomé',tz:'Africa/Lome'},
+  {c:'ABV',n:'Abuja',city:'Abuja',tz:'Africa/Lagos'},
+  {c:'DKR',n:'Dakar',city:'Dakar',tz:'Africa/Dakar'},
+  {c:'ABJ',n:'Abidján',city:'Abidján',tz:'Africa/Abidjan'},
+  {c:'COO',n:'Cotonou',city:'Cotonou',tz:'Africa/Porto-Novo'},
+  {c:'LFW',n:'Lomé',city:'Lomé',tz:'Africa/Lome'},
+  {c:'MPM',n:'Maputo',city:'Maputo',tz:'Africa/Maputo'},
+  {c:'LUN',n:'Lusaka',city:'Lusaka',tz:'Africa/Lusaka'},
+  {c:'HRE',n:'Harare',city:'Harare',tz:'Africa/Harare'},
+  {c:'WDH',n:'Windhoek',city:'Windhoek',tz:'Africa/Windhoek'},
+  {c:'GBE',n:'Gaborone',city:'Gaborone',tz:'Africa/Gaborone'},
+  {c:'MBA',n:'Mombasa',city:'Mombasa',tz:'Africa/Nairobi'},
+  {c:'PNR',n:'Pointe-Noire',city:'Pointe-Noire',tz:'Africa/Brazzaville'},
+  {c:'LBV',n:'Libreville',city:'Libreville',tz:'Africa/Libreville'},
+  {c:'DLA',n:'Duala',city:'Duala',tz:'Africa/Douala'},
+  {c:'NSI',n:'Yaundé',city:'Yaundé',tz:'Africa/Douala'},
+  {c:'SSG',n:'Malabo',city:'Malabo',tz:'Africa/Malabo'},
+  {c:'SID',n:'Sal - Cabo Verde',city:'Sal',tz:'Atlantic/Cape_Verde'},
+  {c:'RAK',n:'Marrakech',city:'Marrakech',tz:'Africa/Casablanca'},
+  {c:'FEZ',n:'Fez',city:'Fez',tz:'Africa/Casablanca'},
+  {c:'AGA',n:'Agadir',city:'Agadir',tz:'Africa/Casablanca'},
+  {c:'TNG',n:'Tánger',city:'Tánger',tz:'Africa/Casablanca'},
+  {c:'ORN',n:'Orán',city:'Orán',tz:'Africa/Algiers'},
+  {c:'CZL',n:'Constantine',city:'Constantine',tz:'Africa/Algiers'},
+  {c:'SFA',n:'Sfax',city:'Sfax',tz:'Africa/Tunis'},
+  {c:'MIR',n:'Monastir',city:'Monastir',tz:'Africa/Tunis'},
+  {c:'DJE',n:'Djerba',city:'Djerba',tz:'Africa/Tunis'},
+  {c:'BIA',n:'Bastia - Córcega',city:'Bastia',tz:'Europe/Paris'},
+  {c:'AJA',n:'Ajaccio - Córcega',city:'Ajaccio',tz:'Europe/Paris'},
+  {c:'IBZ',n:'Ibiza',city:'Ibiza',tz:'Europe/Madrid'},
+  {c:'MAH',n:'Menorca',city:'Menorca',tz:'Europe/Madrid'},
+  {c:'ACE',n:'Lanzarote',city:'Lanzarote',tz:'Atlantic/Canary'},
+  {c:'TFS',n:'Tenerife Sur',city:'Tenerife',tz:'Atlantic/Canary'},
+  {c:'TFN',n:'Tenerife Norte',city:'Tenerife',tz:'Atlantic/Canary'},
+  {c:'LPA',n:'Gran Canaria',city:'Gran Canaria',tz:'Atlantic/Canary'},
+  {c:'FUE',n:'Fuerteventura',city:'Fuerteventura',tz:'Atlantic/Canary'},
+  {c:'SPC',n:'La Palma',city:'La Palma',tz:'Atlantic/Canary'},
+  {c:'HOR',n:'Horta - Azores',city:'Horta',tz:'Atlantic/Azores'},
+  {c:'PDL',n:'Ponta Delgada - Azores',city:'Ponta Delgada',tz:'Atlantic/Azores'},
+  {c:'TER',n:'Terceira - Azores',city:'Terceira',tz:'Atlantic/Azores'},
+  {c:'FNC',n:'Funchal - Madeira',city:'Funchal',tz:'Atlantic/Madeira'},
+  {c:'SDQ',n:'Santo Domingo',city:'Santo Domingo',tz:'America/Santo_Domingo'},
+  {c:'PUJ',n:'Punta Cana',city:'Punta Cana',tz:'America/Santo_Domingo'},
+  {c:'STI',n:'Santiago - Rep. Dom.',city:'Santiago',tz:'America/Santo_Domingo'},
+  {c:'PAP',n:'Puerto Príncipe',city:'Puerto Príncipe',tz:'America/Port-au-Prince'},
+  {c:'KIN',n:'Kingston - Jamaica',city:'Kingston',tz:'America/Jamaica'},
+  {c:'MBJ',n:'Montego Bay',city:'Montego Bay',tz:'America/Jamaica'},
+  {c:'NAS',n:'Nassau - Bahamas',city:'Nassau',tz:'America/Nassau'},
+  {c:'GGT',n:'Georgetown - Bahamas',city:'Georgetown',tz:'America/Nassau'},
+  {c:'BGI',n:'Bridgetown - Barbados',city:'Bridgetown',tz:'America/Barbados'},
+  {c:'POS',n:'Puerto España',city:'Puerto España',tz:'America/Port_of_Spain'},
+  {c:'GEO',n:'Georgetown - Guyana',city:'Georgetown',tz:'America/Guyana'},
+  {c:'PBM',n:'Paramaribo',city:'Paramaribo',tz:'America/Paramaribo'},
+  {c:'CAY',n:'Cayena',city:'Cayena',tz:'America/Cayenne'},
+  {c:'BEL',n:'Belém',city:'Belém',tz:'America/Belem'},
+  {c:'MAN',n:'Manaos',city:'Manaos',tz:'America/Manaus'},
+  {c:'FOR',n:'Fortaleza',city:'Fortaleza',tz:'America/Fortaleza'},
+  {c:'REC',n:'Recife',city:'Recife',tz:'America/Recife'},
+  {c:'SSA',n:'Salvador - Bahía',city:'Salvador',tz:'America/Bahia'},
+  {c:'CNF',n:'Belo Horizonte - Confins',city:'Belo Horizonte',tz:'America/Sao_Paulo'},
+  {c:'POA',n:'Porto Alegre',city:'Porto Alegre',tz:'America/Sao_Paulo'},
+  {c:'FLN',n:'Florianópolis',city:'Florianópolis',tz:'America/Sao_Paulo'},
+  {c:'CWB',n:'Curitiba',city:'Curitiba',tz:'America/Sao_Paulo'},
+  {c:'VCP',n:'Campinas - Viracopos',city:'Campinas',tz:'America/Sao_Paulo'},
+  {c:'MDE',n:'Medellín',city:'Medellín',tz:'America/Bogota'},
+  {c:'CLO',n:'Cali',city:'Cali',tz:'America/Bogota'},
+  {c:'CTG',n:'Cartagena',city:'Cartagena',tz:'America/Bogota'},
+  {c:'BAQ',n:'Barranquilla',city:'Barranquilla',tz:'America/Bogota'},
+  {c:'ADZ',n:'San Andrés',city:'San Andrés',tz:'America/Bogota'},
+  {c:'PEI',n:'Pereira',city:'Pereira',tz:'America/Bogota'},
+  {c:'PMC',n:'Puerto Montt',city:'Puerto Montt',tz:'America/Santiago'},
+  {c:'IQQ',n:'Iquique',city:'Iquique',tz:'America/Santiago'},
+  {c:'ANF',n:'Antofagasta',city:'Antofagasta',tz:'America/Santiago'},
+  {c:'CCP',n:'Concepción',city:'Concepción',tz:'America/Santiago'},
+  {c:'PUQ',n:'Punta Arenas',city:'Punta Arenas',tz:'America/Punta_Arenas'},
+  {c:'IPC',n:'Isla de Pascua',city:'Isla de Pascua',tz:'Pacific/Easter'},
+  {c:'LPB',n:'La Paz',city:'La Paz',tz:'America/La_Paz'},
+  {c:'VVI',n:'Santa Cruz - Bolivia',city:'Santa Cruz',tz:'America/La_Paz'},
+  {c:'CBB',n:'Cochabamba',city:'Cochabamba',tz:'America/La_Paz'},
+  {c:'SRE',n:'Sucre',city:'Sucre',tz:'America/La_Paz'},
+  {c:'TRU',n:'Trujillo',city:'Trujillo',tz:'America/Lima'},
+  {c:'AQP',n:'Arequipa',city:'Arequipa',tz:'America/Lima'},
+  {c:'CUZ',n:'Cusco',city:'Cusco',tz:'America/Lima'},
+  {c:'IQT',n:'Iquitos',city:'Iquitos',tz:'America/Lima'},
+  {c:'ECN',n:'Guayaquil - José J. de Olmedo',city:'Guayaquil',tz:'America/Guayaquil'},
+  {c:'GPS',n:'Islas Galápagos',city:'Galápagos',tz:'Pacific/Galapagos'},
+  {c:'PMV',n:'Porlamar - Venezuela',city:'Porlamar',tz:'America/Caracas'},
+  {c:'MRD',n:'Mérida - Venezuela',city:'Mérida',tz:'America/Caracas'},
+  {c:'MAR',n:'Maracaibo',city:'Maracaibo',tz:'America/Caracas'},
+  {c:'PTY',n:'Ciudad de Panamá',city:'Panamá',tz:'America/Panama'},
+  {c:'SJO',n:'San José - Costa Rica',city:'San José',tz:'America/Costa_Rica'},
+  {c:'LIR',n:'Liberia - Costa Rica',city:'Liberia',tz:'America/Costa_Rica'},
+  {c:'MGA',n:'Managua',city:'Managua',tz:'America/Managua'},
+  {c:'TGU',n:'Tegucigalpa',city:'Tegucigalpa',tz:'America/Tegucigalpa'},
+  {c:'SAP',n:'San Pedro Sula',city:'San Pedro Sula',tz:'America/Tegucigalpa'},
+  {c:'SAL',n:'San Salvador',city:'San Salvador',tz:'America/El_Salvador'},
+  {c:'GUA',n:'Ciudad de Guatemala',city:'Guatemala',tz:'America/Guatemala'},
+  {c:'BZE',n:'Belmopán - Belice',city:'Belice',tz:'America/Belize'},
+  {c:'SJU',n:'San Juan - Puerto Rico',city:'San Juan',tz:'America/Puerto_Rico'},
+  {c:'STT',n:'St. Thomas - USVI',city:'St. Thomas',tz:'America/St_Thomas'},
+  {c:'ANU',n:'Antigua',city:'Antigua',tz:'America/Antigua'},
+  {c:'ORD',n:'Chicago - O\'Hare',city:'Chicago',tz:'America/Chicago'},
+  {c:'MDW',n:'Chicago - Midway',city:'Chicago',tz:'America/Chicago'},
+  {c:'DEN',n:'Denver',city:'Denver',tz:'America/Denver'},
+  {c:'PHX',n:'Phoenix',city:'Phoenix',tz:'America/Phoenix'},
+  {c:'MSP',n:'Minneapolis',city:'Minneapolis',tz:'America/Chicago'},
+  {c:'DTW',n:'Detroit',city:'Detroit',tz:'America/New_York'},
+  {c:'CLT',n:'Charlotte',city:'Charlotte',tz:'America/New_York'},
+  {c:'PHL',n:'Filadelfia',city:'Filadelfia',tz:'America/New_York'},
+  {c:'DCA',n:'Washington - Reagan',city:'Washington',tz:'America/New_York'},
+  {c:'IAH',n:'Houston - Intercontinental',city:'Houston',tz:'America/Chicago'},
+  {c:'HOU',n:'Houston - Hobby',city:'Houston',tz:'America/Chicago'},
+  {c:'SAN',n:'San Diego',city:'San Diego',tz:'America/Los_Angeles'},
+  {c:'PDX',n:'Portland',city:'Portland',tz:'America/Los_Angeles'},
+  {c:'SLC',n:'Salt Lake City',city:'Salt Lake City',tz:'America/Denver'},
+  {c:'MSY',n:'Nueva Orleans',city:'Nueva Orleans',tz:'America/Chicago'},
+  {c:'MEM',n:'Memphis',city:'Memphis',tz:'America/Chicago'},
+  {c:'BNA',n:'Nashville',city:'Nashville',tz:'America/Chicago'},
+  {c:'RDU',n:'Raleigh-Durham',city:'Raleigh',tz:'America/New_York'},
+  {c:'TPA',n:'Tampa',city:'Tampa',tz:'America/New_York'},
+  {c:'FLL',n:'Fort Lauderdale',city:'Fort Lauderdale',tz:'America/New_York'},
+  {c:'PBI',n:'West Palm Beach',city:'West Palm Beach',tz:'America/New_York'},
+  {c:'BWI',n:'Baltimore-Washington',city:'Baltimore',tz:'America/New_York'},
+  {c:'OAK',n:'Oakland',city:'Oakland',tz:'America/Los_Angeles'},
+  {c:'SJC',n:'San José - California',city:'San José',tz:'America/Los_Angeles'},
+  {c:'SMF',n:'Sacramento',city:'Sacramento',tz:'America/Los_Angeles'},
+  {c:'ABQ',n:'Albuquerque',city:'Albuquerque',tz:'America/Denver'},
+  {c:'ANC',n:'Anchorage',city:'Anchorage',tz:'America/Anchorage'},
+  {c:'FAI',n:'Fairbanks',city:'Fairbanks',tz:'America/Anchorage'},
+  {c:'OGG',n:'Maui',city:'Maui',tz:'Pacific/Honolulu'},
+  {c:'KOA',n:'Kona - Hawaii',city:'Kona',tz:'Pacific/Honolulu'},
+  {c:'LIH',n:'Kauai',city:'Kauai',tz:'Pacific/Honolulu'},
+  {c:'YYC',n:'Calgary',city:'Calgary',tz:'America/Edmonton'},
+  {c:'YEG',n:'Edmonton',city:'Edmonton',tz:'America/Edmonton'},
+  {c:'YOW',n:'Ottawa',city:'Ottawa',tz:'America/Toronto'},
+  {c:'YHZ',n:'Halifax',city:'Halifax',tz:'America/Halifax'},
+  {c:'YQB',n:'Quebec',city:'Quebec',tz:'America/Toronto'},
+  {c:'YWG',n:'Winnipeg',city:'Winnipeg',tz:'America/Winnipeg'},
+];
+
+</script>
+<script>// Airport search autocomplete
+function mkAirportField(cls, placeholder) {
+  var wrap = ce('div', 'ap-wrap');
+  var inp = ce('input');
+  inp.className = cls + ' ap-inp';
+  inp.placeholder = placeholder || 'Buscar aeropuerto...';
+  inp.autocomplete = 'off';
+  var dropdown = ce('div', 'ap-dropdown');
+  dropdown.style.display = 'none';
+
+  inp.addEventListener('input', function() {
+    var q = inp.value.trim().toUpperCase();
+    if(q.length < 2) { dropdown.style.display = 'none'; return; }
+    var results = AIRPORTS.filter(function(a) {
+      return a.c.includes(q) || a.n.toUpperCase().includes(q) || a.city.toUpperCase().includes(q);
+    }).slice(0, 8);
+    dropdown.innerHTML = '';
+    if(!results.length) { dropdown.style.display = 'none'; return; }
+    results.forEach(function(a) {
+      var item = ce('div', 'ap-item');
+      item.innerHTML = '<span class="ap-code">' + a.c + '</span><span class="ap-name">' + a.n + '</span>';
+      item.addEventListener('mousedown', function(e) {
+        e.preventDefault();
+        inp.value = a.c + ' - ' + a.n;
+        inp.dataset.code = a.c;
+        inp.dataset.tz = a.tz;
+        dropdown.style.display = 'none';
+        // trigger duration calc if exists
+        var evt = new Event('airportSelected');
+        inp.dispatchEvent(evt);
+      });
+      dropdown.appendChild(item);
+    });
+    dropdown.style.display = 'block';
+  });
+
+  inp.addEventListener('blur', function() {
+    setTimeout(function() { dropdown.style.display = 'none'; }, 150);
+  });
+
+  wrap.appendChild(inp);
+  wrap.appendChild(dropdown);
+  return wrap;
+}
+
+function getAirportTz(code) {
+  var a = AIRPORTS.find(function(x) { return x.c === code; });
+  return a ? a.tz : 'UTC';
+}
+
+function calcDuration(salida, llegada, tzOrigen, tzDestino) {
+  // salida and llegada are local datetime strings like "2025-06-10T23:45"
+  if(!salida || !llegada) return '';
+  try {
+    // Convert local times to UTC using timezone offsets
+    var sLocal = new Date(salida);
+    var lLocal = new Date(llegada);
+    var diffMs = lLocal - sLocal;
+    if(diffMs <= 0) return '';
+    var h = Math.floor(diffMs / 3600000);
+    var m = Math.round((diffMs % 3600000) / 60000);
+    return h + 'h ' + m + 'm';
+  } catch(e) { return ''; }
+}
+
+function calcDurationMs(salida, llegada) {
+  if(!salida || !llegada) return 0;
+  try {
+    var s = new Date(salida), l = new Date(llegada);
+    return Math.max(0, l - s);
+  } catch(e) { return 0; }
+}
+
+function msToStr(ms) {
+  if(!ms) return '';
+  var h = Math.floor(ms / 3600000);
+  var m = Math.round((ms % 3600000) / 60000);
+  return h + 'h ' + m + 'm';
+}
+
+// Build a tramo (flight leg) form
+function mkTramoForm(tramo, idx, onCalcTotal) {
+  var card = ce('div', 'tramo-card');
+  var header = ce('div', 'tramo-header');
+  header.appendChild(ce('div', 'tramo-num', 'Tramo ' + (idx + 1)));
+  card.appendChild(header);
+
+  var body = ce('div', 'tramo-body');
+  var grid = ce('div', 'fg3');
+
+  // Origen with autocomplete
+  var origenD = ce('div', 'ff');
+  origenD.appendChild(ce('label', '', 'Aeropuerto origen'));
+  var origenWrap = mkAirportField('tramo-origen', 'EZE - Buenos Aires');
+  if(tramo && tramo.origen_codigo) {
+    var orInp = origenWrap.querySelector('input');
+    orInp.value = tramo.origen_codigo + (tramo.origen_nombre ? ' - ' + tramo.origen_nombre : '');
+    orInp.dataset.code = tramo.origen_codigo;
+    orInp.dataset.tz = tramo.origen_tz || '';
+  }
+  origenD.appendChild(origenWrap);
+  grid.appendChild(origenD);
+
+  // Destino with autocomplete
+  var destinoD = ce('div', 'ff');
+  destinoD.appendChild(ce('label', '', 'Aeropuerto destino'));
+  var destinoWrap = mkAirportField('tramo-destino', 'MAD - Madrid');
+  if(tramo && tramo.destino_codigo) {
+    var deInp = destinoWrap.querySelector('input');
+    deInp.value = tramo.destino_codigo + (tramo.destino_nombre ? ' - ' + tramo.destino_nombre : '');
+    deInp.dataset.code = tramo.destino_codigo;
+    deInp.dataset.tz = tramo.destino_tz || '';
+  }
+  destinoD.appendChild(destinoWrap);
+  grid.appendChild(destinoD);
+
+  // Aerolinea + nro vuelo
+  function mf(lbl, cls2, val2) {
+    var d = ce('div', 'ff'); d.appendChild(ce('label', '', lbl));
+    var i = ce('input'); i.className = cls2; i.value = val2 || '';
+    d.appendChild(i); return d;
+  }
+  grid.appendChild(mf('Aerolinea', 'tramo-ae', tramo ? tramo.aerolinea : ''));
+  grid.appendChild(mf('Nro vuelo', 'tramo-nv', tramo ? tramo.nro_vuelo : ''));
+
+  // Fecha/hora salida
+  var salidaD = ce('div', 'ff');
+  salidaD.appendChild(ce('label', '', 'Fecha y hora salida'));
+  var salidaI = ce('input'); salidaI.className = 'tramo-salida'; salidaI.type = 'datetime-local';
+  salidaI.value = tramo && tramo.fecha_salida ? tramo.fecha_salida.slice(0, 16) : '';
+  salidaD.appendChild(salidaI); grid.appendChild(salidaD);
+
+  // Fecha/hora llegada
+  var llegadaD = ce('div', 'ff');
+  llegadaD.appendChild(ce('label', '', 'Fecha y hora llegada'));
+  var llegadaI = ce('input'); llegadaI.className = 'tramo-llegada'; llegadaI.type = 'datetime-local';
+  llegadaI.value = tramo && tramo.fecha_llegada ? tramo.fecha_llegada.slice(0, 16) : '';
+  llegadaD.appendChild(llegadaI); grid.appendChild(llegadaD);
+
+  // Duracion calculada
+  var durD = ce('div', 'ff');
+  durD.appendChild(ce('label', '', 'Duracion tramo'));
+  var durI = ce('input'); durI.className = 'tramo-dur'; durI.readOnly = true;
+  durI.style.background = 'var(--bg)'; durI.style.color = 'var(--b)'; durI.style.fontWeight = '700';
+  durI.value = tramo && tramo.duracion_minutos ? msToStr(tramo.duracion_minutos * 60000) : '';
+  durD.appendChild(durI); grid.appendChild(durD);
+
+  function recalc() {
+    var ms = calcDurationMs(salidaI.value, llegadaI.value);
+    durI.value = msToStr(ms);
+    if(onCalcTotal) onCalcTotal();
+  }
+  salidaI.addEventListener('change', recalc);
+  llegadaI.addEventListener('change', recalc);
+
+  body.appendChild(grid);
+  card.appendChild(body);
+  return card;
+}
+
+// Build full vuelo block with escalas
+function mkVueloBlockV2(f, tramos, idx, onDelete) {
+  var bl = ce('div', 'ib'); 
+  if(f && f.id) bl.dataset.vid = f.id;
+
+  var bh = ce('div', 'ibh');
+  var titulo = f ? 'Vuelo ' + (idx+1) + (f.ruta ? ' — ' + f.ruta : '') : 'Nuevo vuelo';
+  bh.appendChild(ce('div', 'ibl', titulo));
+  var rb = ce('button', 'ibr', 'Eliminar');
+  rb.addEventListener('click', function() {
+    if(f && f.id) {
+      if(!confirm('Eliminar vuelo?')) return;
+      sb.from('tramos_vuelo').delete().eq('vuelo_id', f.id).then(function() {
+        sb.from('vuelos').delete().eq('id', f.id).then(function() {
+          bl.remove(); toast('Vuelo eliminado');
+        });
+      });
+    } else { bl.remove(); }
+    if(onDelete) onDelete();
+  });
+  bh.appendChild(rb); bl.appendChild(bh);
+
+  var bb = ce('div', 'ibb');
+
+  // Escalas selector
+  var escalasD = ce('div', 'ff'); escalasD.style.marginBottom = '14px';
+  escalasD.appendChild(ce('label', '', 'Cantidad de escalas'));
+  var escalasS = ce('select'); escalasS.className = 'vuelo-escalas';
+  [['0','Sin escalas'],['1','1 escala'],['2','2 escalas']].forEach(function(op) {
+    var o = ce('option', '', op[1]); o.value = op[0];
+    if(f && parseInt(f.escalas) === parseInt(op[0])) o.selected = true;
+    escalasS.appendChild(o);
+  });
+  escalasD.appendChild(escalasS); bb.appendChild(escalasD);
+
+  // Tramos container
+  var tramosDiv = ce('div', 'tramos-cont');
+
+  function updateTotalDuration() {
+    var salidaEl = tramosDiv.querySelector('.tramo-salida');
+    var llegadasEls = tramosDiv.querySelectorAll('.tramo-llegada');
+    var llegadaEl = llegadasEls[llegadasEls.length - 1];
+    if(salidaEl && llegadaEl) {
+      var totalMs = calcDurationMs(salidaEl.value, llegadaEl.value);
+      durTotalI.value = msToStr(totalMs);
+    }
+    // Update escala times
+    var allTramos = tramosDiv.querySelectorAll('.tramo-card');
+    for(var i = 1; i < allTramos.length; i++) {
+      var prevLlegada = allTramos[i-1].querySelector('.tramo-llegada');
+      var thisSalida = allTramos[i].querySelector('.tramo-salida');
+      var escLabel = allTramos[i].querySelector('.escala-label');
+      if(prevLlegada && thisSalida && escLabel) {
+        var ms = calcDurationMs(prevLlegada.value, thisSalida.value);
+        escLabel.textContent = ms > 0 ? 'Escala: ' + msToStr(ms) : 'Escala';
+      }
+    }
+  }
+
+  function buildTramos(numEscalas) {
+    tramosDiv.innerHTML = '';
+    var count = parseInt(numEscalas) + 1;
+    for(var i = 0; i < count; i++) {
+      var t = tramos && tramos[i] ? tramos[i] : null;
+      var tramCard = mkTramoForm(t, i, updateTotalDuration);
+      if(i > 0) {
+        var escalLabel = ce('div', 'escala-separator');
+        var el = ce('div', 'escala-label', 'Escala');
+        escalLabel.appendChild(el);
+        tramosDiv.appendChild(escalLabel);
+      }
+      tramosDiv.appendChild(tramCard);
+    }
+    updateTotalDuration();
+  }
+
+  buildTramos(f ? f.escalas || 0 : 0);
+  escalasS.addEventListener('change', function() { buildTramos(escalasS.value); });
+  bb.appendChild(tramosDiv);
+
+  // Duracion total
+  var durGrid = ce('div', 'fg'); durGrid.style.marginBottom = '12px';
+  var durTotalD = ce('div', 'ff');
+  durTotalD.appendChild(ce('label', '', 'Duracion total del viaje'));
+  var durTotalI = ce('input'); durTotalI.className = 'vuelo-dur-total'; durTotalI.readOnly = true;
+  durTotalI.style.cssText = 'background:var(--n);color:#fff;font-family:Parkinsans,sans-serif;font-weight:700;font-size:14px;';
+  durTotalI.value = f ? f.duracion_total || '' : '';
+  durTotalD.appendChild(durTotalI); durGrid.appendChild(durTotalD);
+
+  // Estado
+  var estD = ce('div', 'ff'); estD.appendChild(ce('label', '', 'Estado'));
+  var estS = ce('select'); estS.className = 'vuelo-estado';
+  ['Confirmado','Por confirmar'].forEach(function(s) {
+    var o = ce('option', '', s); o.value = s;
+    if(f && f.estado === s) o.selected = true;
+    estS.appendChild(o);
+  });
+  estD.appendChild(estS); durGrid.appendChild(estD);
+  bb.appendChild(durGrid);
+
+  // Codigo reserva + link checkin
+  var resGrid = ce('div', 'fg'); resGrid.style.marginBottom = '12px';
+  function mf2(lbl, cls2, val2, tp) {
+    var d = ce('div', 'ff'); d.appendChild(ce('label', '', lbl));
+    var i = ce('input'); i.className = cls2; i.type = tp || 'text'; i.value = val2 || '';
+    d.appendChild(i); return d;
+  }
+  resGrid.appendChild(mf2('Codigo de reserva', 'vuelo-reserva', f ? f.codigo_reserva || '' : ''));
+  var lidD = ce('div', 'ff ful'); lidD.appendChild(ce('label', '', 'Link check-in online'));
+  var lidI = ce('input'); lidI.className = 'vuelo-checkin'; lidI.type = 'url'; lidI.value = f ? f.link_checkin || '' : '';
+  lidD.appendChild(lidI); resGrid.appendChild(lidD);
+  bb.appendChild(resGrid);
+
+  // Upload zone
+  var uz = ce('div', 'upload-section');
+  uz.appendChild(ce('div', 'upload-section-title', 'Documento del vuelo (boarding pass, e-ticket)'));
+  if(f && f.documento_url) uz.appendChild(mkDocRow(f.documento_url.split('/').pop(), f.documento_url));
+  var uzBtn = ce('label', 'upload-zone-big');
+  uzBtn.innerHTML = '<span class="uz-icon">📎</span><span class="uz-label">Subir PDF / imagen</span>';
+  var uzInp = document.createElement('input'); uzInp.type = 'file'; uzInp.accept = '.pdf,.jpg,.jpeg,.png'; uzInp.style.display = 'none';
+  (function(vuelo, uzB, uzZ) {
+    uzInp.addEventListener('change', function() {
+      if(!uzInp.files.length) return;
+      var file = uzInp.files[0]; uzB.querySelector('.uz-label').textContent = 'Subiendo...';
+      if(vuelo && vuelo.id && sb) {
+        uploadDoc(file, 'vuelos', vuelo.id).then(function(path) {
+          if(path) { uzZ.innerHTML = ''; uzZ.appendChild(ce('div', 'upload-section-title', 'Documento')); uzZ.appendChild(mkDocRow(file.name, path)); toast('Subido!'); }
+          uzB.querySelector('.uz-label').textContent = 'Subir PDF / imagen';
+        });
+      } else {
+        bl.pendingFile = file;
+        uzZ.innerHTML = ''; uzZ.appendChild(ce('div', 'upload-section-title', 'Documento')); uzZ.appendChild(mkDocRow(file.name, null));
+        uzB.querySelector('.uz-label').textContent = 'Subir PDF / imagen';
+        toast('Listo para subir al guardar');
+      }
+      uzInp.value = '';
+    });
+  })(f, uzBtn, uz);
+  uzBtn.appendChild(uzInp); uz.appendChild(uzBtn); bb.appendChild(uz);
+  bl.appendChild(bb);
+  return bl;
+}
+
+async function saveVuelos() {
+  if(!EID || !sb) { toast('Sin conexion'); return; }
+  var blocks = document.querySelectorAll('#et-2 .ib');
+  for(var i = 0; i < blocks.length; i++) {
+    var b = blocks[i];
+    var vid = b.dataset.vid;
+    var escalas = b.querySelector('.vuelo-escalas') ? parseInt(b.querySelector('.vuelo-escalas').value) : 0;
+    var durTotal = b.querySelector('.vuelo-dur-total') ? b.querySelector('.vuelo-dur-total').value : '';
+    var estado = b.querySelector('.vuelo-estado') ? b.querySelector('.vuelo-estado').value : 'Confirmado';
+    var reserva = b.querySelector('.vuelo-reserva') ? b.querySelector('.vuelo-reserva').value : '';
+    var checkin = b.querySelector('.vuelo-checkin') ? b.querySelector('.vuelo-checkin').value : '';
+    // Build ruta from tramos
+    var origenEls = b.querySelectorAll('.tramo-origen');
+    var destinoEls = b.querySelectorAll('.tramo-destino');
+    var ruta = '';
+    if(origenEls.length) {
+      var parts = [];
+      parts.push(origenEls[0].dataset.code || origenEls[0].value.split(' ')[0]);
+      for(var j = 0; j < destinoEls.length; j++) {
+        parts.push(destinoEls[j].dataset.code || destinoEls[j].value.split(' ')[0]);
+      }
+      ruta = parts.filter(Boolean).join(' → ');
+    }
+    var vdata = {viaje_id: EID, escalas: escalas, duracion_total: durTotal, ruta: ruta, estado: estado, codigo_reserva: reserva, link_checkin: checkin};
+    // Get first tramo data for backward compat
+    var firstSalida = b.querySelector('.tramo-salida');
+    var firstLlegada = b.querySelector('.tramo-llegada');
+    var firstAe = b.querySelector('.tramo-ae');
+    var firstNv = b.querySelector('.tramo-nv');
+    var firstOrigen = b.querySelector('.tramo-origen');
+    var firstDestino = b.querySelector('.tramo-destino');
+    if(firstSalida) vdata.fecha_salida = firstSalida.value || null;
+    if(firstLlegada) vdata.fecha_llegada = firstLlegada.value || null;
+    if(firstAe) vdata.aerolinea = firstAe.value;
+    if(firstNv) vdata.nro_vuelo = firstNv.value;
+    if(firstOrigen) vdata.origen = firstOrigen.dataset.code || firstOrigen.value.split(' ')[0];
+    if(firstDestino) {
+      var destEls = b.querySelectorAll('.tramo-destino');
+      var lastDest = destEls[destEls.length - 1];
+      vdata.destino = lastDest.dataset.code || lastDest.value.split(' ')[0];
+    }
+    var vres;
+    if(vid) vres = await sb.from('vuelos').update(vdata).eq('id', vid).select().single();
+    else vres = await sb.from('vuelos').insert(vdata).select().single();
+    var vueloId = vid || (vres.data && vres.data.id);
+    // Save tramos
+    if(vueloId) {
+      await sb.from('tramos_vuelo').delete().eq('vuelo_id', vueloId);
+      var tramoCards = b.querySelectorAll('.tramo-card');
+      for(var t = 0; t < tramoCards.length; t++) {
+        var tc = tramoCards[t];
+        var orInp = tc.querySelector('.tramo-origen');
+        var deInp = tc.querySelector('.tramo-destino');
+        var saI = tc.querySelector('.tramo-salida');
+        var llI = tc.querySelector('.tramo-llegada');
+        var aeI = tc.querySelector('.tramo-ae');
+        var nvI = tc.querySelector('.tramo-nv');
+        var durI2 = tc.querySelector('.tramo-dur');
+        var durMs = saI && llI ? calcDurationMs(saI.value, llI.value) : 0;
+        var tdata = {
+          vuelo_id: vueloId, orden: t + 1,
+          origen_codigo: orInp ? orInp.dataset.code || orInp.value.split(' ')[0] : '',
+          origen_nombre: orInp ? (orInp.value.includes(' - ') ? orInp.value.split(' - ').slice(1).join(' - ') : '') : '',
+          origen_tz: orInp ? orInp.dataset.tz || '' : '',
+          destino_codigo: deInp ? deInp.dataset.code || deInp.value.split(' ')[0] : '',
+          destino_nombre: deInp ? (deInp.value.includes(' - ') ? deInp.value.split(' - ').slice(1).join(' - ') : '') : '',
+          destino_tz: deInp ? deInp.dataset.tz || '' : '',
+          aerolinea: aeI ? aeI.value : '',
+          nro_vuelo: nvI ? nvI.value : '',
+          fecha_salida: saI ? saI.value || null : null,
+          fecha_llegada: llI ? llI.value || null : null,
+          duracion_minutos: Math.round(durMs / 60000)
+        };
+        await sb.from('tramos_vuelo').insert(tdata);
+      }
+      if(b.pendingFile) await uploadDoc(b.pendingFile, 'vuelos', vueloId);
+    }
+  }
+  toast('Vuelos guardados!');
+  await loadV();
+}
+
+
+
+var SBURL = 'https://vzgcogivfnlzciwwscls.supabase.co';
+var SBKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ6Z2NvZ2l2Zm5semNpd3dzY2xzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2ODYwMTAsImV4cCI6MjA4OTI2MjAxMH0.tPqXzg44_xG6uogi8lmRIWLfLUB21pSokivL6XIL9_M';
+var sb = null;
+try { sb = window.supabase.createClient(SBURL, SBKEY); } catch(e) { console.warn(e); }
+
+var AV=[], AC=[], AP=[], EID=null, CID=null;
+var NVC=0, NHC=0, NAC=0;
+
+var COLORS=['#0D1F75','#3A46A0','#FF7D87','#1B5E20','#7A3800','#5B0DA0'];
+function gc(s){return COLORS[s?s.charCodeAt(0)%COLORS.length:0];}
+function gi(n){if(!n)return '?';var p=n.split(' '),r='';for(var i=0;i<p.length&&r.length<2;i++)if(p[i])r+=p[i][0].toUpperCase();return r||'?';}
+function fd(d){if(!d)return '-';try{return new Date(d+'T00:00:00').toLocaleDateString('es-AR',{day:'numeric',month:'short',year:'numeric'});}catch(e){return d;}}
+function fdCorta(d){if(!d)return '-';try{return new Date(d+'T00:00:00').toLocaleDateString('es-AR',{day:'numeric',month:'short'});}catch(e){return d;}}
+function getStatus(v){var t=new Date(),s=new Date(v.fecha_inicio),e=new Date(v.fecha_fin);if(v.estado==='Finalizado'||e<t)return 'Finalizado';if(s<=t&&t<=e)return 'Activo';return 'Proximo';}
+function getProgress(v){var t=new Date(),s=new Date(v.fecha_inicio),e=new Date(v.fecha_fin);var tot=Math.max(1,(e-s)/86400000),don=Math.max(0,Math.min(tot,(t-s)/86400000));return {pct:Math.round(don/tot*100),day:Math.round(don)+1,tot:Math.round(tot)};}
+var SCL={Activo:'vs-ok',Proximo:'vs-up',Finalizado:'vs-pa'};
+var SLB={Activo:'En curso',Proximo:'Proximo',Finalizado:'Finalizado'};
+var PCL={Solicitado:'s-sol',Creado:'s-cre',Enviado:'s-env',Modificado:'s-mod',Confirmado:'s-con'};
+
+function toast(m){var t=g('tst');t.textContent=m;t.style.display='block';setTimeout(function(){t.style.display='none';},2800);}
+function g(id){return document.getElementById(id);}
+function val(id){var e=g(id);return e?e.value.trim():'';}
+function ce(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!==undefined)e.textContent=txt;return e;}
+
+// LOGIN
+function login(){
+  var em=val('lem'),pw=g('lpw').value;
+  if(!em||!pw){showLoginErr('Completa email y contrasena');return;}
+  var btn=g('lbtn');btn.textContent='Ingresando...';btn.disabled=true;
+  sb.auth.signInWithPassword({email:em,password:pw}).then(function(res){
+    btn.textContent='Ingresar al panel';btn.disabled=false;
+    if(res.error){showLoginErr('Email o contrasena incorrectos');return;}
+    var nm=em.split('@')[0],nd=nm.charAt(0).toUpperCase()+nm.slice(1);
+    g('anm').textContent=nd;g('ado').textContent=gi(nm);
+    var h=new Date().getHours();
+    g('dg').textContent=(h<12?'Buenos dias':h<18?'Buenas tardes':'Buenas noches')+', '+nd;
+    g('dd').textContent=new Date().toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    g('ls').style.display='none';g('as').style.display='flex';
+    loadAll();
+  });
+}
+function showLoginErr(m){var e=g('lerr');e.textContent=m;e.style.display='block';setTimeout(function(){e.style.display='none';},3000);}
+
+// NAV
+function gpage(p){
+  document.querySelectorAll('.pg').forEach(function(x){x.classList.remove('on');});
+  document.querySelectorAll('.si').forEach(function(x){x.classList.remove('on');});
+  var pg=g('p-'+p);if(pg)pg.classList.add('on');
+  var si=g('si-'+p.substring(0,2));if(si)si.classList.add('on');
+  if(p==='vi')renderV('todos');
+  if(p==='cl')renderC();
+  if(p==='pr'){renderP();upPipe();}
+  if(p==='nv'){fillCS();goNT(1);initNV();}
+  if(p==='np'){fillNPC();}
+}
+function goNT(n){
+  document.querySelectorAll('.fth[data-nt]').forEach(function(b){b.classList.toggle('on',parseInt(b.dataset.nt)===n);});
+  for(var i=1;i<=5;i++){var t=g('nt-'+i);if(t)t.style.display=i===n?'block':'none';}
+}
+function goET(n){
+  document.querySelectorAll('.fth[data-et]').forEach(function(b){b.classList.toggle('on',parseInt(b.dataset.et)===n);});
+  for(var i=1;i<=5;i++){var t=g('et-'+i);if(t)t.style.display=i===n?'block':'none';}
+}
+
+// LOAD
+async function loadAll(){await Promise.all([loadV(),loadC(),loadP()]);renderD();}
+async function loadV(){
+  if(!sb)return;
+  var r=await sb.from('viajes').select('*,clientes(nombre,email)').order('fecha_inicio',{ascending:false});
+  AV=(r.data||[]).map(function(v){v._s=getStatus(v);return v;});
+  g('c-vi').textContent=AV.length;g('vi-s').textContent=AV.length+' viajes';fillCS();
+}
+async function loadC(){
+  if(!sb)return;
+  var r=await sb.from('clientes').select('*').order('nombre');
+  AC=r.data||[];g('c-cl').textContent=AC.length;g('cl-s').textContent=AC.length+' clientes';
+}
+async function loadP(){
+  if(!sb)return;
+  var r=await sb.from('presupuestos').select('*,clientes(nombre)').order('created_at',{ascending:false});
+  AP=r.data||[];g('c-pr').textContent=AP.length;g('pr-s').textContent=AP.length+' presupuestos';
+}
+
+// DASHBOARD
+function renderD(){
+  var act=AV.filter(function(v){return v._s==='Activo';});
+  var prx=AV.filter(function(v){var d=new Date(v.fecha_inicio),t=new Date(),t3=new Date();t3.setDate(t.getDate()+30);return d>=t&&d<=t3;});
+  g('s-ac').textContent=act.length;g('s-px').textContent=prx.length;g('s-cl').textContent=AC.length;
+  g('s-pr').textContent=AP.filter(function(p){return p.estado!=='Viaje creado';}).length;
+  var c=g('dc');c.innerHTML='';
+  if(act.length){var h=ce('div','sd','Viajes activos hoy');c.appendChild(h);act.forEach(function(v){c.appendChild(mkVR(v));});}
+  var pnd=AP.filter(function(p){return ['Enviado','Creado','Solicitado'].includes(p.estado);}).slice(0,3);
+  if(pnd.length){var h2=ce('div','sd','Presupuestos pendientes');c.appendChild(h2);pnd.forEach(function(p){c.appendChild(mkPC(p));});}
+  if(!act.length&&!pnd.length)c.innerHTML='<div class="em"><p>No hay viajes activos. Crea el primero!</p></div>';
+}
+
+// VIAJE ROW
+function mkVR(v){
+  var cn=(v.clientes&&v.clientes.nombre)?v.clientes.nombre:'Cliente';
+  var pr=getProgress(v),st=v._s,pct=st==='Finalizado'?100:pr.pct;
+  var row=ce('div','vr');
+  var av=ce('div','av',gi(cn));av.style.background=gc(cn);
+  var vi=ce('div','vi');
+  vi.appendChild(ce('div','vn',cn));vi.appendChild(ce('div','vd',v.destino||'-'));
+  vi.appendChild(ce('div','vt',fd(v.fecha_inicio)+' - '+fd(v.fecha_fin)));
+  var vpw=ce('div','vpw');
+  vpw.appendChild(ce('div','vpl',st==='Activo'?'Dia '+pr.day+'/'+pr.tot:st==='Proximo'?'Proximo':'Finalizado'));
+  var vp=ce('div','vp');var vpf=ce('div','vpf');vpf.style.width=pct+'%';if(st==='Finalizado')vpf.style.background='var(--mu)';vp.appendChild(vpf);vpw.appendChild(vp);
+  var vs=ce('span','vs '+(SCL[st]||'vs-pa'),SLB[st]||st);
+  var va=ce('div','va');
+  var eb=ce('button','ia ea','');eb.title='Editar';
+  eb.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
+  (function(vid){eb.addEventListener('click',function(){openE(vid);});})(v.id);
+  var cb=ce('button','ia ca','');cb.title='Copiar';
+  cb.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>';
+  (function(vid,vcn,vdest){cb.addEventListener('click',function(){openCopy(vid,vcn,vdest);});})(v.id,cn,v.destino||'');
+  va.appendChild(eb);va.appendChild(cb);
+  row.appendChild(av);row.appendChild(vi);row.appendChild(vpw);row.appendChild(vs);row.appendChild(va);
+  return row;
+}
+function renderV(f){
+  var list=f==='todos'?AV:AV.filter(function(v){return v._s===f;});
+  var c=g('vl');c.innerHTML='';
+  if(!list.length){c.innerHTML='<div class="em"><p>No hay viajes en esta categoria.</p></div>';return;}
+  var grp={Activo:[],Proximo:[],Finalizado:[]};
+  list.forEach(function(v){if(grp[v._s])grp[v._s].push(v);});
+  function addG(lbl,arr,op){if(!arr.length)return;var h=ce('div','sd',lbl);c.appendChild(h);arr.forEach(function(v){var r=mkVR(v);if(op)r.style.opacity=op;c.appendChild(r);});}
+  addG('En curso',grp.Activo,null);addG('Proximos',grp.Proximo,'0.8');addG('Finalizados',grp.Finalizado,'0.55');
+}
+
+// UPLOAD to Supabase Storage
+async function uploadDoc(file, folder, entityTable, entityId) {
+  var path = folder+'/'+entityId+'/'+Date.now()+'_'+file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+  var res = await sb.storage.from('documentos').upload(path, file, {upsert:true});
+  if(res.error){ toast('Error subiendo archivo: '+res.error.message); return null; }
+  await sb.from(entityTable).update({documento_url:path}).eq('id',entityId);
+  return path;
+}
+
+// UPLOAD ZONE - creates a visible upload area
+function mkUploadZone(label, onFile) {
+  var wrap = ce('div','upload-wrap');
+  var lbl = ce('label','upload-zone');
+  lbl.innerHTML = '<div class="uz-ic">📎</div><div class="uz-txt">'+label+'</div><div class="uz-sub">PDF, JPG, PNG</div>';
+  var inp = document.createElement('input');
+  inp.type='file'; inp.accept='.pdf,.jpg,.jpeg,.png'; inp.style.display='none';
+  inp.addEventListener('change', function(){
+    if(inp.files.length){ onFile(inp.files[0]); inp.value=''; }
+  });
+  lbl.appendChild(inp);
+  wrap.appendChild(lbl);
+  return wrap;
+}
+
+// DOC ROW - shows uploaded file
+function mkDocRow(nombre, url) {
+  var row = ce('div','doc-uploaded-row');
+  row.innerHTML = '📄 ';
+  var nm = ce('span','',nombre);
+  row.appendChild(nm);
+  if(url){
+    var a = ce('a','doc-ver-btn','Ver');
+    a.href = SBURL+'/storage/v1/object/public/documentos/'+url;
+    a.target='_blank';
+    row.appendChild(a);
+  }
+  return row;
+}
+
+// EDIT VIAJE
+async function openE(id){
+  if(!sb)return;EID=id;
+  var v=AV.find(function(x){return x.id===id;});if(!v)return;
+  var cn=(v.clientes&&v.clientes.nombre)?v.clientes.nombre:'Cliente';
+  var pr=getProgress(v);
+  g('ed-s').textContent=cn+' - '+(v.destino||'');
+  var hd=g('ed-hd');hd.innerHTML='';
+  var hav=ce('div','eav',gi(cn));hav.style.background=gc(cn);
+  var hi=ce('div','ei');hi.appendChild(ce('div','en',cn));hi.appendChild(ce('div','ed2',v.destino||'-'));
+  var hpr=ce('div','');hpr.style.textAlign='right';
+  hpr.appendChild(ce('div','ep',pr.pct+'%'));
+  hpr.appendChild(ce('div','epl','Dia '+pr.day+' de '+pr.tot));
+  var hpb=ce('div','epb');var hpf=ce('div','epf');hpf.style.width=pr.pct+'%';hpb.appendChild(hpf);hpr.appendChild(hpb);
+  var htg=ce('span','et',SLB[v._s]||v._s);
+  hd.appendChild(hav);hd.appendChild(hi);hd.appendChild(hpr);hd.appendChild(htg);
+
+  // TAB 1 - Datos generales
+  var t1=g('et-1');t1.innerHTML='';
+  var fc=ce('div','fc');
+  fc.appendChild(mkFct('Datos del viaje','user'));
+  var fg=ce('div','fg');
+  fg.appendChild(mkField('Destino','ev-de','text',v.destino,true));
+  fg.appendChild(mkField('Fecha inicio','ev-fi','date',v.fecha_inicio,false));
+  fg.appendChild(mkField('Fecha fin','ev-ff','date',v.fecha_fin,false));
+  var ed=ce('div','ff');ed.appendChild(ce('label','','Estado'));
+  var es=ce('select');es.id='ev-es';
+  ['Activo','Proximo','Finalizado'].forEach(function(s){var o=ce('option','',s);o.value=s;if(v._s===s)o.selected=true;es.appendChild(o);});
+  ed.appendChild(es);fg.appendChild(ed);
+  fg.appendChild(mkField('Agente','ev-ag','text',v.agente,false));
+  fg.appendChild(mkField('Descripcion','ev-ds','textarea',v.descripcion,true));
+  fc.appendChild(fg);
+  var fa=ce('div','fa');var sb2=ce('button','bp','Guardar cambios');sb2.addEventListener('click',saveV);fa.appendChild(sb2);fc.appendChild(fa);
+  t1.appendChild(fc);
+
+  // Load sub data
+  var rs=await Promise.all([
+    sb.from('vuelos').select('*').eq('viaje_id',id).order('fecha_salida'),
+    sb.from('hoteles').select('*').eq('viaje_id',id).order('checkin'),
+    sb.from('actividades').select('*').eq('viaje_id',id).order('fecha_actividad,dia'),
+    sb.from('itinerario').select('*').eq('viaje_id',id).order('dia'),
+  ]);
+  renderEditVuelos(rs[0].data||[]);
+  renderEditHoteles(rs[1].data||[]);
+  renderEditActs(rs[2].data||[], v);
+  renderEditItin(rs[3].data||[], v);
+  goET(1);
+  gpage('ed');
+}
+
+function mkFct(txt, icon) {
+  var d=ce('div','fct');d.textContent=txt;return d;
+}
+function mkField(lbl,id2,tp,vl,ful){
+  var d=ce('div','ff'+(ful?' ful':''));d.appendChild(ce('label','',lbl));
+  var inp;
+  if(tp==='textarea'){inp=ce('textarea');inp.textContent=vl||'';}
+  else{inp=ce('input');inp.type=tp||'text';inp.value=vl||'';}
+  inp.id=id2;d.appendChild(inp);return d;
+}
+function mkSelectField(lbl,id2,opts,current,ful){
+  var d=ce('div','ff'+(ful?' ful':''));d.appendChild(ce('label','',lbl));
+  var s=ce('select');s.id=id2;
+  opts.forEach(function(o){var op=ce('option','',o);op.value=o;if(o===current)op.selected=true;s.appendChild(op);});
+  d.appendChild(s);return d;
+}
+
+function renderEditVuelos(vls){
+  var c=g('et-2');c.innerHTML='';c.style.display='none';
+  // Load tramos for each vuelo
+  var promises = vls.map(function(f){ return sb.from('tramos_vuelo').select('*').eq('vuelo_id',f.id).order('orden'); });
+  Promise.all(promises).then(function(results){
+    vls.forEach(function(f,i){
+      var tramos = results[i] ? results[i].data||[] : [];
+      var bl = mkVueloBlockV2(f, tramos, i, null);
+      c.insertBefore(bl, c.querySelector('.ab')||null);
+    });
+  });
+  var ab=ce('button','ab','+ Agregar vuelo');
+  ab.addEventListener('click',function(){ var nb=mkVueloBlockV2(null,[],c.querySelectorAll('.ib').length,null); c.insertBefore(nb,ab); });
+  c.appendChild(ab);
+  var fa=ce('div','fa');var sv=ce('button','bp','Guardar vuelos');sv.addEventListener('click',saveVuelos);fa.appendChild(sv);c.appendChild(fa);
+}
+
+function mkVueloBlock(f, i, hasId) {
+  var bl=ce('div','ib');if(f&&f.id)bl.dataset.vid=f.id;
+  var bh=ce('div','ibh');
+  var titulo = f ? 'Vuelo '+(i+1)+' — '+(f.origen||'?')+' a '+(f.destino||'?') : 'Nuevo vuelo';
+  bh.appendChild(ce('div','ibl',titulo));
+  var rb=ce('button','ibr','Eliminar');
+  (function(bll,fid){rb.addEventListener('click',function(){
+    if(fid&&confirm('Eliminar vuelo?'))sb.from('vuelos').delete().eq('id',fid).then(function(){bll.remove();toast('Vuelo eliminado');});
+    else if(!fid) bll.remove();
+  });})(bl, f?f.id:null);
+  bh.appendChild(rb);bl.appendChild(bh);
+  var bb=ce('div','ibb');var fg=ce('div','fg3');fg.style.marginBottom='12px';
+  function mf(lbl,cls,vl,tp){var d=ce('div','ff');d.appendChild(ce('label','',lbl));var inp=ce('input');inp.className=cls;inp.type=tp||'text';inp.value=vl||'';d.appendChild(inp);return d;}
+  fg.appendChild(mf('Aerolinea','ev-ae',f?f.aerolinea:''));
+  fg.appendChild(mf('Nro vuelo','ev-nv',f?f.nro_vuelo:''));
+  // Estado
+  var esd=ce('div','ff');esd.appendChild(ce('label','','Estado'));var ess=ce('select');ess.className='ev-ve';
+  ['Confirmado','Por confirmar'].forEach(function(s){var o=ce('option','',s);o.value=s;if(f&&f.estado===s)o.selected=true;ess.appendChild(o);});
+  esd.appendChild(ess);fg.appendChild(esd);
+  fg.appendChild(mf('Origen','ev-or',f?f.origen:''));
+  fg.appendChild(mf('Destino','ev-vd',f?f.destino:''));
+  // Fecha y hora salida (datetime-local)
+  var sad=ce('div','ff');sad.appendChild(ce('label','','Fecha y hora salida'));
+  var sai=ce('input');sai.className='ev-sa';sai.type='datetime-local';sai.value=f&&f.fecha_salida?f.fecha_salida.slice(0,16):'';
+  sad.appendChild(sai);fg.appendChild(sad);
+  // Fecha y hora llegada
+  var lld=ce('div','ff');lld.appendChild(ce('label','','Fecha y hora llegada'));
+  var lli=ce('input');lli.className='ev-ll';lli.type='datetime-local';lli.value=f&&f.fecha_llegada&&f.fecha_llegada.length>10?f.fecha_llegada.slice(0,16):(f&&f.fecha_llegada?f.fecha_llegada:'');
+  lld.appendChild(lli);fg.appendChild(lld);
+  // Duracion calculada
+  var durd=ce('div','ff');durd.appendChild(ce('label','','Duracion (calculada)'));
+  var duri=ce('input');duri.className='ev-du';duri.readOnly=true;duri.style.background='var(--bg)';duri.value=f?f.duracion||'':'';
+  durd.appendChild(duri);fg.appendChild(durd);
+  // Auto-calc duration
+  function calcDur(){
+    var s=sai.value,l=lli.value;
+    if(s&&l){var ms=new Date(l)-new Date(s);if(ms>0){var h=Math.floor(ms/3600000),m=Math.round((ms%3600000)/60000);duri.value=h+'h '+m+'m';}}
+  }
+  sai.addEventListener('change',calcDur);lli.addEventListener('change',calcDur);
+  // Codigo reserva + link checkin
+  fg.appendChild(mf('Codigo de reserva','ev-cr',f?f.codigo_reserva||'':''));
+  var lid=ce('div','ff ful');lid.appendChild(ce('label','','Link check-in online'));
+  var lii=ce('input');lii.className='ev-ci';lii.type='url';lii.value=f?f.link_checkin||'':'';
+  lid.appendChild(lii);fg.appendChild(lid);
+  bb.appendChild(fg);
+
+  // UPLOAD ZONE - prominente
+  var uz=ce('div','upload-section');
+  uz.appendChild(ce('div','upload-section-title','Documento del vuelo (boarding pass, e-ticket)'));
+  if(f&&f.documento_url){
+    uz.appendChild(mkDocRow(f.documento_url.split('/').pop(), f.documento_url));
+  }
+  var uzBtn = ce('label','upload-zone-big');
+  uzBtn.innerHTML='<span class="uz-icon">📎</span><span class="uz-label">Subir PDF / imagen</span>';
+  var uzInp=document.createElement('input');uzInp.type='file';uzInp.accept='.pdf,.jpg,.jpeg,.png';uzInp.style.display='none';
+  (function(vuelo, uzB, uzZ){
+    uzInp.addEventListener('change',function(){
+      if(!uzInp.files.length)return;
+      var file=uzInp.files[0];
+      uzB.textContent='Subiendo...';
+      if(vuelo&&vuelo.id&&sb){
+        uploadDoc(file,'vuelos',vuelo.id).then(function(path){
+          if(path){uzZ.innerHTML='';uzZ.appendChild(ce('div','upload-section-title','Documento del vuelo'));uzZ.appendChild(mkDocRow(file.name,path));toast('Documento subido!');}
+          uzB.textContent='Subir PDF / imagen';
+        });
+      } else {
+        // New vuelo - store file for later
+        bl.dataset.pendingFile=file.name;bl.pendingFile=file;
+        uzZ.innerHTML='';uzZ.appendChild(ce('div','upload-section-title','Documento del vuelo'));uzZ.appendChild(mkDocRow(file.name,null));
+        uzB.textContent='Subir PDF / imagen';toast('Archivo listo para subir al guardar');
+      }
+      uzInp.value='';
+    });
+  })(f, uzBtn, uz);
+  uzBtn.appendChild(uzInp);uz.appendChild(uzBtn);
+  bb.appendChild(uz);
+  bl.appendChild(bb);
+  return bl;
+}
+
+async function saveVuelos(){
+  if(!EID||!sb){toast('Sin conexion');return;}
+  var blocks=document.querySelectorAll('#et-2 .ib');
+  for(var i=0;i<blocks.length;i++){
+    var b=blocks[i];
+    var vid=b.dataset.vid;
+    var data={
+      viaje_id:EID,
+      aerolinea:b.querySelector('.ev-ae')?b.querySelector('.ev-ae').value:'',
+      nro_vuelo:b.querySelector('.ev-nv')?b.querySelector('.ev-nv').value:'',
+      estado:b.querySelector('.ev-ve')?b.querySelector('.ev-ve').value:'Confirmado',
+      origen:b.querySelector('.ev-or')?b.querySelector('.ev-or').value:'',
+      destino:b.querySelector('.ev-vd')?b.querySelector('.ev-vd').value:'',
+      fecha_salida:b.querySelector('.ev-sa')?b.querySelector('.ev-sa').value||null:null,
+      fecha_llegada:b.querySelector('.ev-ll')?b.querySelector('.ev-ll').value||null:null,
+      duracion:b.querySelector('.ev-du')?b.querySelector('.ev-du').value:'',
+      codigo_reserva:b.querySelector('.ev-cr')?b.querySelector('.ev-cr').value:'',
+      link_checkin:b.querySelector('.ev-ci')?b.querySelector('.ev-ci').value:'',
+    };
+    var res;
+    if(vid){res=await sb.from('vuelos').update(data).eq('id',vid);}
+    else{res=await sb.from('vuelos').insert(data).select().single();}
+    // Upload pending file if any
+    if(b.pendingFile&&res.data&&res.data.id){
+      await uploadDoc(b.pendingFile,'vuelos',res.data.id);
+    }
+  }
+  toast('Vuelos guardados!');await loadV();
+}
+
+function renderEditHoteles(hts){
+  var c=g('et-3');c.innerHTML='';c.style.display='none';
+  hts.forEach(function(h,i){c.appendChild(mkHotelBlock(h,i));});
+  var ab=ce('button','ab','+ Agregar hotel');
+  ab.addEventListener('click',function(){c.insertBefore(mkHotelBlock(null,hts.length+c.querySelectorAll('.ib').length),ab);});
+  c.appendChild(ab);
+  var fa=ce('div','fa');var sv=ce('button','bp','Guardar hoteles');sv.addEventListener('click',saveHoteles);fa.appendChild(sv);c.appendChild(fa);
+}
+
+function mkHotelBlock(h,i){
+  var bl=ce('div','ib');if(h&&h.id)bl.dataset.hid=h.id;
+  var bh=ce('div','ibh');
+  bh.appendChild(ce('div','ibl',h?'Hotel '+(i+1)+' — '+(h.nombre||'-'):'Nuevo hotel'));
+  var rb=ce('button','ibr','Eliminar');
+  (function(bll,hid){rb.addEventListener('click',function(){
+    if(hid&&confirm('Eliminar hotel?'))sb.from('hoteles').delete().eq('id',hid).then(function(){bll.remove();toast('Hotel eliminado');});
+    else if(!hid)bll.remove();
+  });})(bl,h?h.id:null);
+  bh.appendChild(rb);bl.appendChild(bh);
+  var bb=ce('div','ibb');var fg=ce('div','fg');fg.style.marginBottom='12px';
+  function mf(lbl,cls,vl){var d=ce('div','ff');d.appendChild(ce('label','',lbl));var inp=ce('input');inp.className=cls;inp.value=vl||'';d.appendChild(inp);return d;}
+  var nd=ce('div','ff ful');nd.appendChild(ce('label','','Nombre del hotel'));var ni=ce('input');ni.className='ev-hn';ni.value=h?h.nombre||'':'';nd.appendChild(ni);fg.appendChild(nd);
+  fg.appendChild(mf('Ciudad','ev-hc',h?h.ciudad:''));
+  // Check-in / Check-out con datetime-local
+  var cind=ce('div','ff');cind.appendChild(ce('label','','Check-in'));var cini=ce('input');cini.className='ev-hI';cini.type='date';cini.value=h?h.checkin||'':'';cind.appendChild(cini);fg.appendChild(cind);
+  var coutd=ce('div','ff');coutd.appendChild(ce('label','','Check-out'));var couti=ce('input');couti.className='ev-hO';couti.type='date';couti.value=h?h.checkout||'':'';coutd.appendChild(couti);fg.appendChild(coutd);
+  fg.appendChild(mf('Nro reserva','ev-hr',h?h.nro_reserva:''));
+  // Regimen (reemplaza desayuno)
+  var regd=ce('div','ff');regd.appendChild(ce('label','','Regimen'));var regs=ce('select');regs.className='ev-hd';
+  ['','Desayuno','Media pension','Todo incluido'].forEach(function(s){var o=ce('option','',s);o.value=s;if(h&&h.desayuno===s)o.selected=true;regs.appendChild(o);});
+  regd.appendChild(regs);fg.appendChild(regd);
+  bb.appendChild(fg);
+  // Upload zone
+  var uz=ce('div','upload-section');
+  uz.appendChild(ce('div','upload-section-title','Confirmacion / voucher del hotel'));
+  if(h&&h.documento_url)uz.appendChild(mkDocRow(h.documento_url.split('/').pop(),h.documento_url));
+  var uzBtn=ce('label','upload-zone-big');uzBtn.innerHTML='<span class="uz-icon">📎</span><span class="uz-label">Subir PDF / imagen</span>';
+  var uzInp=document.createElement('input');uzInp.type='file';uzInp.accept='.pdf,.jpg,.jpeg,.png';uzInp.style.display='none';
+  (function(hotel,uzB,uzZ,bll){
+    uzInp.addEventListener('change',function(){
+      if(!uzInp.files.length)return;var file=uzInp.files[0];uzB.textContent='Subiendo...';
+      if(hotel&&hotel.id&&sb){
+        uploadDoc(file,'hoteles',hotel.id).then(function(path){
+          if(path){uzZ.innerHTML='';uzZ.appendChild(ce('div','upload-section-title','Confirmacion / voucher'));uzZ.appendChild(mkDocRow(file.name,path));toast('Documento subido!');}
+          uzB.textContent='Subir PDF / imagen';
+        });
+      } else {bll.pendingFile=file;uzZ.innerHTML='';uzZ.appendChild(ce('div','upload-section-title','Confirmacion / voucher'));uzZ.appendChild(mkDocRow(file.name,null));uzB.textContent='Subir PDF / imagen';toast('Listo para subir al guardar');}
+      uzInp.value='';
+    });
+  })(h,uzBtn,uz,bl);
+  uzBtn.appendChild(uzInp);uz.appendChild(uzBtn);bb.appendChild(uz);bl.appendChild(bb);
+  return bl;
+}
+
+async function saveHoteles(){
+  if(!EID||!sb){toast('Sin conexion');return;}
+  var blocks=document.querySelectorAll('#et-3 .ib');
+  for(var i=0;i<blocks.length;i++){
+    var b=blocks[i],hid=b.dataset.hid;
+    var data={viaje_id:EID,nombre:b.querySelector('.ev-hn')?b.querySelector('.ev-hn').value:'',ciudad:b.querySelector('.ev-hc')?b.querySelector('.ev-hc').value:'',checkin:b.querySelector('.ev-hI')?b.querySelector('.ev-hI').value||null:null,checkout:b.querySelector('.ev-hO')?b.querySelector('.ev-hO').value||null:null,nro_reserva:b.querySelector('.ev-hr')?b.querySelector('.ev-hr').value:'',desayuno:b.querySelector('.ev-hd')?b.querySelector('.ev-hd').value:'',estado:'Confirmado'};
+    var res;
+    if(hid)res=await sb.from('hoteles').update(data).eq('id',hid);
+    else res=await sb.from('hoteles').insert(data).select().single();
+    if(b.pendingFile&&res.data&&res.data.id)await uploadDoc(b.pendingFile,'hoteles',res.data.id);
+  }
+  toast('Hoteles guardados!');await loadV();
+}
+
+function renderEditActs(acs, viaje){
+  var c=g('et-4');c.innerHTML='';c.style.display='none';
+  acs.forEach(function(a,i){c.appendChild(mkActBlock(a,i,viaje));});
+  var ab=ce('button','ab','+ Agregar actividad / traslado');
+  ab.addEventListener('click',function(){c.insertBefore(mkActBlock(null,acs.length+c.querySelectorAll('.ib').length,viaje),ab);});
+  c.appendChild(ab);
+  var fa=ce('div','fa');var sv=ce('button','bp','Guardar actividades');sv.addEventListener('click',saveActs);fa.appendChild(sv);c.appendChild(fa);
+}
+
+function mkActBlock(a,i,viaje){
+  var bl=ce('div','ib');if(a&&a.id)bl.dataset.aid=a.id;
+  var bh=ce('div','ibh');
+  bh.appendChild(ce('div','ibl',a?'Dia '+(a.dia||'?')+' — '+(a.nombre||'-'):'Nueva actividad'));
+  var rb=ce('button','ibr','Eliminar');
+  (function(bll,aid){rb.addEventListener('click',function(){
+    if(aid&&confirm('Eliminar?'))sb.from('actividades').delete().eq('id',aid).then(function(){bll.remove();toast('Eliminado');});
+    else if(!aid)bll.remove();
+  });})(bl,a?a.id:null);
+  bh.appendChild(rb);bl.appendChild(bh);
+  var bb=ce('div','ibb');var fg=ce('div','fg');fg.style.marginBottom='12px';
+  // Tipo
+  var td=ce('div','ff');td.appendChild(ce('label','','Tipo'));var ts=ce('select');ts.className='ev-at';
+  ['Excursion','Traslado','Cena/Almuerzo','Show','Tren','Micro','Libre'].forEach(function(s){var o=ce('option','',s);o.value=s;if(a&&a.tipo===s)o.selected=true;ts.appendChild(o);});
+  td.appendChild(ts);fg.appendChild(td);
+  function mf(lbl,cls,vl){var d=ce('div','ff');d.appendChild(ce('label','',lbl));var inp=ce('input');inp.className=cls;inp.value=vl||'';d.appendChild(inp);return d;}
+  fg.appendChild(mf('Nombre','ev-an',a?a.nombre:''));
+  fg.appendChild(mf('Ciudad','ev-ac',a?a.ciudad:''));
+  // Fecha con calendario (date picker) limitado a fechas del viaje
+  var fechad=ce('div','ff');fechad.appendChild(ce('label','','Fecha'));
+  var fechai=ce('input');fechai.className='ev-af';fechai.type='date';
+  if(viaje){fechai.min=viaje.fecha_inicio;fechai.max=viaje.fecha_fin;}
+  // Si tiene fecha la usa, sino calcula desde dia
+  if(a&&a.fecha_actividad){fechai.value=a.fecha_actividad;}
+  else if(a&&a.dia&&viaje){var d2=new Date(viaje.fecha_inicio+'T00:00:00');d2.setDate(d2.getDate()+(a.dia-1));fechai.value=d2.toISOString().slice(0,10);}
+  fechad.appendChild(fechai);fg.appendChild(fechad);
+  // Horario
+  fg.appendChild(mf('Horario','ev-ah',a?a.horario:''));
+  var hiD=ce('div','ff');hiD.appendChild(ce('label','','Hora inicio'));var hiI=ce('input');hiI.className='ev-hi';hiI.type='time';hiI.value=a&&a.hora_inicio?a.hora_inicio.slice(0,5):'';hiD.appendChild(hiI);fg.appendChild(hiD);
+  var hfD=ce('div','ff');hfD.appendChild(ce('label','','Hora fin'));var hfI=ce('input');hfI.className='ev-hf';hfI.type='time';hfI.value=a&&a.hora_fin?a.hora_fin.slice(0,5):'';hfD.appendChild(hfI);fg.appendChild(hfD);
+  var durActD=ce('div','ff');durActD.appendChild(ce('label','','Duracion'));var durActI=ce('input');durActI.className='ev-hdur';durActI.readOnly=true;durActI.style.background='var(--bg)';
+  function calcActDur(){if(hiI.value&&hfI.value){var s=hiI.value.split(':'),e=hfI.value.split(':');var mins=(parseInt(e[0])*60+parseInt(e[1]))-(parseInt(s[0])*60+parseInt(s[1]));if(mins>0)durActI.value=Math.floor(mins/60)+'h '+( mins%60)+'m';}}
+  hiI.addEventListener('change',calcActDur);hfI.addEventListener('change',calcActDur);
+  if(a&&a.hora_inicio&&a.hora_fin)calcActDur();
+  durActD.appendChild(durActI);fg.appendChild(durActD);
+  // Estado
+  var esd=ce('div','ff');esd.appendChild(ce('label','','Estado'));var ess=ce('select');ess.className='ev-ae';
+  ['Confirmada','Por confirmar'].forEach(function(s){var o=ce('option','',s);o.value=s;if(a&&a.estado===s)o.selected=true;ess.appendChild(o);});
+  esd.appendChild(ess);fg.appendChild(esd);
+  var dsd=ce('div','ff ful');dsd.appendChild(ce('label','','Descripcion'));var dst=ce('textarea');dst.className='ev-ades';dst.textContent=a?a.descripcion||'':'';dsd.appendChild(dst);fg.appendChild(dsd);
+  var tpd=ce('div','ff ful');tpd.appendChild(ce('label','','Tip del agente'));var tpt=ce('textarea');tpt.className='ev-atip';tpt.textContent=a?a.tip||'':'';tpd.appendChild(tpt);fg.appendChild(tpd);
+  bb.appendChild(fg);
+  // Upload zone
+  var uz=ce('div','upload-section');
+  uz.appendChild(ce('div','upload-section-title','Voucher / entrada'));
+  if(a&&a.documento_url)uz.appendChild(mkDocRow(a.documento_url.split('/').pop(),a.documento_url));
+  var uzBtn=ce('label','upload-zone-big');uzBtn.innerHTML='<span class="uz-icon">📎</span><span class="uz-label">Subir PDF / imagen</span>';
+  var uzInp=document.createElement('input');uzInp.type='file';uzInp.accept='.pdf,.jpg,.jpeg,.png';uzInp.style.display='none';
+  (function(act,uzB,uzZ,bll){
+    uzInp.addEventListener('change',function(){
+      if(!uzInp.files.length)return;var file=uzInp.files[0];uzB.textContent='Subiendo...';
+      if(act&&act.id&&sb){
+        uploadDoc(file,'actividades',act.id).then(function(path){
+          if(path){uzZ.innerHTML='';uzZ.appendChild(ce('div','upload-section-title','Voucher / entrada'));uzZ.appendChild(mkDocRow(file.name,path));toast('Documento subido!');}
+          uzB.textContent='Subir PDF / imagen';
+        });
+      } else {bll.pendingFile=file;uzZ.innerHTML='';uzZ.appendChild(ce('div','upload-section-title','Voucher / entrada'));uzZ.appendChild(mkDocRow(file.name,null));uzB.textContent='Subir PDF / imagen';toast('Listo para subir al guardar');}
+      uzInp.value='';
+    });
+  })(a,uzBtn,uz,bl);
+  uzBtn.appendChild(uzInp);uz.appendChild(uzBtn);bb.appendChild(uz);bl.appendChild(bb);
+  return bl;
+}
+
+async function saveActs(){
+  if(!EID||!sb){toast('Sin conexion');return;}
+  var viajeObj=AV.find(function(x){return x.id===EID;});
+  var blocks=document.querySelectorAll('#et-4 .ib');
+  for(var i=0;i<blocks.length;i++){
+    var b=blocks[i],aid=b.dataset.aid;
+    var fechaVal=b.querySelector('.ev-af')?b.querySelector('.ev-af').value||null:null;
+    var diaNum=1;
+    if(fechaVal&&viajeObj){var inicio=new Date(viajeObj.fecha_inicio+'T00:00:00');var fechaD=new Date(fechaVal+'T00:00:00');diaNum=Math.round((fechaD-inicio)/86400000)+1;}
+    var horaI=b.querySelector('.ev-hi')?b.querySelector('.ev-hi').value||null:null;var horaF=b.querySelector('.ev-hf')?b.querySelector('.ev-hf').value||null:null;var data={viaje_id:EID,tipo:b.querySelector('.ev-at')?b.querySelector('.ev-at').value:'',nombre:b.querySelector('.ev-an')?b.querySelector('.ev-an').value:'',ciudad:b.querySelector('.ev-ac')?b.querySelector('.ev-ac').value:'',fecha_actividad:fechaVal,dia:diaNum,horario:b.querySelector('.ev-ah')?b.querySelector('.ev-ah').value:'',hora_inicio:horaI,hora_fin:horaF,estado:b.querySelector('.ev-ae')?b.querySelector('.ev-ae').value:'Confirmada',descripcion:b.querySelector('.ev-ades')?b.querySelector('.ev-ades').value:'',tip:b.querySelector('.ev-atip')?b.querySelector('.ev-atip').value:'',incluido:'Incluido'};
+    var res;
+    if(aid)res=await sb.from('actividades').update(data).eq('id',aid);
+    else res=await sb.from('actividades').insert(data).select().single();
+    if(b.pendingFile&&res.data&&res.data.id)await uploadDoc(b.pendingFile,'actividades',res.data.id);
+  }
+  toast('Actividades guardadas!');await loadV();
+}
+
+// ITINERARIO - se arma automaticamente, solo titulo y comentario
+function renderEditItin(itn, v){
+  var c=g('et-5');c.innerHTML='';c.style.display='none';
+  if(!v.fecha_inicio||!v.fecha_fin){c.appendChild(ce('div','em','Define las fechas del viaje primero.'));return;}
+  var inicio=new Date(v.fecha_inicio+'T00:00:00');
+  var fin=new Date(v.fecha_fin+'T00:00:00');
+  var current=new Date(inicio);var num=1;
+  var itinMap={};
+  itn.forEach(function(d){itinMap[d.dia]=d;});
+  while(current<=fin){
+    var diaExist=itinMap[num];
+    var card=ce('div','itin-edit-card');
+    var header=ce('div','itin-edit-header');
+    var numEl=ce('div','itin-edit-num',''+num);
+    var fechaEl=ce('div','itin-edit-fecha',current.toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long'}));
+    header.appendChild(numEl);header.appendChild(fechaEl);
+    card.appendChild(header);
+    // Titulo (opcional)
+    var titd=ce('div','itin-edit-field');titd.appendChild(ce('label','itin-edit-lbl','Titulo del dia (opcional)'));
+    var titi=ce('input');titi.className='itin-tit-inp';titi.dataset.dia=num;
+    titi.placeholder='Ej: Llegada a Budapest';titi.value=diaExist?diaExist.titulo||'':'';
+    titd.appendChild(titi);card.appendChild(titd);
+    // Comentario agente
+    var comd=ce('div','itin-edit-field');comd.appendChild(ce('label','itin-edit-lbl','Comentario del agente (opcional)'));
+    var comi=ce('textarea');comi.className='itin-com-inp';comi.dataset.dia=num;
+    comi.placeholder='Tip o comentario para el cliente...';comi.textContent=diaExist?diaExist.tip||'':'';
+    comd.appendChild(comi);card.appendChild(comd);
+    c.appendChild(card);
+    current.setDate(current.getDate()+1);num++;
+  }
+  var fa=ce('div','fa');var sv=ce('button','bp','Guardar itinerario');sv.addEventListener('click',saveItin);fa.appendChild(sv);c.appendChild(fa);
+}
+
+async function saveItin(){
+  if(!EID||!sb){toast('Sin conexion');return;}
+  var v=AV.find(function(x){return x.id===EID;});
+  if(!v)return;
+  var titInputs=document.querySelectorAll('#et-5 .itin-tit-inp');
+  var comInputs=document.querySelectorAll('#et-5 .itin-com-inp');
+  // Delete existing and re-insert
+  await sb.from('itinerario').delete().eq('viaje_id',EID);
+  var rows=[];
+  for(var i=0;i<titInputs.length;i++){
+    var dia=parseInt(titInputs[i].dataset.dia);
+    var tit=titInputs[i].value.trim();
+    var com=comInputs[i]?comInputs[i].value.trim():'';
+    // Calculate city from activities on that day
+    var d2=new Date(v.fecha_inicio+'T00:00:00');d2.setDate(d2.getDate()+(dia-1));
+    // Only save if has title or comment
+    rows.push({viaje_id:EID,dia:dia,titulo:tit,ciudad:'',descripcion:'',tip:com});
+  }
+  await sb.from('itinerario').insert(rows);
+  toast('Itinerario guardado!');
+}
+
+async function saveV(){
+  if(!sb||!EID)return;
+  var de2=val('ev-de');if(!de2){toast('Completa el destino');return;}
+  await sb.from('viajes').update({destino:de2,fecha_inicio:val('ev-fi')||null,fecha_fin:val('ev-ff')||null,estado:val('ev-es'),agente:val('ev-ag'),descripcion:g('ev-ds')?g('ev-ds').value:''}).eq('id',EID);
+  toast('Cambios guardados!');await loadV();
+}
+
+async function uploadDoc(file, folder, entityId) {
+  var tableMap={'vuelos':'vuelos','hoteles':'hoteles','actividades':'actividades'};
+  var path=folder+'/'+entityId+'/'+Date.now()+'_'+file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+  var res=await sb.storage.from('documentos').upload(path,file,{upsert:true});
+  if(res.error){toast('Error subiendo: '+res.error.message);return null;}
+  var table=tableMap[folder]||folder;
+  await sb.from(table).update({documento_url:path}).eq('id',entityId);
+  return path;
+}
+
+function mkDocRow(nombre, url) {
+  var row=ce('div','doc-uploaded');
+  row.innerHTML='📄 ';
+  row.appendChild(ce('span','doc-up-nm',nombre));
+  if(url){var a=ce('a','doc-up-ver','Ver');a.href=SBURL+'/storage/v1/object/public/documentos/'+url;a.target='_blank';row.appendChild(a);}
+  return row;
+}
+
+// FILL CLIENT SELECT
+function fillCS(){
+  var s=g('nv-cs');if(!s)return;
+  s.innerHTML='';var op0=ce('option','','Nuevo cliente');op0.value='';s.appendChild(op0);
+  AC.forEach(function(c){var o=ce('option','',c.nombre+' ('+c.email+')');o.value=c.id;s.appendChild(o);});
+}
+function fillNPC(){
+  var s=g('np-cl');if(!s)return;
+  s.innerHTML='';var op0=ce('option','','Seleccionar');op0.value='';s.appendChild(op0);
+  AC.forEach(function(c){var o=ce('option','',c.nombre);o.value=c.id;s.appendChild(o);});
+}
+
+// NUEVO VIAJE - simplified init
+function initNV(){NVC=0;NHC=0;NAC=0;g('nvc').innerHTML='';g('nhc').innerHTML='';g('nac').innerHTML='';addNVV();addNVH();addNVA();}
+
+function addNVV(){
+  NVC++;var n=NVC;var bl=ce('div','ib');
+  var bh=ce('div','ibh');bh.appendChild(ce('div','ibl','Vuelo '+n));
+  if(n>1){var rb=ce('button','ibr','Eliminar');rb.addEventListener('click',function(){bl.remove();});bh.appendChild(rb);}
+  bl.appendChild(bh);
+  var bb=ce('div','ibb');var fg=ce('div','fg3');fg.style.marginBottom='12px';
+  function mf(lbl,cls,ph,tp){var d=ce('div','ff');d.appendChild(ce('label','',lbl));var inp=ce('input');inp.className=cls;inp.type=tp||'text';inp.placeholder=ph||'';d.appendChild(inp);return d;}
+  fg.appendChild(mf('Aerolinea','nv-ae','Aerolineas Arg.'));
+  fg.appendChild(mf('Nro vuelo','nv-nv','AR 141'));
+  var sd=ce('div','ff');sd.appendChild(ce('label','','Estado'));var ss=ce('select');ss.className='nv-ve';['Confirmado','Por confirmar'].forEach(function(s){var o=ce('option','',s);ss.appendChild(o);});sd.appendChild(ss);fg.appendChild(sd);
+  fg.appendChild(mf('Origen','nv-or','EZE'));fg.appendChild(mf('Destino','nv-vd','BUD'));
+  var sad=ce('div','ff');sad.appendChild(ce('label','','Fecha y hora salida'));var sai=ce('input');sai.className='nv-sa';sai.type='datetime-local';sad.appendChild(sai);fg.appendChild(sad);
+  var lld=ce('div','ff');lld.appendChild(ce('label','','Fecha y hora llegada'));var lli=ce('input');lli.className='nv-ll';lli.type='datetime-local';lld.appendChild(lli);fg.appendChild(lld);
+  var durd=ce('div','ff');durd.appendChild(ce('label','','Duracion'));var duri=ce('input');duri.className='nv-du';duri.readOnly=true;duri.style.background='var(--bg)';durd.appendChild(duri);fg.appendChild(durd);
+  function calcDur(){var s=sai.value,l=lli.value;if(s&&l){var ms=new Date(l)-new Date(s);if(ms>0){var h=Math.floor(ms/3600000),m=Math.round((ms%3600000)/60000);duri.value=h+'h '+m+'m';}}}
+  sai.addEventListener('change',calcDur);lli.addEventListener('change',calcDur);
+  fg.appendChild(mf('Codigo de reserva','nv-cr','ABC123'));
+  var lid=ce('div','ff ful');lid.appendChild(ce('label','','Link check-in'));var lii=ce('input');lii.className='nv-ci';lii.type='url';lii.placeholder='https://...';lid.appendChild(lii);fg.appendChild(lid);
+  bb.appendChild(fg);
+  // Upload
+  var uz=ce('div','upload-section');uz.appendChild(ce('div','upload-section-title','Documento del vuelo'));
+  var uzBtn=ce('label','upload-zone-big');uzBtn.innerHTML='<span class="uz-icon">📎</span><span class="uz-label">Subir boarding pass / e-ticket</span>';
+  var uzInp=document.createElement('input');uzInp.type='file';uzInp.accept='.pdf,.jpg,.jpeg,.png';uzInp.style.display='none';
+  uzInp.addEventListener('change',function(){if(uzInp.files.length){bl.pendingFile=uzInp.files[0];uz.innerHTML='';uz.appendChild(ce('div','upload-section-title','Documento del vuelo'));uz.appendChild(mkDocRow(uzInp.files[0].name,null));uzBtn.textContent='Subir PDF / imagen';toast('Listo para subir al crear el viaje');}uzInp.value='';});
+  uzBtn.appendChild(uzInp);uz.appendChild(uzBtn);bb.appendChild(uz);bl.appendChild(bb);g('nvc').appendChild(bl);
+}
+
+function addNVH(){
+  NHC++;var n=NHC;var bl=ce('div','ib');
+  var bh=ce('div','ibh');bh.appendChild(ce('div','ibl','Hotel '+n));
+  if(n>1){var rb=ce('button','ibr','Eliminar');rb.addEventListener('click',function(){bl.remove();});bh.appendChild(rb);}
+  bl.appendChild(bh);
+  var bb=ce('div','ibb');var fg=ce('div','fg');fg.style.marginBottom='12px';
+  var nd=ce('div','ff ful');nd.appendChild(ce('label','','Nombre del hotel'));var ni=ce('input');ni.className='nv-hn';ni.placeholder='Corinthia Hotel Budapest';nd.appendChild(ni);fg.appendChild(nd);
+  function mf(lbl,cls,ph){var d=ce('div','ff');d.appendChild(ce('label','',lbl));var inp=ce('input');inp.className=cls;inp.placeholder=ph||'';d.appendChild(inp);return d;}
+  fg.appendChild(mf('Ciudad','nv-hc','Budapest, Hungria'));
+  var cind=ce('div','ff');cind.appendChild(ce('label','','Check-in'));var cini=ce('input');cini.className='nv-hI';cini.type='date';cind.appendChild(cini);fg.appendChild(cind);
+  var coutd=ce('div','ff');coutd.appendChild(ce('label','','Check-out'));var couti=ce('input');couti.className='nv-hO';couti.type='date';coutd.appendChild(couti);fg.appendChild(coutd);
+  fg.appendChild(mf('Nro reserva','nv-hr',''));
+  var regd=ce('div','ff');regd.appendChild(ce('label','','Regimen'));var regs=ce('select');regs.className='nv-hd';['','Desayuno','Media pension','Todo incluido'].forEach(function(s){var o=ce('option','',s);regs.appendChild(o);});regd.appendChild(regs);fg.appendChild(regd);
+  bb.appendChild(fg);
+  var uz=ce('div','upload-section');uz.appendChild(ce('div','upload-section-title','Confirmacion / voucher'));
+  var uzBtn=ce('label','upload-zone-big');uzBtn.innerHTML='<span class="uz-icon">📎</span><span class="uz-label">Subir confirmacion del hotel</span>';
+  var uzInp=document.createElement('input');uzInp.type='file';uzInp.accept='.pdf,.jpg,.jpeg,.png';uzInp.style.display='none';
+  uzInp.addEventListener('change',function(){if(uzInp.files.length){bl.pendingFile=uzInp.files[0];uz.innerHTML='';uz.appendChild(ce('div','upload-section-title','Confirmacion'));uz.appendChild(mkDocRow(uzInp.files[0].name,null));toast('Listo');}uzInp.value='';});
+  uzBtn.appendChild(uzInp);uz.appendChild(uzBtn);bb.appendChild(uz);bl.appendChild(bb);g('nhc').appendChild(bl);
+}
+
+function addNVA(){
+  NAC++;var n=NAC;var bl=ce('div','ib');
+  var bh=ce('div','ibh');bh.appendChild(ce('div','ibl','Actividad '+n));
+  if(n>1){var rb=ce('button','ibr','Eliminar');rb.addEventListener('click',function(){bl.remove();});bh.appendChild(rb);}
+  bl.appendChild(bh);
+  var bb=ce('div','ibb');var fg=ce('div','fg');fg.style.marginBottom='12px';
+  var td=ce('div','ff');td.appendChild(ce('label','','Tipo'));var ts=ce('select');ts.className='nv-at';['Excursion','Traslado','Cena/Almuerzo','Show','Tren','Micro','Libre'].forEach(function(s){var o=ce('option','',s);ts.appendChild(o);});td.appendChild(ts);fg.appendChild(td);
+  function mf(lbl,cls,ph){var d=ce('div','ff');d.appendChild(ce('label','',lbl));var inp=ce('input');inp.className=cls;inp.placeholder=ph||'';d.appendChild(inp);return d;}
+  fg.appendChild(mf('Nombre','nv-an','Excursion Budapest'));fg.appendChild(mf('Ciudad','nv-ac','Budapest'));
+  var fechad=ce('div','ff');fechad.appendChild(ce('label','','Fecha'));var fechai=ce('input');fechai.className='nv-af';fechai.type='date';fechad.appendChild(fechai);fg.appendChild(fechad);
+  fg.appendChild(mf('Horario','nv-ah','09:00 - 18:00'));
+  var esd=ce('div','ff');esd.appendChild(ce('label','','Estado'));var ess=ce('select');ess.className='nv-ae';['Confirmada','Por confirmar'].forEach(function(s){var o=ce('option','',s);ess.appendChild(o);});esd.appendChild(ess);fg.appendChild(esd);
+  var dsd=ce('div','ff ful');dsd.appendChild(ce('label','','Descripcion'));var dst=ce('textarea');dst.className='nv-ades';dsd.appendChild(dst);fg.appendChild(dsd);
+  var tpd=ce('div','ff ful');tpd.appendChild(ce('label','','Tip del agente'));var tpt=ce('textarea');tpt.className='nv-atip';tpd.appendChild(tpt);fg.appendChild(tpd);
+  bb.appendChild(fg);
+  var uz=ce('div','upload-section');uz.appendChild(ce('div','upload-section-title','Voucher / entrada'));
+  var uzBtn=ce('label','upload-zone-big');uzBtn.innerHTML='<span class="uz-icon">📎</span><span class="uz-label">Subir voucher / entrada</span>';
+  var uzInp=document.createElement('input');uzInp.type='file';uzInp.accept='.pdf,.jpg,.jpeg,.png';uzInp.style.display='none';
+  uzInp.addEventListener('change',function(){if(uzInp.files.length){bl.pendingFile=uzInp.files[0];uz.innerHTML='';uz.appendChild(ce('div','upload-section-title','Voucher'));uz.appendChild(mkDocRow(uzInp.files[0].name,null));toast('Listo');}uzInp.value='';});
+  uzBtn.appendChild(uzInp);uz.appendChild(uzBtn);bb.appendChild(uz);bl.appendChild(bb);g('nac').appendChild(bl);
+}
+
+async function createViaje(){
+  if(!sb){toast('Sin conexion');return;}
+  var btn=g('nv-cr');btn.textContent='Guardando...';btn.disabled=true;
+  try{
+    var cid=val('nv-cs');
+    if(!cid){var nm=val('nv-nm'),em=val('nv-em');if(!nm||!em){toast('Completa nombre y email');btn.textContent='Crear viaje';btn.disabled=false;return;}var cr=await sb.from('clientes').insert({nombre:nm,email:em,telefono:val('nv-tl')}).select().single();cid=cr.data.id;}
+    var de2=val('nv-de');if(!de2){toast('Completa el nombre del viaje');btn.textContent='Crear viaje';btn.disabled=false;return;}
+    var vr=await sb.from('viajes').insert({cliente_id:cid,destino:de2,fecha_inicio:val('nv-fi')||null,fecha_fin:val('nv-ff')||null,estado:val('nv-es'),agente:val('nv-ag'),descripcion:g('nv-ds').value}).select().single();
+    var vid=vr.data.id;
+    var vb=document.querySelectorAll('#nvc .ib');
+    for(var i=0;i<vb.length;i++){var b=vb[i],a=b.querySelector('.nv-ae');if(a&&a.value){var vres=await sb.from('vuelos').insert({viaje_id:vid,aerolinea:a.value,nro_vuelo:b.querySelector('.nv-nv').value,origen:b.querySelector('.nv-or').value,destino:b.querySelector('.nv-vd').value,duracion:b.querySelector('.nv-du').value,fecha_salida:b.querySelector('.nv-sa').value||null,fecha_llegada:b.querySelector('.nv-ll').value||null,codigo_reserva:b.querySelector('.nv-cr').value,link_checkin:b.querySelector('.nv-ci').value,estado:b.querySelector('.nv-ve').value}).select().single();if(b.pendingFile&&vres.data)await uploadDoc(b.pendingFile,'vuelos',vres.data.id);}}
+    var hb=document.querySelectorAll('#nhc .ib');
+    for(var i=0;i<hb.length;i++){var b=hb[i],nm2=b.querySelector('.nv-hn');if(nm2&&nm2.value){var hres=await sb.from('hoteles').insert({viaje_id:vid,nombre:nm2.value,ciudad:b.querySelector('.nv-hc').value,checkin:b.querySelector('.nv-hI').value||null,checkout:b.querySelector('.nv-hO').value||null,nro_reserva:b.querySelector('.nv-hr').value,desayuno:b.querySelector('.nv-hd').value,estado:'Confirmado'}).select().single();if(b.pendingFile&&hres.data)await uploadDoc(b.pendingFile,'hoteles',hres.data.id);}}
+    var ab2=document.querySelectorAll('#nac .ib');
+    for(var i=0;i<ab2.length;i++){var b=ab2[i],nm3=b.querySelector('.nv-an');if(nm3&&nm3.value){var fechaV=b.querySelector('.nv-af').value||null;var diaNum=1;var vobj=AV.find(function(x){return x.id===vid;});if(fechaV&&val('nv-fi')){var d2=new Date(val('nv-fi')+'T00:00:00');var fd2=new Date(fechaV+'T00:00:00');diaNum=Math.round((fd2-d2)/86400000)+1;}var ares=await sb.from('actividades').insert({viaje_id:vid,nombre:nm3.value,tipo:b.querySelector('.nv-at').value,ciudad:b.querySelector('.nv-ac').value,fecha_actividad:fechaV,dia:diaNum,horario:b.querySelector('.nv-ah').value,descripcion:b.querySelector('.nv-ades').value,tip:b.querySelector('.nv-atip').value,estado:b.querySelector('.nv-ae').value,incluido:'Incluido'}).select().single();if(b.pendingFile&&ares.data)await uploadDoc(b.pendingFile,'actividades',ares.data.id);}}
+    toast('Viaje creado!');await loadAll();gpage('vi');
+  }catch(e){toast('Error: '+e.message);}
+  btn.textContent='Crear viaje';btn.disabled=false;
+}
+
+// NUEVO CLIENTE
+async function createCliente(){
+  if(!sb)return;var nm=val('nc-nm'),em=val('nc-em');
+  if(!nm||!em){toast('Completa nombre y email');return;}
+  await sb.from('clientes').insert({nombre:nm,email:em,telefono:val('nc-tl')});
+  toast('Cliente guardado!');
+  ['nc-nm','nc-em','nc-tl','nc-dc'].forEach(function(id){var e=g(id);if(e)e.value='';});
+  await loadC();gpage('cl');
+}
+
+// CLIENTES
+function renderC(){
+  var c=g('cll');c.innerHTML='';
+  if(!AC.length){c.innerHTML='<div class="em"><p>No hay clientes aun.</p></div>';return;}
+  AC.forEach(function(cl){
+    var vjs=AV.filter(function(x){return x.cliente_id===cl.id;});
+    var act=vjs.find(function(x){return x._s==='Activo';});var prx=vjs.find(function(x){return x._s==='Proximo';});
+    var est=act?'En curso':prx?'Proximo':vjs.length?'Finalizado':'Sin viajes';
+    var cls2=act?'b-ok':prx?'b-inf':'b-pa';
+    var row=ce('div','cr');
+    var av=ce('div','av',gi(cl.nombre));av.style.background=gc(cl.nombre);
+    var vi=ce('div','vi');vi.appendChild(ce('div','vn',cl.nombre));vi.appendChild(ce('div','vd',cl.email+(cl.telefono?' - '+cl.telefono:'')));vi.appendChild(ce('div','vt',vjs.length+' viaje'+(vjs.length!==1?'s':'')));
+    var bg=ce('span','bg '+cls2,est.toUpperCase());
+    var db=ce('button','ia','');db.style.borderColor='#F7C1C1';
+    db.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>';
+    (function(cid2,cnm){db.addEventListener('click',function(){if(confirm('Eliminar a '+cnm+'?'))sb.from('clientes').delete().eq('id',cid2).then(function(){toast('Eliminado!');loadC();});});})(cl.id,cl.nombre);
+    row.appendChild(av);row.appendChild(vi);row.appendChild(bg);row.appendChild(db);c.appendChild(row);
+  });
+}
+
+// PRESUPUESTOS
+function mkPC(p){
+  var cn=(p.clientes&&p.clientes.nombre)?p.clientes.nombre:'Cliente';
+  var card=ce('div','pc');var top=ce('div','pt2');
+  var av=ce('div','pav',gi(cn));av.style.background=gc(cn);
+  var inn=ce('div','pin');inn.appendChild(ce('div','pnu',new Date(p.created_at).toLocaleDateString('es-AR')));inn.appendChild(ce('div','pnm',cn));inn.appendChild(ce('div','pds',(p.destino||'-')+' - '+(p.pasajeros||1)+' pax'));
+  var pr=ce('div','pr');pr.appendChild(ce('div','pp',p.precio_total||'-'));if(p.precio_por_persona)pr.appendChild(ce('div','ppx',p.precio_por_persona+' / pax'));
+  pr.appendChild(ce('span','sp '+(PCL[p.estado]||'s-cre'),(p.estado||'').toUpperCase()));
+  top.appendChild(av);top.appendChild(inn);top.appendChild(pr);
+  var foot=ce('div','pf');foot.appendChild(ce('span','pm','Valido hasta: '+fd(p.validez)));
+  var pac=ce('div','pac');var sel=ce('select','');sel.style.cssText='font-size:10px;padding:4px 8px;border-radius:8px;border:1px solid var(--br);background:var(--bg);color:var(--n);cursor:pointer;';
+  ['Solicitado','Creado','Enviado','Modificado','Confirmado','Viaje creado'].forEach(function(e){var o=ce('option','',e);o.value=e;if(e===p.estado)o.selected=true;sel.appendChild(o);});
+  (function(pid){sel.addEventListener('change',function(){sb.from('presupuestos').update({estado:sel.value}).eq('id',pid).then(function(){toast('Estado actualizado!');loadP();});});})(p.id);
+  var db=ce('button','ib2','');db.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>';
+  (function(pid){db.addEventListener('click',function(){if(confirm('Eliminar?'))sb.from('presupuestos').delete().eq('id',pid).then(function(){toast('Eliminado!');loadP();});});})(p.id);
+  pac.appendChild(sel);pac.appendChild(db);foot.appendChild(pac);card.appendChild(top);card.appendChild(foot);return card;
+}
+function renderP(){var c=g('prl');c.innerHTML='';if(!AP.length){c.innerHTML='<div class="em"><p>No hay presupuestos aun.</p></div>';return;}AP.forEach(function(p){c.appendChild(mkPC(p));});}
+function upPipe(){var es=['Solicitado','Creado','Enviado','Modificado','Confirmado','Viaje creado'],ids=['pp-so','pp-cr','pp-en','pp-mo','pp-co','pp-vi'];es.forEach(function(e,i){g(ids[i]).textContent=AP.filter(function(p){return p.estado===e;}).length;});}
+
+function npCalc(){var pp=g('np-pp').value.replace(/[^0-9]/g,''),px=parseInt(g('np-px2').value||2)||2;g('np-pl').textContent=px+(px===1?' persona':' personas');var n=parseInt(pp);g('np-tot').textContent=(!isNaN(n)&&n>0)?'USD '+(n*px).toLocaleString('es-AR'):'-';}
+function renderNpList(id2,arr,bg,col){var cont=g(id2);cont.innerHTML='';arr.forEach(function(x,i){var row=ce('div','nprow');var ic=ce('div','');ic.style.cssText='width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:'+bg;var nm=ce('div','npnm',x.r);var sd=ce('div','npsd',x.a||'');var del=ce('button','npdel','x');del.addEventListener('click',function(){arr.splice(i,1);renderNpList(id2,arr,bg,col);});row.appendChild(ic);row.appendChild(nm);row.appendChild(sd);row.appendChild(del);cont.appendChild(row);});}
+
+var NPV=[],NPH=[],NPA=[];
+async function savePresupuesto(){
+  if(!sb){toast('Sin conexion');return;}
+  var de2=val('np-de');if(!de2){toast('Completa el destino');return;}
+  var btn=g('np-sv');btn.textContent='Guardando...';btn.disabled=true;
+  var des='';document.querySelectorAll('#np-dr .dr').forEach(function(r){var ins=r.querySelectorAll('input'),c2=ins[0]?ins[0].value.trim():'',v2=ins[1]?ins[1].value.trim():'';if(c2)des+=c2+(v2?': '+v2:'')+'\n';});
+  var tot=g('np-tot').textContent;
+  var res=await sb.from('presupuestos').insert({cliente_id:val('np-cl')||null,destino:de2,fecha_inicio:val('np-fi')||null,fecha_fin:val('np-ff')||null,noches:parseInt(val('np-no'))||null,pasajeros:parseInt(val('np-px')||1),agente:val('np-ag'),validez:val('np-va')||null,estado:val('np-es'),precio_total:tot!=='-'?tot:'',precio_por_persona:val('np-pp'),condiciones:des+'---\n'+g('np-co').value});
+  btn.textContent='Guardar presupuesto';btn.disabled=false;
+  if(res.error){toast('Error: '+res.error.message);return;}
+  toast('Presupuesto guardado!');NPV=[];NPH=[];NPA=[];await loadP();gpage('pr');
+}
+
+// COPY
+function openCopy(id,cn,dest){CID=id;g('cm-s').textContent='Copiando: '+dest+' de '+cn;g('cm').classList.add('open');}
+async function doCopy(){
+  if(!sb)return;var nm=g('cm-nm').value.trim(),em=g('cm-em').value.trim();if(!nm||!em){toast('Completa nombre y email');return;}
+  var or=await sb.from('viajes').select('*').eq('id',CID).single();if(!or.data){toast('Error');return;}
+  var cid2;var ex=await sb.from('clientes').select('id').eq('email',em).maybeSingle();
+  if(ex.data)cid2=ex.data.id;else{var nc=await sb.from('clientes').insert({nombre:nm,email:em}).select().single();cid2=nc.data.id;}
+  var nv=await sb.from('viajes').insert({cliente_id:cid2,destino:nm,fecha_inicio:g('cm-fi').value||or.data.fecha_inicio,fecha_fin:g('cm-ff').value||or.data.fecha_fin,estado:'Proximo',agente:or.data.agente,descripcion:or.data.descripcion}).select().single();
+  var tbls=['vuelos','hoteles','actividades','itinerario'];
+  for(var i=0;i<tbls.length;i++){var rws=await sb.from(tbls[i]).select('*').eq('viaje_id',CID);if(rws.data&&rws.data.length){var nr2=rws.data.map(function(r){var o=Object.assign({},r);delete o.id;o.viaje_id=nv.data.id;return o;});await sb.from(tbls[i]).insert(nr2);}}
+  g('cm').classList.remove('open');toast('Viaje copiado!');await loadAll();
+}
+
+function setupEvents(){
+  g('lbtn').addEventListener('click',login);
+  g('lem').addEventListener('keydown',function(e){if(e.key==='Enter')login();});
+  g('lpw').addEventListener('keydown',function(e){if(e.key==='Enter')login();});
+  g('lout').addEventListener('click',async function(){if(sb)await sb.auth.signOut();g('as').style.display='none';g('ls').style.display='flex';});
+  g('si-da').addEventListener('click',function(){gpage('da');});
+  g('si-vi').addEventListener('click',function(){gpage('vi');});
+  g('si-pr').addEventListener('click',function(){gpage('pr');});
+  g('si-cl').addEventListener('click',function(){gpage('cl');});
+  g('si-nv').addEventListener('click',function(){gpage('nv');});
+  g('si-nc').addEventListener('click',function(){gpage('nc');});
+  g('si-np').addEventListener('click',function(){gpage('np');});
+  g('d-np').addEventListener('click',function(){gpage('np');});
+  g('d-nv').addEventListener('click',function(){gpage('nv');});
+  g('vi-nv').addEventListener('click',function(){gpage('nv');});
+  g('ed-bk').addEventListener('click',function(){gpage('vi');});
+  g('ed-sv').addEventListener('click',saveV);
+  g('ed-dl').addEventListener('click',async function(){
+    if(!EID||!sb||!confirm('Eliminar este viaje?'))return;
+    await sb.from('itinerario').delete().eq('viaje_id',EID);
+    await sb.from('actividades').delete().eq('viaje_id',EID);
+    await sb.from('hoteles').delete().eq('viaje_id',EID);
+    await sb.from('vuelos').delete().eq('viaje_id',EID);
+    await sb.from('viajes').delete().eq('id',EID);
+    toast('Viaje eliminado!');EID=null;await loadAll();gpage('vi');
+  });
+  g('nv-cx').addEventListener('click',function(){gpage('vi');});
+  g('nc-bk').addEventListener('click',function(){gpage('cl');});
+  g('nc-cx').addEventListener('click',function(){gpage('cl');});
+  g('cl-nw').addEventListener('click',function(){gpage('nc');});
+  g('pr-nw').addEventListener('click',function(){gpage('np');});
+  g('np-bk').addEventListener('click',function(){gpage('pr');});
+  g('np-cx').addEventListener('click',function(){gpage('pr');});
+  g('cm-cx').addEventListener('click',function(){g('cm').classList.remove('open');});
+  g('cm-ok').addEventListener('click',doCopy);
+  g('nv-av').addEventListener('click',function(){ var c=g('nvc'); var n=c.querySelectorAll('.ib').length; var bl=mkVueloBlockV2(null,[],n,null); c.appendChild(bl); });
+  g('nv-ah').addEventListener('click',addNVH);
+  g('nv-aa').addEventListener('click',addNVA);
+  g('nv-cr').addEventListener('click',createViaje);
+  g('nv-cs').addEventListener('change',function(){var c=AC.find(function(x){return x.id===this.value;},this);if(c){g('nv-nm').value=c.nombre;g('nv-em').value=c.email;g('nv-tl').value=c.telefono||'';}});
+  g('nc-sv').addEventListener('click',createCliente);
+  document.querySelectorAll('.fb[data-f]').forEach(function(b){b.addEventListener('click',function(){document.querySelectorAll('.fb[data-f]').forEach(function(x){x.classList.remove('on');});b.classList.add('on');renderV(b.dataset.f);});});
+  document.querySelectorAll('.fth[data-et]').forEach(function(b){b.addEventListener('click',function(){document.querySelectorAll('.fth[data-et]').forEach(function(x){x.classList.remove('on');});b.classList.add('on');for(var i=1;i<=5;i++){var t=g('et-'+i);if(t)t.style.display=(i==b.dataset.et)?'block':'none';}});});
+  document.querySelectorAll('.fth[data-nt],.bp[data-ng],.bs[data-ng]').forEach(function(b){b.addEventListener('click',function(){var n=parseInt(b.dataset.nt||b.dataset.ng);if(n)goNT(n);});});
+  g('np-pp').addEventListener('input',npCalc);g('np-px2').addEventListener('input',npCalc);
+  g('np-bd').addEventListener('click',function(){var row=ce('div','dr');var i1=ce('input');i1.placeholder='Concepto';var i2=ce('input');i2.placeholder='USD 0';i2.addEventListener('input',npCalc);var btn=ce('button','','x');btn.addEventListener('click',function(){row.remove();});row.appendChild(i1);row.appendChild(i2);row.appendChild(btn);g('np-dr').appendChild(row);});
+  g('np-bv').addEventListener('click',function(){var r=val('np-vr'),a=val('np-va2');if(!r)return;NPV.push({r:r,a:a});g('np-vr').value='';g('np-va2').value='';renderNpList('np-vl',NPV,'#FFE8E8','#A00D1F');});
+  g('np-bh').addEventListener('click',function(){var n=val('np-hn'),c2=val('np-hc');if(!n)return;NPH.push({r:n,a:c2});g('np-hn').value='';g('np-hc').value='';renderNpList('np-hl',NPH,'#FFF0E0','#7A3800');});
+  g('np-ba').addEventListener('click',function(){var n=val('np-an'),d2=val('np-ad');if(!n)return;NPA.push({r:n,a:d2});g('np-an').value='';g('np-ad').value='';renderNpList('np-al',NPA,'#E8EAF6','#0D1F75');});
+  g('np-sv').addEventListener('click',savePresupuesto);
+}
+
+document.addEventListener('DOMContentLoaded',setupEvents);
+
+</script>
+</body>
+</html>
