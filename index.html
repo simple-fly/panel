@@ -883,6 +883,7 @@ function addNVV(){
   var sald=ce('div','ff');sald.appendChild(ce('label','','Salida'));var sali=ce('input');sali.className='nv-sa';sali.type='datetime-local';sald.appendChild(sali);fg3.appendChild(sald);
   fg3.appendChild(mf('Llegada','nv-ll','13:00+1'));fg3.appendChild(mf('Asiento','nv-as','24C'));
   var cd=ce('div','ff ful');cd.appendChild(ce('label','','Link check-in'));var ci=ce('input');ci.className='nv-ci';ci.type='url';ci.placeholder='https://...';cd.appendChild(ci);fg3.appendChild(cd);
+  var cr2d=ce('div','ff');cr2d.appendChild(ce('label','','Codigo de reserva'));var cr2i=ce('input');cr2i.className='nv-cr2';cr2i.placeholder='ABC123';cr2d.appendChild(cr2i);fg3.appendChild(cr2d);
   bb.appendChild(fg3);bl.appendChild(bb);g('nvc').appendChild(bl);
 }
 
@@ -952,7 +953,7 @@ async function createViaje(){
     var vr=await sb.from('viajes').insert({cliente_id:cid,destino:de2,fecha_inicio:val('nv-fi')||null,fecha_fin:val('nv-ff')||null,estado:val('nv-es'),agente:val('nv-ag'),descripcion:g('nv-ds').value}).select().single();
     var vid=vr.data.id;
     var vb=document.querySelectorAll('#nvc .ib');
-    for(var i=0;i<vb.length;i++){var b=vb[i],a=b.querySelector('.nv-ae');if(a&&a.value)await sb.from('vuelos').insert({viaje_id:vid,aerolinea:a.value,nro_vuelo:b.querySelector('.nv-nv').value,origen:b.querySelector('.nv-or').value,destino:b.querySelector('.nv-vd').value,duracion:b.querySelector('.nv-du').value,fecha_salida:b.querySelector('.nv-sa').value||null,fecha_llegada:b.querySelector('.nv-ll').value,asiento:b.querySelector('.nv-as').value,link_checkin:b.querySelector('.nv-ci').value,estado:b.querySelector('.nv-ve').value});}
+    for(var i=0;i<vb.length;i++){var b=vb[i],a=b.querySelector('.nv-ae');if(a&&a.value)await sb.from('vuelos').insert({viaje_id:vid,aerolinea:a.value,nro_vuelo:b.querySelector('.nv-nv').value,origen:b.querySelector('.nv-or').value,destino:b.querySelector('.nv-vd').value,duracion:b.querySelector('.nv-du').value,fecha_salida:b.querySelector('.nv-sa').value||null,fecha_llegada:b.querySelector('.nv-ll').value,asiento:b.querySelector('.nv-as').value,link_checkin:b.querySelector('.nv-ci').value,codigo_reserva:b.querySelector('.nv-cr2')?b.querySelector('.nv-cr2').value:'',estado:b.querySelector('.nv-ve').value});}
     var hb=document.querySelectorAll('#nhc .ib');
     for(var i=0;i<hb.length;i++){var b=hb[i],nm2=b.querySelector('.nv-hn');if(nm2&&nm2.value)await sb.from('hoteles').insert({viaje_id:vid,nombre:nm2.value,ciudad:b.querySelector('.nv-hc').value,categoria:parseInt(b.querySelector('.nv-hk').value||5),checkin:b.querySelector('.nv-hI').value||null,checkout:b.querySelector('.nv-hO').value||null,habitacion:b.querySelector('.nv-hh').value,nro_reserva:b.querySelector('.nv-hr').value,desayuno:b.querySelector('.nv-hd').value,estado:'Confirmado'});}
     var ab=document.querySelectorAll('#nac .ib');
