@@ -7,98 +7,185 @@
   <link href="https://fonts.googleapis.com/css2?family=Parkinsans:wght@400;700&family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    *{box-sizing:border-box;margin:0;padding:0;}
-    :root{--n:#0D1F75;--b:#3A46A0;--pk:#FFB4B4;--pd:#FF7D87;--bg:#F5F6FA;--cd:#fff;--br:rgba(13,31,117,0.12);--mu:#6B7BAE;--ok:#1B5E20;--okbg:#E8F5E9;--er:#A00D1F;--erbg:#FFE8E8;}
-    body{font-family:'Raleway',sans-serif;background:var(--bg);color:var(--n);}
-    button,input,select,textarea{font:inherit;}
-    .hidden{display:none!important;}
+    *{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --n:#0D1F75;--b:#3A46A0;--pk:#FFB4B4;--pd:#FF7D87;
+      --bg:#F5F6FA;--cd:#fff;--br:rgba(13,31,117,.12);--mu:#6B7BAE;
+      --ok:#1B5E20;--okbg:#E8F5E9;--er:#A00D1F;--erbg:#FFE8E8;
+    }
+    body{font-family:'Raleway',sans-serif;background:var(--bg);color:var(--n)}
+    button,input,select,textarea{font:inherit}
+    .hidden{display:none!important}
 
-    #auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,#0D1F75 0%,#3A46A0 60%,#FFB4B4 100%);padding:20px;}
-    .login-card{background:#fff;border-radius:22px;padding:32px;width:100%;max-width:400px;box-shadow:0 16px 40px rgba(13,31,117,.18);}
-    .brand{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
-    .brand-mark{width:48px;height:48px;border-radius:14px;background:var(--pk);display:flex;align-items:center;justify-content:center;color:var(--n);font-family:'Parkinsans',sans-serif;font-weight:700;}
-    .brand-name{font-family:'Parkinsans',sans-serif;font-size:24px;font-weight:700;color:var(--n);}
-    .brand-sub{font-size:13px;color:var(--mu);margin-bottom:22px;}
-    .field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
-    .field label{font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.4px;}
-    .field input,.field select,.field textarea{width:100%;padding:12px 14px;font-size:14px;border-radius:12px;border:1.5px solid var(--br);background:var(--bg);outline:none;color:var(--n);}
-    .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--b);background:#fff;}
-    .primary-btn{width:100%;padding:13px 18px;border:none;border-radius:14px;background:var(--n);color:#fff;font-family:'Parkinsans',sans-serif;font-weight:700;cursor:pointer;}
-    .primary-btn:hover{background:var(--b);}
-    .secondary-btn{padding:11px 16px;border-radius:12px;border:1px solid var(--br);background:var(--cd);color:var(--n);cursor:pointer;font-weight:600;}
-    .secondary-btn:hover{background:var(--bg);}
-    .danger-btn{padding:11px 16px;border-radius:12px;border:1px solid #f7c1c1;background:var(--erbg);color:var(--er);cursor:pointer;font-weight:700;}
-    .danger-btn:hover{filter:brightness(.98);}
-    .msg{display:none;margin-top:12px;padding:10px 12px;border-radius:10px;font-size:12px;}
-    .msg.error{display:block;background:var(--erbg);color:var(--er);}
-    .msg.success{display:block;background:var(--okbg);color:var(--ok);}
+    #auth-screen{
+      min-height:100vh;display:flex;align-items:center;justify-content:center;
+      background:linear-gradient(160deg,#0D1F75 0%,#3A46A0 60%,#FFB4B4 100%);
+      padding:20px;
+    }
+    .login-card{
+      background:#fff;border-radius:22px;padding:32px;width:100%;max-width:400px;
+      box-shadow:0 16px 40px rgba(13,31,117,.18);
+    }
+    .brand{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+    .brand-mark{
+      width:48px;height:48px;border-radius:14px;background:var(--pk);
+      display:flex;align-items:center;justify-content:center;color:var(--n);
+      font-family:'Parkinsans',sans-serif;font-weight:700
+    }
+    .brand-name{font-family:'Parkinsans',sans-serif;font-size:24px;font-weight:700;color:var(--n)}
+    .brand-sub{font-size:13px;color:var(--mu);margin-bottom:22px}
 
-    #app{min-height:100vh;display:flex;flex-direction:column;}
-    .topbar{background:var(--n);padding:14px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:20;}
-    .topbar-mark{width:34px;height:34px;border-radius:10px;background:var(--pk);display:flex;align-items:center;justify-content:center;color:var(--n);font-family:'Parkinsans',sans-serif;font-weight:700;}
-    .topbar-name{font-family:'Parkinsans',sans-serif;font-size:16px;font-weight:700;color:#fff;}
-    .topbar-badge{background:rgba(255,255,255,.15);color:rgba(255,255,255,.8);font-size:10px;font-weight:700;padding:4px 10px;border-radius:99px;}
-    .topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-    .user-chip{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);padding:6px 12px;border-radius:99px;color:#fff;font-size:12px;font-weight:600;}
-    .user-avatar{width:24px;height:24px;border-radius:50%;background:var(--pk);display:flex;align-items:center;justify-content:center;color:var(--n);font-size:10px;font-weight:700;}
-    .logout-btn{background:rgba(255,255,255,.12);color:#fff;border:none;border-radius:99px;padding:7px 12px;cursor:pointer;font-size:12px;}
+    .field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+    .field label{font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.4px}
+    .field input,.field select,.field textarea{
+      width:100%;padding:12px 14px;font-size:14px;border-radius:12px;border:1.5px solid var(--br);
+      background:var(--bg);outline:none;color:var(--n)
+    }
+    .field input:focus,.field select:focus,.field textarea:focus{
+      border-color:var(--b);background:#fff
+    }
 
-    .container{max-width:1200px;width:100%;margin:0 auto;padding:24px;}
-    .page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px;}
-    .page-title{font-family:'Parkinsans',sans-serif;font-size:28px;font-weight:700;color:var(--n);}
-    .page-sub{font-size:13px;color:var(--mu);margin-top:4px;}
-    .row-actions{display:flex;gap:8px;flex-wrap:wrap;}
+    .primary-btn{
+      width:100%;padding:13px 18px;border:none;border-radius:14px;background:var(--n);
+      color:#fff;font-family:'Parkinsans',sans-serif;font-weight:700;cursor:pointer
+    }
+    .primary-btn:hover{background:var(--b)}
+    .secondary-btn{
+      padding:11px 16px;border-radius:12px;border:1px solid var(--br);
+      background:var(--cd);color:var(--n);cursor:pointer;font-weight:600
+    }
+    .secondary-btn:hover{background:var(--bg)}
+    .danger-btn{
+      padding:11px 16px;border-radius:12px;border:1px solid #f7c1c1;
+      background:var(--erbg);color:var(--er);cursor:pointer;font-weight:700
+    }
 
-    .card{background:var(--cd);border:1px solid var(--br);border-radius:18px;padding:20px;margin-bottom:16px;box-shadow:0 4px 18px rgba(13,31,117,.04);}
-    .card-title{font-family:'Parkinsans',sans-serif;font-size:15px;font-weight:700;color:var(--n);margin-bottom:14px;}
-    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
-    .full{grid-column:1/-1;}
-    textarea{resize:vertical;min-height:72px;}
+    .msg{display:none;margin-top:12px;padding:10px 12px;border-radius:10px;font-size:12px}
+    .msg.error{display:block;background:var(--erbg);color:var(--er)}
+    .msg.success{display:block;background:var(--okbg);color:var(--ok)}
 
-    .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:16px;}
-    .stat{background:var(--cd);border:1px solid var(--br);border-radius:16px;padding:16px;}
-    .stat-label{font-size:11px;color:var(--mu);font-weight:700;text-transform:uppercase;}
-    .stat-value{font-family:'Parkinsans',sans-serif;font-size:24px;font-weight:700;color:var(--n);margin-top:6px;}
+    #app{min-height:100vh;display:flex;flex-direction:column}
+    .topbar{
+      background:var(--n);padding:14px 20px;display:flex;align-items:center;gap:12px;
+      position:sticky;top:0;z-index:20
+    }
+    .topbar-mark{
+      width:34px;height:34px;border-radius:10px;background:var(--pk);
+      display:flex;align-items:center;justify-content:center;color:var(--n);
+      font-family:'Parkinsans',sans-serif;font-weight:700
+    }
+    .topbar-name{font-family:'Parkinsans',sans-serif;font-size:16px;font-weight:700;color:#fff}
+    .topbar-badge{
+      background:rgba(255,255,255,.15);color:rgba(255,255,255,.8);
+      font-size:10px;font-weight:700;padding:4px 10px;border-radius:99px
+    }
+    .topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .user-chip{
+      display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);
+      padding:6px 12px;border-radius:99px;color:#fff;font-size:12px;font-weight:600
+    }
+    .user-avatar{
+      width:24px;height:24px;border-radius:50%;background:var(--pk);
+      display:flex;align-items:center;justify-content:center;color:var(--n);
+      font-size:10px;font-weight:700
+    }
+    .logout-btn{
+      background:rgba(255,255,255,.12);color:#fff;border:none;border-radius:99px;
+      padding:7px 12px;cursor:pointer;font-size:12px
+    }
 
-    .budget-row{background:var(--cd);border:1px solid var(--br);border-radius:16px;padding:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px;}
-    .budget-title{font-family:'Parkinsans',sans-serif;font-size:15px;font-weight:700;color:var(--n);}
-    .budget-meta{font-size:12px;color:var(--mu);margin-top:4px;}
-    .budget-total{font-family:'Parkinsans',sans-serif;font-size:22px;font-weight:700;color:var(--n);}
-    .budget-actions{display:flex;gap:8px;flex-wrap:wrap;}
-    .mini-btn{padding:8px 12px;border-radius:10px;border:1px solid var(--br);background:var(--cd);color:var(--n);cursor:pointer;font-size:12px;font-weight:700;}
-    .mini-btn:hover{background:var(--bg);}
+    .container{max-width:1200px;width:100%;margin:0 auto;padding:24px}
+    .page-header{
+      display:flex;align-items:flex-start;justify-content:space-between;
+      gap:12px;flex-wrap:wrap;margin-bottom:20px
+    }
+    .page-title{font-family:'Parkinsans',sans-serif;font-size:28px;font-weight:700;color:var(--n)}
+    .page-sub{font-size:13px;color:var(--mu);margin-top:4px}
+    .row-actions{display:flex;gap:8px;flex-wrap:wrap}
 
-    .module-card{background:rgba(13,31,117,.03);border:1px solid var(--br);border-radius:16px;padding:16px;margin-bottom:12px;}
-    .module-top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px;}
-    .module-title{font-family:'Parkinsans',sans-serif;font-size:14px;font-weight:700;color:var(--n);}
-    .module-actions{display:flex;gap:8px;flex-wrap:wrap;}
-    .remove-btn{padding:8px 11px;border:none;border-radius:10px;background:var(--erbg);color:var(--er);cursor:pointer;font-size:12px;font-weight:700;}
-    .duplicate-btn{padding:8px 11px;border:none;border-radius:10px;background:#e8eaf6;color:var(--n);cursor:pointer;font-size:12px;font-weight:700;}
-    .add-btn{width:100%;padding:12px;border:1.5px dashed rgba(13,31,117,.2);border-radius:14px;background:none;color:var(--b);cursor:pointer;font-weight:700;}
-    .add-btn:hover{border-color:var(--n);color:var(--n);}
+    .card{
+      background:var(--cd);border:1px solid var(--br);border-radius:18px;
+      padding:20px;margin-bottom:16px;box-shadow:0 4px 18px rgba(13,31,117,.04)
+    }
+    .card-title{font-family:'Parkinsans',sans-serif;font-size:15px;font-weight:700;color:var(--n);margin-bottom:14px}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .full{grid-column:1/-1}
+    textarea{resize:vertical;min-height:72px}
 
-    .summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--br);border-radius:16px;overflow:hidden;}
-    .summary-cell{background:#fff;padding:14px 10px;text-align:center;border-right:1px solid var(--br);}
-    .summary-cell:last-child{border-right:none;}
-    .summary-cell.highlight{background:var(--n);}
-    .summary-value{font-family:'Parkinsans',sans-serif;font-size:24px;font-weight:700;color:var(--n);}
-    .summary-cell.highlight .summary-value{color:#fff;}
-    .summary-label{font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;margin-top:4px;}
-    .summary-cell.highlight .summary-label{color:rgba(255,255,255,.7);}
+    .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:16px}
+    .stat{background:var(--cd);border:1px solid var(--br);border-radius:16px;padding:16px}
+    .stat-label{font-size:11px;color:var(--mu);font-weight:700;text-transform:uppercase}
+    .stat-value{font-family:'Parkinsans',sans-serif;font-size:24px;font-weight:700;color:var(--n);margin-top:6px}
 
-    .flight-bar{margin-top:12px;padding:12px 14px;background:#fff;border:1px solid var(--br);border-radius:12px;font-size:12px;color:var(--mu);line-height:1.5;}
-    .flight-strong{font-weight:700;color:var(--n);}
+    .budget-row{
+      background:var(--cd);border:1px solid var(--br);border-radius:16px;padding:16px;
+      display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+      margin-bottom:10px
+    }
+    .budget-title{font-family:'Parkinsans',sans-serif;font-size:15px;font-weight:700;color:var(--n)}
+    .budget-meta{font-size:12px;color:var(--mu);margin-top:4px}
+    .budget-total{font-family:'Parkinsans',sans-serif;font-size:22px;font-weight:700;color:var(--n)}
+    .budget-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .mini-btn{
+      padding:8px 12px;border-radius:10px;border:1px solid var(--br);
+      background:var(--cd);color:var(--n);cursor:pointer;font-size:12px;font-weight:700
+    }
+    .mini-btn:hover{background:var(--bg)}
 
-    .toast{position:fixed;right:20px;bottom:20px;background:var(--n);color:#fff;padding:12px 16px;border-radius:14px;font-family:'Parkinsans',sans-serif;font-size:12px;display:none;z-index:50;}
-    .loading{padding:34px;text-align:center;color:var(--mu);}
+    .module-card{
+      background:rgba(13,31,117,.03);border:1px solid var(--br);
+      border-radius:16px;padding:16px;margin-bottom:12px
+    }
+    .module-top{
+      display:flex;align-items:center;justify-content:space-between;
+      gap:10px;flex-wrap:wrap;margin-bottom:14px
+    }
+    .module-title{font-family:'Parkinsans',sans-serif;font-size:14px;font-weight:700;color:var(--n)}
+    .module-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .remove-btn{
+      padding:8px 11px;border:none;border-radius:10px;background:var(--erbg);
+      color:var(--er);cursor:pointer;font-size:12px;font-weight:700
+    }
+    .duplicate-btn{
+      padding:8px 11px;border:none;border-radius:10px;background:#e8eaf6;
+      color:var(--n);cursor:pointer;font-size:12px;font-weight:700
+    }
+    .add-btn{
+      width:100%;padding:12px;border:1.5px dashed rgba(13,31,117,.2);
+      border-radius:14px;background:none;color:var(--b);cursor:pointer;font-weight:700
+    }
+    .add-btn:hover{border-color:var(--n);color:var(--n)}
+
+    .summary-grid{
+      display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+      border:1px solid var(--br);border-radius:16px;overflow:hidden
+    }
+    .summary-cell{text-align:center;padding:14px 10px;background:#fff;border-right:1px solid var(--br)}
+    .summary-cell:last-child{border-right:none}
+    .summary-cell.highlight{background:var(--n)}
+    .summary-value{font-family:'Parkinsans',sans-serif;font-size:24px;font-weight:700;color:var(--n)}
+    .summary-cell.highlight .summary-value{color:#fff}
+    .summary-label{font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;margin-top:4px}
+    .summary-cell.highlight .summary-label{color:rgba(255,255,255,.7)}
+
+    .flight-bar{
+      margin-top:12px;padding:12px 14px;background:#fff;border:1px solid var(--br);
+      border-radius:12px;font-size:12px;color:var(--mu);line-height:1.5
+    }
+    .flight-strong{font-weight:700;color:var(--n)}
+
+    .toast{
+      position:fixed;right:20px;bottom:20px;background:var(--n);color:#fff;
+      padding:12px 16px;border-radius:14px;font-family:'Parkinsans',sans-serif;
+      font-size:12px;display:none;z-index:50
+    }
+    .loading{padding:34px;text-align:center;color:var(--mu)}
 
     @media (max-width: 860px){
-      .grid-3,.stats,.summary-grid{grid-template-columns:1fr;}
-      .grid-2{grid-template-columns:1fr;}
-      .summary-cell{border-right:none;border-bottom:1px solid var(--br);}
-      .summary-cell:last-child{border-bottom:none;}
-      .container{padding:18px;}
+      .grid-3,.stats,.summary-grid{grid-template-columns:1fr}
+      .summary-cell{border-right:none;border-bottom:1px solid var(--br)}
+      .summary-cell:last-child{border-bottom:none}
+      .container{padding:18px}
     }
   </style>
 </head>
@@ -160,8 +247,8 @@
             <div class="stat-value" id="stat-count">0</div>
           </div>
           <div class="stat">
-            <div class="stat-label">Moneda principal</div>
-            <div class="stat-value" id="stat-currency">USD</div>
+            <div class="stat-label">Agente</div>
+            <div class="stat-value" id="stat-agent">-</div>
           </div>
           <div class="stat">
             <div class="stat-label">Última carga</div>
@@ -181,7 +268,7 @@
           <div class="grid-3">
             <div class="field">
               <label>Cliente</label>
-              <input type="text" id="budget-client" placeholder="Nombre del cliente" />
+              <input type="text" id="budget-client-name" placeholder="Nombre del cliente" />
             </div>
             <div class="field">
               <label>Destino</label>
@@ -191,25 +278,32 @@
               <label>Pasajeros</label>
               <input type="number" id="budget-passengers" min="1" value="2" />
             </div>
+
             <div class="field">
-              <label>Fecha salida</label>
+              <label>Fecha inicio</label>
               <input type="date" id="budget-start-date" />
             </div>
             <div class="field">
-              <label>Fecha regreso</label>
+              <label>Fecha fin</label>
               <input type="date" id="budget-end-date" />
             </div>
             <div class="field">
-              <label>Moneda</label>
-              <select id="budget-currency">
-                <option value="USD">USD</option>
-                <option value="ARS">ARS</option>
-                <option value="EUR">EUR</option>
+              <label>Estado</label>
+              <select id="budget-status">
+                <option value="borrador">Borrador</option>
+                <option value="enviado">Enviado</option>
+                <option value="confirmado">Confirmado</option>
+                <option value="cancelado">Cancelado</option>
               </select>
             </div>
+
+            <div class="field">
+              <label>Validez</label>
+              <input type="date" id="budget-validity" />
+            </div>
             <div class="field full">
-              <label>Observaciones</label>
-              <textarea id="budget-notes" placeholder="Notas internas o aclaraciones breves"></textarea>
+              <label>Condiciones</label>
+              <textarea id="budget-conditions" placeholder="Texto breve de condiciones generales"></textarea>
             </div>
           </div>
         </div>
@@ -256,25 +350,14 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    /* =========================
-       1) CONFIGURACION SUPABASE
-       =========================
-       REEMPLAZA ESTOS DOS VALORES
-    */
-    const SUPABASE_URL = https://vzgcogivfnlzcivwscls.supabase.co;
-    const SUPABASE_ANON_KEY = sb_publishable_XGrYZKOSOKDkW1bY8XBciA_FYX79o63;
+    const SUPABASE_URL = 'PEGA_AQUI_TU_URL_BASE';
+    const SUPABASE_ANON_KEY = 'PEGA_AQUI_TU_PUBLISHABLE_KEY';
 
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    /* =========================
-       2) ESTADO GLOBAL
-    */
     let hotelOptionsState = [];
     let flightSegmentsState = [];
 
-    /* =========================
-       3) HELPERS
-    */
     const $ = (id) => document.getElementById(id);
 
     function showToast(message) {
@@ -282,7 +365,7 @@
       el.textContent = message;
       el.style.display = 'block';
       clearTimeout(showToast._t);
-      showToast._t = setTimeout(() => { el.style.display = 'none'; }, 2600);
+      showToast._t = setTimeout(() => { el.style.display = 'none'; }, 2500);
     }
 
     function setMessage(id, type, text) {
@@ -297,17 +380,27 @@
       el.textContent = '';
     }
 
-    function money(value, currency = 'USD') {
-      const amount = Number(value || 0);
-      try {
-        return new Intl.NumberFormat('es-AR', {
-          style: 'currency',
-          currency,
-          maximumFractionDigits: 0
-        }).format(amount);
-      } catch {
-        return `${currency} ${amount.toFixed(0)}`;
-      }
+    function uid() {
+      if (window.crypto?.randomUUID) return crypto.randomUUID();
+      return `id-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    }
+
+    function money(value) {
+      const num = Number(value || 0);
+      return new Intl.NumberFormat('es-AR', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+      }).format(num);
+    }
+
+    function parseNumber(value) {
+      const num = Number(value || 0);
+      return Number.isFinite(num) ? num : 0;
+    }
+
+    function getInitials(email = '') {
+      const clean = email.split('@')[0] || 'AG';
+      return clean.slice(0, 2).toUpperCase();
     }
 
     function localToIso(dateValue, timeValue) {
@@ -329,14 +422,12 @@
       return `${h}h ${m}m`;
     }
 
-    function getInitials(email = '') {
-      const clean = email.split('@')[0] || 'AG';
-      return clean.slice(0, 2).toUpperCase();
-    }
-
-    function uid() {
-      if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
-      return `id-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    function calculateNights(startDate, endDate) {
+      if (!startDate || !endDate) return 0;
+      const a = new Date(`${startDate}T00:00:00`);
+      const b = new Date(`${endDate}T00:00:00`);
+      const diff = Math.round((b - a) / 86400000);
+      return diff > 0 ? diff : 0;
     }
 
     function calculateFlightSummary(segments) {
@@ -429,13 +520,14 @@
     }
 
     function resetForm() {
-      $('budget-client').value = '';
+      $('budget-client-name').value = '';
       $('budget-destination').value = '';
       $('budget-passengers').value = 2;
       $('budget-start-date').value = '';
       $('budget-end-date').value = '';
-      $('budget-currency').value = 'USD';
-      $('budget-notes').value = '';
+      $('budget-status').value = 'borrador';
+      $('budget-validity').value = '';
+      $('budget-conditions').value = '';
 
       hotelOptionsState = [createHotelOption()];
       flightSegmentsState = [createFlightSegment()];
@@ -446,14 +538,13 @@
     }
 
     function updateTotals() {
-      const currency = $('budget-currency').value || 'USD';
-      const hotelsTotal = hotelOptionsState.reduce((acc, item) => acc + Number(item.total || 0), 0);
-      const flightsTotal = flightSegmentsState.reduce((acc, item) => acc + Number(item.total || 0), 0);
+      const hotelsTotal = hotelOptionsState.reduce((acc, item) => acc + parseNumber(item.total), 0);
+      const flightsTotal = flightSegmentsState.reduce((acc, item) => acc + parseNumber(item.total), 0);
       const grandTotal = hotelsTotal + flightsTotal;
 
-      $('hotels-total').textContent = money(hotelsTotal, currency);
-      $('flights-total').textContent = money(flightsTotal, currency);
-      $('grand-total').textContent = money(grandTotal, currency);
+      $('hotels-total').textContent = money(hotelsTotal);
+      $('flights-total').textContent = money(flightsTotal);
+      $('grand-total').textContent = money(grandTotal);
 
       const summary = calculateFlightSummary(flightSegmentsState);
       $('flight-summary').innerHTML = summary.enriched.length
@@ -515,7 +606,7 @@
           const item = hotelOptionsState.find(h => h.uid === e.target.dataset.hotelId);
           if (!item) return;
           const field = e.target.dataset.hotelField;
-          item[field] = e.target.type === 'number' ? Number(e.target.value || 0) : e.target.value;
+          item[field] = e.target.type === 'number' ? parseNumber(e.target.value) : e.target.value;
           updateTotals();
         });
       });
@@ -626,7 +717,7 @@
           const item = flightSegmentsState.find(f => f.uid === e.target.dataset.flightId);
           if (!item) return;
           const field = e.target.dataset.flightField;
-          item[field] = e.target.type === 'number' ? Number(e.target.value || 0) : e.target.value;
+          item[field] = e.target.type === 'number' ? parseNumber(e.target.value) : e.target.value;
           item.salida = localToIso(item.fecha_salida, item.hora_salida);
           item.llegada = localToIso(item.fecha_llegada, item.hora_llegada);
           renderFlights();
@@ -654,10 +745,12 @@
       const email = user?.email || 'agente@simplefly.com';
       $('user-name').textContent = email;
       $('user-avatar').textContent = getInitials(email);
+      $('stat-agent').textContent = email.split('@')[0];
     }
 
     async function signIn() {
       clearMessage('login-message');
+
       const email = $('login-email').value.trim();
       const password = $('login-password').value;
 
@@ -692,8 +785,9 @@
         if (error) throw error;
 
         $('stat-count').textContent = data?.length || 0;
-        $('stat-currency').textContent = data?.[0]?.moneda || 'USD';
-        $('stat-last').textContent = data?.[0]?.created_at ? new Date(data[0].created_at).toLocaleDateString('es-AR') : '-';
+        $('stat-last').textContent = data?.[0]?.created_at
+          ? new Date(data[0].created_at).toLocaleDateString('es-AR')
+          : '-';
 
         if (!data || !data.length) {
           list.innerHTML = '<div class="loading">Todavía no hay presupuestos cargados.</div>';
@@ -703,18 +797,24 @@
         list.innerHTML = '';
 
         data.forEach((item) => {
+          let clientName = 'Cliente';
+          try {
+            const parsedHotels = item.hoteles_data ? JSON.parse(item.hoteles_data) : [];
+            if (parsedHotels?.client_name) clientName = parsedHotels.client_name;
+          } catch {}
+
           const row = document.createElement('div');
           row.className = 'budget-row';
           row.innerHTML = `
             <div>
-              <div class="budget-title">${item.cliente_nombre} · ${item.destino}</div>
+              <div class="budget-title">${clientName} · ${item.destino || '-'}</div>
               <div class="budget-meta">
-                ${item.fecha_salida || 'Sin fecha'}${item.fecha_regreso ? ` → ${item.fecha_regreso}` : ''}
+                ${item.fecha_inicio || 'Sin fecha'}${item.fecha_fin ? ` → ${item.fecha_fin}` : ''}
                 · ${item.pasajeros || 1} pasajero(s)
                 · ${item.estado || 'borrador'}
               </div>
             </div>
-            <div class="budget-total">${money(item.total || 0, item.moneda || 'USD')}</div>
+            <div class="budget-total">${money(item.precio_total || 0)}</div>
             <div class="budget-actions">
               <button class="mini-btn" data-duplicate="${item.id}">Duplicar</button>
               <button class="mini-btn" data-delete="${item.id}">Eliminar</button>
@@ -762,155 +862,91 @@
         .select('*')
         .eq('id', id)
         .single();
+
       if (originalError) throw originalError;
 
-      const { data: hotels, error: hotelsError } = await supabaseClient
-        .from('presupuesto_hoteles')
-        .select('*')
-        .eq('presupuesto_id', id)
-        .order('orden', { ascending: true });
-      if (hotelsError) throw hotelsError;
+      const payload = {
+        cliente_id: original.cliente_id || uid(),
+        destino: original.destino,
+        fecha_inicio: original.fecha_inicio,
+        fecha_fin: original.fecha_fin,
+        noches: original.noches,
+        pasajeros: original.pasajeros,
+        agente: user.email,
+        precio_total: original.precio_total,
+        precio_por_persona: original.precio_por_persona,
+        estado: 'borrador',
+        validez: original.validez,
+        condiciones: original.condiciones,
+        vuelos_data: original.vuelos_data,
+        hoteles_data: original.hoteles_data,
+        actividades_data: original.actividades_data || '[]',
+        otros_data: original.otros_data || '[]'
+      };
 
-      const { data: flights, error: flightsError } = await supabaseClient
-        .from('presupuesto_vuelos')
-        .select('*')
-        .eq('presupuesto_id', id)
-        .order('orden', { ascending: true });
-      if (flightsError) throw flightsError;
-
-      const { data: inserted, error: insertError } = await supabaseClient
-        .from('presupuestos')
-        .insert([{
-          agente_id: user.id,
-          cliente_nombre: original.cliente_nombre,
-          destino: original.destino,
-          fecha_salida: original.fecha_salida,
-          fecha_regreso: original.fecha_regreso,
-          pasajeros: original.pasajeros,
-          moneda: original.moneda,
-          observaciones: original.observaciones,
-          total: original.total,
-          estado: 'borrador'
-        }])
-        .select()
-        .single();
-      if (insertError) throw insertError;
-
-      if (hotels?.length) {
-        const payload = hotels.map((h) => ({
-          presupuesto_id: inserted.id,
-          orden: h.orden,
-          hotel_nombre: h.hotel_nombre,
-          categoria: h.categoria,
-          regimen: h.regimen,
-          habitacion: h.habitacion,
-          noches: h.noches,
-          observaciones: h.observaciones,
-          total: h.total
-        }));
-        const { error } = await supabaseClient.from('presupuesto_hoteles').insert(payload);
-        if (error) throw error;
-      }
-
-      if (flights?.length) {
-        const payload = flights.map((f) => ({
-          presupuesto_id: inserted.id,
-          grupo: f.grupo,
-          orden: f.orden,
-          aerolinea: f.aerolinea,
-          numero_vuelo: f.numero_vuelo,
-          origen: f.origen,
-          destino: f.destino,
-          salida: f.salida,
-          llegada: f.llegada,
-          total: f.total
-        }));
-        const { error } = await supabaseClient.from('presupuesto_vuelos').insert(payload);
-        if (error) throw error;
-      }
+      const { error } = await supabaseClient.from('presupuestos').insert([payload]);
+      if (error) throw error;
     }
 
     async function saveBudget() {
-      const client = $('budget-client').value.trim();
-      const destination = $('budget-destination').value.trim();
-      const passengers = Number($('budget-passengers').value || 1);
-      const startDate = $('budget-start-date').value || null;
-      const endDate = $('budget-end-date').value || null;
-      const currency = $('budget-currency').value || 'USD';
-      const notes = $('budget-notes').value.trim();
-
-      if (!client || !destination) {
-        alert('Completá cliente y destino.');
-        return;
-      }
-
       const user = await getCurrentUser();
       if (!user) {
         alert('No hay sesión activa.');
         return;
       }
 
-      const totalHotels = hotelOptionsState.reduce((acc, item) => acc + Number(item.total || 0), 0);
-      const totalFlights = flightSegmentsState.reduce((acc, item) => acc + Number(item.total || 0), 0);
-      const grandTotal = totalHotels + totalFlights;
+      const clientName = $('budget-client-name').value.trim();
+      const destination = $('budget-destination').value.trim();
+      const passengers = parseNumber($('budget-passengers').value || 1);
+      const startDate = $('budget-start-date').value || null;
+      const endDate = $('budget-end-date').value || null;
+      const status = $('budget-status').value || 'borrador';
+      const validity = $('budget-validity').value || null;
+      const conditions = $('budget-conditions').value.trim();
 
-      const { data: budget, error: budgetError } = await supabaseClient
-        .from('presupuestos')
-        .insert([{
-          agente_id: user.id,
-          cliente_nombre: client,
-          destino: destination,
-          fecha_salida: startDate,
-          fecha_regreso: endDate,
-          pasajeros: passengers,
-          moneda: currency,
-          observaciones: notes,
-          total: grandTotal,
-          estado: 'borrador'
-        }])
-        .select()
-        .single();
-
-      if (budgetError) throw budgetError;
-
-      const hotelRows = hotelOptionsState
-        .filter((h) => h.hotel_nombre.trim())
-        .map((h, index) => ({
-          presupuesto_id: budget.id,
-          orden: index + 1,
-          hotel_nombre: h.hotel_nombre,
-          categoria: h.categoria,
-          regimen: h.regimen,
-          habitacion: h.habitacion,
-          noches: Number(h.noches || 1),
-          observaciones: h.observaciones,
-          total: Number(h.total || 0)
-        }));
-
-      if (hotelRows.length) {
-        const { error } = await supabaseClient.from('presupuesto_hoteles').insert(hotelRows);
-        if (error) throw error;
+      if (!clientName || !destination) {
+        alert('Completá cliente y destino.');
+        return;
       }
 
-      const flightRows = flightSegmentsState
-        .filter((f) => f.origen.trim() && f.destino.trim() && f.salida && f.llegada)
-        .map((f, index) => ({
-          presupuesto_id: budget.id,
-          grupo: f.grupo,
-          orden: index + 1,
-          aerolinea: f.aerolinea,
-          numero_vuelo: f.numero_vuelo,
-          origen: f.origen,
-          destino: f.destino,
-          salida: f.salida,
-          llegada: f.llegada,
-          total: Number(f.total || 0)
-        }));
+      const nights = calculateNights(startDate, endDate);
 
-      if (flightRows.length) {
-        const { error } = await supabaseClient.from('presupuesto_vuelos').insert(flightRows);
-        if (error) throw error;
-      }
+      const hotelsTotal = hotelOptionsState.reduce((acc, item) => acc + parseNumber(item.total), 0);
+      const flightsTotal = flightSegmentsState.reduce((acc, item) => acc + parseNumber(item.total), 0);
+      const grandTotal = hotelsTotal + flightsTotal;
+      const pricePerPerson = passengers > 0 ? Math.round(grandTotal / passengers) : grandTotal;
+
+      const hotelsSnapshot = {
+        client_name: clientName,
+        options: hotelOptionsState
+      };
+
+      const flightsSnapshot = {
+        segments: flightSegmentsState,
+        summary: calculateFlightSummary(flightSegmentsState)
+      };
+
+      const payload = {
+        cliente_id: uid(),
+        destino: destination,
+        fecha_inicio: startDate,
+        fecha_fin: endDate,
+        noches: nights,
+        pasajeros: passengers,
+        agente: user.email,
+        precio_total: String(Math.round(grandTotal)),
+        precio_por_persona: String(Math.round(pricePerPerson)),
+        estado: status,
+        validez: validity,
+        condiciones: conditions,
+        vuelos_data: JSON.stringify(flightsSnapshot),
+        hoteles_data: JSON.stringify(hotelsSnapshot),
+        actividades_data: '[]',
+        otros_data: '[]'
+      };
+
+      const { error } = await supabaseClient.from('presupuestos').insert([payload]);
+      if (error) throw error;
 
       resetForm();
       showListView();
@@ -922,11 +958,14 @@
       $('login-btn').addEventListener('click', signIn);
       $('logout-btn').addEventListener('click', signOut);
       $('refresh-btn').addEventListener('click', loadBudgets);
+
       $('new-budget-btn').addEventListener('click', () => {
         resetForm();
         showFormView();
       });
+
       $('cancel-btn').addEventListener('click', showListView);
+
       $('save-btn').addEventListener('click', async () => {
         try {
           await saveBudget();
@@ -934,17 +973,18 @@
           alert(error.message || 'No se pudo guardar el presupuesto.');
         }
       });
+
       $('add-hotel-btn').addEventListener('click', () => {
         hotelOptionsState.push(createHotelOption());
         renderHotels();
         updateTotals();
       });
+
       $('add-flight-btn').addEventListener('click', () => {
         flightSegmentsState.push(createFlightSegment());
         renderFlights();
         updateTotals();
       });
-      $('budget-currency').addEventListener('change', updateTotals);
     }
 
     async function applySession(session) {
