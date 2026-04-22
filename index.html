@@ -10,40 +10,118 @@
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
-    :root{--n:#0D1F75;--b:#3A46A0;--pk:#FFB4B4;--pd:#FF7D87;--bg:#F5F6FA;--cd:#fff;--br:rgba(13,31,117,.12);--mu:#6B7BAE;--er:#A00D1F;--erbg:#FFE8E8}
+    :root{
+      --n:#0D1F75;--b:#3A46A0;--pk:#FFB4B4;--pd:#FF7D87;
+      --bg:#F5F6FA;--cd:#fff;--br:rgba(13,31,117,.12);--mu:#6B7BAE;
+      --er:#A00D1F;--erbg:#FFE8E8;
+    }
     body{font-family:'Raleway',sans-serif;background:var(--bg);color:var(--n)}
     button,input,select,textarea{font:inherit}
     .hidden{display:none!important}
     #auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,#0D1F75 0%,#3A46A0 60%,#FFB4B4 100%);padding:20px}
     .login-card{background:#fff;border-radius:22px;padding:32px;width:100%;max-width:400px;box-shadow:0 16px 40px rgba(13,31,117,.18)}
-    .brand{display:flex;align-items:center;gap:12px;margin-bottom:12px}.brand-mark{width:48px;height:48px;border-radius:14px;background:var(--pk);display:flex;align-items:center;justify-content:center;color:var(--n);font-family:'Parkinsans',sans-serif;font-weight:700}.brand-name{font-family:'Parkinsans',sans-serif;font-size:24px;font-weight:700;color:var(--n)}.brand-sub{font-size:13px;color:var(--mu);margin-bottom:22px}
-    .field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}.field label{font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.4px}.field input,.field select,.field textarea{width:100%;padding:12px 14px;font-size:14px;border-radius:12px;border:1.5px solid var(--br);background:var(--bg);outline:none;color:var(--n)}.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--b);background:#fff}textarea{resize:vertical;min-height:72px}
-    .primary-btn{width:100%;padding:13px 18px;border:none;border-radius:14px;background:var(--n);color:#fff;font-family:'Parkinsans',sans-serif;font-weight:700;cursor:pointer}.primary-btn:hover{background:var(--b)}
-    .secondary-btn{padding:11px 16px;border-radius:12px;border:1px solid var(--br);background:var(--cd);color:var(--n);cursor:pointer;font-weight:600}.secondary-btn:hover{background:var(--bg)}
-    .msg{display:none;margin-top:12px;padding:10px 12px;border-radius:10px;font-size:12px}.msg.error{display:block;background:var(--erbg);color:var(--er)}
+    .brand{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+    .brand-mark{width:48px;height:48px;border-radius:14px;background:var(--pk);display:flex;align-items:center;justify-content:center;color:var(--n);font-family:'Parkinsans',sans-serif;font-weight:700}
+    .brand-name{font-family:'Parkinsans',sans-serif;font-size:24px;font-weight:700;color:var(--n)}
+    .brand-sub{font-size:13px;color:var(--mu);margin-bottom:22px}
+    .field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+    .field label{font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.4px}
+    .field input,.field select,.field textarea{width:100%;padding:12px 14px;font-size:14px;border-radius:12px;border:1.5px solid var(--br);background:var(--bg);outline:none;color:var(--n)}
+    .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--b);background:#fff}
+    textarea{resize:vertical;min-height:72px}
+    .primary-btn{width:100%;padding:13px 18px;border:none;border-radius:14px;background:var(--n);color:#fff;font-family:'Parkinsans',sans-serif;font-weight:700;cursor:pointer}
+    .primary-btn:hover{background:var(--b)}
+    .secondary-btn{padding:11px 16px;border-radius:12px;border:1px solid var(--br);background:var(--cd);color:var(--n);cursor:pointer;font-weight:600}
+    .secondary-btn:hover{background:var(--bg)}
+    .msg{display:none;margin-top:12px;padding:10px 12px;border-radius:10px;font-size:12px}
+    .msg.error{display:block;background:var(--erbg);color:var(--er)}
+
     #app{min-height:100vh;display:flex;flex-direction:column}
-    .topbar{background:var(--n);padding:14px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:20}.topbar-mark{width:34px;height:34px;border-radius:10px;background:var(--pk);display:flex;align-items:center;justify-content:center;color:var(--n);font-family:'Parkinsans',sans-serif;font-weight:700}.topbar-name{font-family:'Parkinsans',sans-serif;font-size:16px;font-weight:700;color:#fff}.topbar-badge{background:rgba(255,255,255,.15);color:rgba(255,255,255,.8);font-size:10px;font-weight:700;padding:4px 10px;border-radius:99px}.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap}.user-chip{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);padding:6px 12px;border-radius:99px;color:#fff;font-size:12px;font-weight:600}.user-avatar{width:24px;height:24px;border-radius:50%;background:var(--pk);display:flex;align-items:center;justify-content:center;color:var(--n);font-size:10px;font-weight:700}.logout-btn{background:rgba(255,255,255,.12);color:#fff;border:none;border-radius:99px;padding:7px 12px;cursor:pointer;font-size:12px}
-    .container{max-width:1280px;width:100%;margin:0 auto;padding:24px}.page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px}.page-title{font-family:'Parkinsans',sans-serif;font-size:28px;font-weight:700;color:var(--n)}.page-sub{font-size:13px;color:var(--mu);margin-top:4px}.row-actions{display:flex;gap:8px;flex-wrap:wrap}
-    .card{background:var(--cd);border:1px solid var(--br);border-radius:18px;padding:20px;margin-bottom:16px;box-shadow:0 4px 18px rgba(13,31,117,.04)}.card-title{font-family:'Parkinsans',sans-serif;font-size:15px;font-weight:700;color:var(--n);margin-bottom:14px}
-    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.full{grid-column:1/-1}
-    .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:16px}.stat{background:var(--cd);border:1px solid var(--br);border-radius:16px;padding:16px}.stat-label{font-size:11px;color:var(--mu);font-weight:700;text-transform:uppercase}.stat-value{font-family:'Parkinsans',sans-serif;font-size:24px;font-weight:700;color:var(--n);margin-top:6px}
-    .budget-row{background:var(--cd);border:1px solid var(--br);border-radius:16px;padding:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px}.budget-title{font-family:'Parkinsans',sans-serif;font-size:15px;font-weight:700;color:var(--n)}.budget-meta{font-size:12px;color:var(--mu);margin-top:4px}.budget-total{font-family:'Parkinsans',sans-serif;font-size:22px;font-weight:700;color:var(--n)}.budget-actions{display:flex;gap:8px;flex-wrap:wrap}.mini-btn{padding:8px 12px;border-radius:10px;border:1px solid var(--br);background:var(--cd);color:var(--n);cursor:pointer;font-size:12px;font-weight:700}.mini-btn:hover{background:var(--bg)}
-    .module-card{background:rgba(13,31,117,.03);border:1px solid var(--br);border-radius:16px;padding:16px;margin-bottom:12px}.module-top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}.module-title{font-family:'Parkinsans',sans-serif;font-size:14px;font-weight:700;color:var(--n)}.module-actions{display:flex;gap:8px;flex-wrap:wrap}.remove-btn{padding:8px 11px;border:none;border-radius:10px;background:var(--erbg);color:var(--er);cursor:pointer;font-size:12px;font-weight:700}.duplicate-btn{padding:8px 11px;border:none;border-radius:10px;background:#e8eaf6;color:var(--n);cursor:pointer;font-size:12px;font-weight:700}.add-btn{width:100%;padding:12px;border:1.5px dashed rgba(13,31,117,.2);border-radius:14px;background:none;color:var(--b);cursor:pointer;font-weight:700}.add-btn:hover{border-color:var(--n);color:var(--n)}
-    .summary-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border:1px solid var(--br);border-radius:16px;overflow:hidden}.summary-cell{text-align:center;padding:14px 10px;background:#fff;border-right:1px solid var(--br)}.summary-cell:last-child{border-right:none}.summary-cell.highlight{background:var(--n)}.summary-value{font-family:'Parkinsans',sans-serif;font-size:24px;font-weight:700;color:var(--n)}.summary-cell.highlight .summary-value{color:#fff}.summary-label{font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;margin-top:4px}.summary-cell.highlight .summary-label{color:rgba(255,255,255,.7)}
-    .flight-bar,.service-bar{margin-top:12px;padding:12px 14px;background:#fff;border:1px solid var(--br);border-radius:12px;font-size:12px;color:var(--mu);line-height:1.5}.flight-strong{font-weight:700;color:var(--n)}
-    .checkbox-row{display:flex;gap:14px;flex-wrap:wrap;padding:12px 14px;border:1.5px solid var(--br);border-radius:12px;background:var(--bg);min-height:48px;align-items:center}.checkbox-row label{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--n);font-weight:600;text-transform:none;letter-spacing:0}
+    .topbar{background:var(--n);padding:14px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:20}
+    .topbar-mark{width:34px;height:34px;border-radius:10px;background:var(--pk);display:flex;align-items:center;justify-content:center;color:var(--n);font-family:'Parkinsans',sans-serif;font-weight:700}
+    .topbar-name{font-family:'Parkinsans',sans-serif;font-size:16px;font-weight:700;color:#fff}
+    .topbar-badge{background:rgba(255,255,255,.15);color:rgba(255,255,255,.8);font-size:10px;font-weight:700;padding:4px 10px;border-radius:99px}
+    .topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .user-chip{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);padding:6px 12px;border-radius:99px;color:#fff;font-size:12px;font-weight:600}
+    .user-avatar{width:24px;height:24px;border-radius:50%;background:var(--pk);display:flex;align-items:center;justify-content:center;color:var(--n);font-size:10px;font-weight:700}
+    .logout-btn{background:rgba(255,255,255,.12);color:#fff;border:none;border-radius:99px;padding:7px 12px;cursor:pointer;font-size:12px}
+
+    .container{max-width:1280px;width:100%;margin:0 auto;padding:24px}
+    .page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+    .page-title{font-family:'Parkinsans',sans-serif;font-size:28px;font-weight:700;color:var(--n)}
+    .page-sub{font-size:13px;color:var(--mu);margin-top:4px}
+    .row-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .card{background:var(--cd);border:1px solid var(--br);border-radius:18px;padding:20px;margin-bottom:16px;box-shadow:0 4px 18px rgba(13,31,117,.04)}
+    .card-title{font-family:'Parkinsans',sans-serif;font-size:15px;font-weight:700;color:var(--n);margin-bottom:14px}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .full{grid-column:1/-1}
+
+    .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:16px}
+    .stat{background:var(--cd);border:1px solid var(--br);border-radius:16px;padding:16px}
+    .stat-label{font-size:11px;color:var(--mu);font-weight:700;text-transform:uppercase}
+    .stat-value{font-family:'Parkinsans',sans-serif;font-size:24px;font-weight:700;color:var(--n);margin-top:6px}
+
+    .budget-row{background:var(--cd);border:1px solid var(--br);border-radius:16px;padding:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+    .budget-title{font-family:'Parkinsans',sans-serif;font-size:15px;font-weight:700;color:var(--n)}
+    .budget-meta{font-size:12px;color:var(--mu);margin-top:4px}
+    .budget-total{font-family:'Parkinsans',sans-serif;font-size:22px;font-weight:700;color:var(--n)}
+    .budget-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .mini-btn{padding:8px 12px;border-radius:10px;border:1px solid var(--br);background:var(--cd);color:var(--n);cursor:pointer;font-size:12px;font-weight:700}
+    .mini-btn:hover{background:var(--bg)}
+
+    .module-card{background:rgba(13,31,117,.03);border:1px solid var(--br);border-radius:16px;padding:16px;margin-bottom:12px}
+    .module-top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+    .module-title{font-family:'Parkinsans',sans-serif;font-size:14px;font-weight:700;color:var(--n)}
+    .module-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .remove-btn{padding:8px 11px;border:none;border-radius:10px;background:var(--erbg);color:var(--er);cursor:pointer;font-size:12px;font-weight:700}
+    .duplicate-btn{padding:8px 11px;border:none;border-radius:10px;background:#e8eaf6;color:var(--n);cursor:pointer;font-size:12px;font-weight:700}
+    .add-btn{width:100%;padding:12px;border:1.5px dashed rgba(13,31,117,.2);border-radius:14px;background:none;color:var(--b);cursor:pointer;font-weight:700}
+    .add-btn:hover{border-color:var(--n);color:var(--n)}
+
+    .summary-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border:1px solid var(--br);border-radius:16px;overflow:hidden}
+    .summary-cell{text-align:center;padding:14px 10px;background:#fff;border-right:1px solid var(--br)}
+    .summary-cell:last-child{border-right:none}
+    .summary-cell.highlight{background:var(--n)}
+    .summary-value{font-family:'Parkinsans',sans-serif;font-size:24px;font-weight:700;color:var(--n)}
+    .summary-cell.highlight .summary-value{color:#fff}
+    .summary-label{font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;margin-top:4px}
+    .summary-cell.highlight .summary-label{color:rgba(255,255,255,.7)}
+
+    .flight-bar,.service-bar{margin-top:12px;padding:12px 14px;background:#fff;border:1px solid var(--br);border-radius:12px;font-size:12px;color:var(--mu);line-height:1.5}
+    .flight-strong{font-weight:700;color:var(--n)}
+
+    .checkbox-row{display:flex;gap:14px;flex-wrap:wrap;padding:12px 14px;border:1.5px solid var(--br);border-radius:12px;background:var(--bg);min-height:48px;align-items:center}
+    .checkbox-row label{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--n);font-weight:600;text-transform:none;letter-spacing:0}
     .readonly-box{width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid var(--br);background:#eef1fa;color:var(--n);min-height:48px;display:flex;align-items:center}
-    .toast{position:fixed;right:20px;bottom:20px;background:var(--n);color:#fff;padding:12px 16px;border-radius:14px;font-family:'Parkinsans',sans-serif;font-size:12px;display:none;z-index:50}.loading{padding:34px;text-align:center;color:var(--mu)}
-    @media (max-width: 980px){.grid-4,.grid-3,.stats,.summary-grid{grid-template-columns:1fr}.summary-cell{border-right:none;border-bottom:1px solid var(--br)}.summary-cell:last-child{border-bottom:none}.container{padding:18px}}
+
+    .toast{position:fixed;right:20px;bottom:20px;background:var(--n);color:#fff;padding:12px 16px;border-radius:14px;font-family:'Parkinsans',sans-serif;font-size:12px;display:none;z-index:50}
+    .loading{text-align:center;padding:34px;color:var(--mu)}
+
+    @media (max-width:980px){
+      .grid-4,.grid-3,.stats,.summary-grid{grid-template-columns:1fr}
+      .summary-cell{border-right:none;border-bottom:1px solid var(--br)}
+      .summary-cell:last-child{border-bottom:none}
+      .container{padding:18px}
+    }
   </style>
 </head>
 <body>
   <div id="auth-screen">
     <div class="login-card">
-      <div class="brand"><div class="brand-mark">SF</div><div class="brand-name">Simplefly</div></div>
+      <div class="brand">
+        <div class="brand-mark">SF</div>
+        <div class="brand-name">Simplefly</div>
+      </div>
       <div class="brand-sub">Panel de presupuestos para agentes</div>
-      <div class="field"><label>Email</label><input type="email" id="login-email" placeholder="agente@tuagencia.com" /></div>
-      <div class="field"><label>Contraseña</label><input type="password" id="login-password" placeholder="••••••••" /></div>
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="login-email" placeholder="agente@tuagencia.com" />
+      </div>
+      <div class="field">
+        <label>Contraseña</label>
+        <input type="password" id="login-password" placeholder="••••••••" />
+      </div>
       <button class="primary-btn" id="login-btn">Ingresar</button>
       <div id="login-message" class="msg"></div>
     </div>
@@ -55,14 +133,20 @@
       <div class="topbar-name">Simplefly</div>
       <div class="topbar-badge">Presupuestos</div>
       <div class="topbar-right">
-        <div class="user-chip"><div class="user-avatar" id="user-avatar">AG</div><span id="user-name">Agente</span></div>
+        <div class="user-chip">
+          <div class="user-avatar" id="user-avatar">AG</div>
+          <span id="user-name">Agente</span>
+        </div>
         <button class="logout-btn" id="logout-btn">Salir</button>
       </div>
     </div>
 
     <div class="container">
       <div class="page-header">
-        <div><div class="page-title">Presupuestos</div><div class="page-sub">Vuelos por ida y vuelta, hoteles por fechas, servicios y PDF para enviar.</div></div>
+        <div>
+          <div class="page-title">Presupuestos</div>
+          <div class="page-sub">Vuelos por ida y vuelta, hoteles por fechas, servicios y PDF para enviar.</div>
+        </div>
         <div class="row-actions">
           <button class="secondary-btn" id="refresh-btn">Actualizar</button>
           <button class="primary-btn" style="width:auto" id="new-budget-btn">Nuevo presupuesto</button>
@@ -75,7 +159,10 @@
           <div class="stat"><div class="stat-label">Agente</div><div class="stat-value" id="stat-agent">-</div></div>
           <div class="stat"><div class="stat-label">Última carga</div><div class="stat-value" id="stat-last">-</div></div>
         </div>
-        <div class="card"><div class="card-title">Listado</div><div id="budgets-list"><div class="loading">Cargando presupuestos...</div></div></div>
+        <div class="card">
+          <div class="card-title">Listado</div>
+          <div id="budgets-list"><div class="loading">Cargando presupuestos...</div></div>
+        </div>
       </div>
 
       <div id="form-view" class="hidden">
@@ -85,7 +172,14 @@
             <div class="field"><label>Cliente</label><input type="text" id="budget-client-name" placeholder="Nombre del cliente" /></div>
             <div class="field"><label>Destino</label><input type="text" id="budget-destination" placeholder="Ej: Japón" /></div>
             <div class="field"><label>Pasajeros</label><input type="number" id="budget-passengers" min="1" value="2" /></div>
-            <div class="field"><label>Estado</label><select id="budget-status"><option value="borrador">Borrador</option><option value="enviado">Enviado</option><option value="confirmado">Confirmado</option><option value="cancelado">Cancelado</option></select></div>
+            <div class="field"><label>Estado</label>
+              <select id="budget-status">
+                <option value="borrador">Borrador</option>
+                <option value="enviado">Enviado</option>
+                <option value="confirmado">Confirmado</option>
+                <option value="cancelado">Cancelado</option>
+              </select>
+            </div>
             <div class="field"><label>Fecha inicio</label><input type="date" id="budget-start-date" /></div>
             <div class="field"><label>Fecha fin</label><input type="date" id="budget-end-date" /></div>
             <div class="field"><label>Validez</label><input type="date" id="budget-validity" /></div>
@@ -142,12 +236,58 @@
   <script>
     const SUPABASE_URL = 'https://vzgcogivfnlzciwwscls.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_XGrYZKOSOKDkW1bY8XBciA_FYX79o63';
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     const { DateTime } = luxon;
     const { jsPDF } = window.jspdf;
 
     const AIRPORTS = [
-      ['EZE','Buenos Aires Ezeiza','Argentina','America/Argentina/Buenos_Aires'],['AEP','Buenos Aires Aeroparque','Argentina','America/Argentina/Buenos_Aires'],['COR','Córdoba','Argentina','America/Argentina/Cordoba'],['MDZ','Mendoza','Argentina','America/Argentina/Mendoza'],['SCL','Santiago','Chile','America/Santiago'],['GRU','São Paulo Guarulhos','Brasil','America/Sao_Paulo'],['GIG','Rio de Janeiro Galeão','Brasil','America/Sao_Paulo'],['MVD','Montevideo','Uruguay','America/Montevideo'],['LIM','Lima','Perú','America/Lima'],['BOG','Bogotá','Colombia','America/Bogota'],['MEX','Ciudad de México','México','America/Mexico_City'],['CUN','Cancún','México','America/Cancun'],['PTY','Panamá','Panamá','America/Panama'],['PUJ','Punta Cana','Rep. Dominicana','America/Santo_Domingo'],['JFK','New York JFK','EE.UU.','America/New_York'],['EWR','Newark','EE.UU.','America/New_York'],['MIA','Miami','EE.UU.','America/New_York'],['MCO','Orlando','EE.UU.','America/New_York'],['ORD','Chicago O’Hare','EE.UU.','America/Chicago'],['DFW','Dallas Fort Worth','EE.UU.','America/Chicago'],['LAX','Los Angeles','EE.UU.','America/Los_Angeles'],['SFO','San Francisco','EE.UU.','America/Los_Angeles'],['YYZ','Toronto','Canadá','America/Toronto'],['LHR','London Heathrow','Reino Unido','Europe/London'],['CDG','Paris Charles de Gaulle','Francia','Europe/Paris'],['AMS','Amsterdam','Países Bajos','Europe/Amsterdam'],['FRA','Frankfurt','Alemania','Europe/Berlin'],['MAD','Madrid','España','Europe/Madrid'],['BCN','Barcelona','España','Europe/Madrid'],['LIS','Lisboa','Portugal','Europe/Lisbon'],['FCO','Roma Fiumicino','Italia','Europe/Rome'],['ZRH','Zurich','Suiza','Europe/Zurich'],['IST','Estambul','Turquía','Europe/Istanbul'],['DOH','Doha','Qatar','Asia/Qatar'],['DXB','Dubai','EAU','Asia/Dubai'],['DEL','Delhi','India','Asia/Kolkata'],['BKK','Bangkok','Tailandia','Asia/Bangkok'],['SIN','Singapur','Singapur','Asia/Singapore'],['HKG','Hong Kong','China','Asia/Hong_Kong'],['ICN','Seúl Incheon','Corea del Sur','Asia/Seoul'],['HND','Tokio Haneda','Japón','Asia/Tokyo'],['NRT','Tokio Narita','Japón','Asia/Tokyo'],['KIX','Osaka Kansai','Japón','Asia/Tokyo'],['SYD','Sídney','Australia','Australia/Sydney'],['AKL','Auckland','Nueva Zelanda','Pacific/Auckland']
+      ['EZE','Buenos Aires Ezeiza','Argentina','America/Argentina/Buenos_Aires'],
+      ['AEP','Buenos Aires Aeroparque','Argentina','America/Argentina/Buenos_Aires'],
+      ['COR','Córdoba','Argentina','America/Argentina/Cordoba'],
+      ['MDZ','Mendoza','Argentina','America/Argentina/Mendoza'],
+      ['SCL','Santiago','Chile','America/Santiago'],
+      ['GRU','São Paulo Guarulhos','Brasil','America/Sao_Paulo'],
+      ['GIG','Rio de Janeiro Galeão','Brasil','America/Sao_Paulo'],
+      ['MVD','Montevideo','Uruguay','America/Montevideo'],
+      ['LIM','Lima','Perú','America/Lima'],
+      ['BOG','Bogotá','Colombia','America/Bogota'],
+      ['MEX','Ciudad de México','México','America/Mexico_City'],
+      ['CUN','Cancún','México','America/Cancun'],
+      ['PTY','Panamá','Panamá','America/Panama'],
+      ['PUJ','Punta Cana','Rep. Dominicana','America/Santo_Domingo'],
+      ['JFK','New York JFK','EE.UU.','America/New_York'],
+      ['EWR','Newark','EE.UU.','America/New_York'],
+      ['MIA','Miami','EE.UU.','America/New_York'],
+      ['MCO','Orlando','EE.UU.','America/New_York'],
+      ['ORD','Chicago O’Hare','EE.UU.','America/Chicago'],
+      ['DFW','Dallas Fort Worth','EE.UU.','America/Chicago'],
+      ['LAX','Los Angeles','EE.UU.','America/Los_Angeles'],
+      ['SFO','San Francisco','EE.UU.','America/Los_Angeles'],
+      ['YYZ','Toronto','Canadá','America/Toronto'],
+      ['LHR','London Heathrow','Reino Unido','Europe/London'],
+      ['CDG','Paris Charles de Gaulle','Francia','Europe/Paris'],
+      ['AMS','Amsterdam','Países Bajos','Europe/Amsterdam'],
+      ['FRA','Frankfurt','Alemania','Europe/Berlin'],
+      ['MAD','Madrid','España','Europe/Madrid'],
+      ['BCN','Barcelona','España','Europe/Madrid'],
+      ['LIS','Lisboa','Portugal','Europe/Lisbon'],
+      ['FCO','Roma Fiumicino','Italia','Europe/Rome'],
+      ['ZRH','Zurich','Suiza','Europe/Zurich'],
+      ['IST','Estambul','Turquía','Europe/Istanbul'],
+      ['DOH','Doha','Qatar','Asia/Qatar'],
+      ['DXB','Dubai','EAU','Asia/Dubai'],
+      ['DEL','Delhi','India','Asia/Kolkata'],
+      ['BKK','Bangkok','Tailandia','Asia/Bangkok'],
+      ['SIN','Singapur','Singapur','Asia/Singapore'],
+      ['HKG','Hong Kong','China','Asia/Hong_Kong'],
+      ['ICN','Seúl Incheon','Corea del Sur','Asia/Seoul'],
+      ['HND','Tokio Haneda','Japón','Asia/Tokyo'],
+      ['NRT','Tokio Narita','Japón','Asia/Tokyo'],
+      ['KIX','Osaka Kansai','Japón','Asia/Tokyo'],
+      ['SYD','Sídney','Australia','Australia/Sydney'],
+      ['AKL','Auckland','Nueva Zelanda','Pacific/Auckland']
     ];
+
     const HOTEL_REGIMENS = ['Solo alojamiento','Desayuno','Media pensión','Pensión completa','All Inclusive','Ultra All Inclusive'];
     const SERVICE_TYPES = ['Traslado interno','Bus','Tren','Excursión','Seguro de viaje','Asistencia','Ticket ferry','Alquiler de auto','Entrada','Otro'];
 
@@ -157,244 +297,835 @@
 
     const $ = (id) => document.getElementById(id);
 
-    function showToast(message){const el=$('toast');el.textContent=message;el.style.display='block';clearTimeout(showToast._t);showToast._t=setTimeout(()=>{el.style.display='none'},2400)}
-    function setMessage(id,type,text){const el=$(id);el.className=`msg ${type}`;el.textContent=text}
-    function clearMessage(id){const el=$(id);el.className='msg';el.textContent=''}
-    function uid(){if(window.crypto?.randomUUID)return crypto.randomUUID();return `id-${Date.now()}-${Math.random().toString(16).slice(2)}`}
-    function money(value){const num=Number(value||0);return new Intl.NumberFormat('es-AR',{minimumFractionDigits:0,maximumFractionDigits:0}).format(num)}
-    function parseNumber(value){const num=Number(value||0);return Number.isFinite(num)?num:0}
-    function getInitials(email=''){const clean=email.split('@')[0]||'AG';return clean.slice(0,2).toUpperCase()}
-    function calculateNights(startDate,endDate){if(!startDate||!endDate)return 0;const start=DateTime.fromISO(startDate).startOf('day');const end=DateTime.fromISO(endDate).startOf('day');const diff=Math.round(end.diff(start,'days').days);return diff>0?diff:0}
-    function getAirportByCode(code){if(!code)return null;const upper=String(code).trim().toUpperCase();const found=AIRPORTS.find(([airportCode])=>airportCode===upper);if(!found)return null;const [airportCode,name,country,zone]=found;return {code:airportCode,name,country,zone}}
-    function buildAirportOptions(){const list=$('airport-list');list.innerHTML=AIRPORTS.map(([code,name,country])=>`<option value="${code}" label="${code} - ${name}, ${country}"></option>`).join('')}
-    function zonedToUTC(dateValue,timeValue,airportCode){const airport=getAirportByCode(airportCode);if(!airport||!dateValue||!timeValue)return null;const dt=DateTime.fromISO(`${dateValue}T${timeValue}`,{zone:airport.zone});return dt.isValid?dt.toUTC():null}
-    function formatMinutes(totalMinutes){const h=Math.floor(totalMinutes/60);const m=totalMinutes%60;return `${h}h ${m}m`}
-
-    function calculateGroupSummary(segments, group){
-      const normalized=segments
-        .filter(segment=>segment.grupo===group)
-        .map(segment=>({ ...segment, depUTC:zonedToUTC(segment.fecha_salida,segment.hora_salida,segment.origen), arrUTC:zonedToUTC(segment.fecha_llegada,segment.hora_llegada,segment.destino) }))
-        .filter(s=>s.depUTC&&s.arrUTC)
-        .sort((a,b)=>a.depUTC.toMillis()-b.depUTC.toMillis());
-      if(!normalized.length)return { totalAirMinutes:0,totalLayoverMinutes:0,totalTripMinutes:0,stops:0,enriched:[] };
-      let totalAirMinutes=0; let totalLayoverMinutes=0;
-      const enriched=normalized.map((segment,index)=>{const duration=Math.max(0,Math.round(segment.arrUTC.diff(segment.depUTC,'minutes').minutes)); totalAirMinutes+=duration; let layover=0; if(index<normalized.length-1){layover=Math.max(0,Math.round(normalized[index+1].depUTC.diff(segment.arrUTC,'minutes').minutes)); totalLayoverMinutes+=layover;} return {...segment,duration,durationText:formatMinutes(duration),layover,layoverText:layover?formatMinutes(layover):'—'}});
-      const totalTripMinutes=Math.max(0,Math.round(normalized[normalized.length-1].arrUTC.diff(normalized[0].depUTC,'minutes').minutes));
-      return { totalAirMinutes,totalLayoverMinutes,totalTripMinutes,stops:Math.max(0,normalized.length-1),enriched };
+    function showToast(message){
+      const el = $('toast');
+      el.textContent = message;
+      el.style.display = 'block';
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => { el.style.display = 'none'; }, 2400);
     }
 
-    function createFlightSegment(){return {uid:uid(),grupo:'ida',aerolinea:'',origen:'',destino:'',fecha_salida:'',hora_salida:'',fecha_llegada:'',hora_llegada:'',total:0,equipaje_carry_on:false,equipaje_valija:false,equipaje_articulo_personal:false}}
-    function createHotelOption(){return {uid:uid(),hotel_nombre:'',regimen:'Desayuno',habitacion:'',check_in:'',check_out:'',noches:0,observaciones:'',total:0}}
-    function createService(){return {uid:uid(),tipo:'Traslado interno',descripcion:'',fecha:'',observaciones:'',total:0}}
+    function setMessage(id,type,text){
+      const el = $(id);
+      el.className = `msg ${type}`;
+      el.textContent = text;
+    }
+
+    function clearMessage(id){
+      const el = $(id);
+      el.className = 'msg';
+      el.textContent = '';
+    }
+
+    function uid(){
+      if(window.crypto?.randomUUID) return crypto.randomUUID();
+      return `id-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    }
+
+    function money(value){
+      const num = Number(value || 0);
+      return new Intl.NumberFormat('es-AR',{minimumFractionDigits:0,maximumFractionDigits:0}).format(num);
+    }
+
+    function parseNumber(value){
+      const num = Number(value || 0);
+      return Number.isFinite(num) ? num : 0;
+    }
+
+    function getInitials(email=''){
+      const clean = email.split('@')[0] || 'AG';
+      return clean.slice(0,2).toUpperCase();
+    }
+
+    function showListView(){
+      $('list-view').classList.remove('hidden');
+      $('form-view').classList.add('hidden');
+    }
+
+    function showFormView(){
+      $('list-view').classList.add('hidden');
+      $('form-view').classList.remove('hidden');
+    }
+
+    function calculateNights(startDate,endDate){
+      if(!startDate || !endDate) return 0;
+      const start = DateTime.fromISO(startDate).startOf('day');
+      const end = DateTime.fromISO(endDate).startOf('day');
+      const diff = Math.round(end.diff(start,'days').days);
+      return diff > 0 ? diff : 0;
+    }
+
+    function getAirportByCode(code){
+      if(!code) return null;
+      const upper = String(code).trim().toUpperCase();
+      const found = AIRPORTS.find(([airportCode]) => airportCode === upper);
+      if(!found) return null;
+      const [airportCode,name,country,zone] = found;
+      return {code:airportCode,name,country,zone};
+    }
+
+    function buildAirportOptions(){
+      const list = $('airport-list');
+      list.innerHTML = AIRPORTS.map(([code,name,country]) => `<option value="${code}" label="${code} - ${name}, ${country}"></option>`).join('');
+    }
+
+    function zonedToUTC(dateValue,timeValue,airportCode){
+      const airport = getAirportByCode(airportCode);
+      if(!airport || !dateValue || !timeValue) return null;
+      const dt = DateTime.fromISO(`${dateValue}T${timeValue}`, {zone:airport.zone});
+      return dt.isValid ? dt.toUTC() : null;
+    }
+
+    function formatMinutes(totalMinutes){
+      const h = Math.floor(totalMinutes / 60);
+      const m = totalMinutes % 60;
+      return `${h}h ${m}m`;
+    }
+
+    function calculateGroupSummary(segments, group){
+      const normalized = segments
+        .filter(segment => segment.grupo === group)
+        .map(segment => ({
+          ...segment,
+          depUTC: zonedToUTC(segment.fecha_salida, segment.hora_salida, segment.origen),
+          arrUTC: zonedToUTC(segment.fecha_llegada, segment.hora_llegada, segment.destino)
+        }))
+        .filter(s => s.depUTC && s.arrUTC)
+        .sort((a,b) => a.depUTC.toMillis() - b.depUTC.toMillis());
+
+      if(!normalized.length){
+        return { totalAirMinutes:0,totalLayoverMinutes:0,totalTripMinutes:0,stops:0,enriched:[] };
+      }
+
+      let totalAirMinutes = 0;
+      let totalLayoverMinutes = 0;
+
+      const enriched = normalized.map((segment,index) => {
+        const duration = Math.max(0, Math.round(segment.arrUTC.diff(segment.depUTC,'minutes').minutes));
+        totalAirMinutes += duration;
+
+        let layover = 0;
+        if(index < normalized.length - 1){
+          layover = Math.max(0, Math.round(normalized[index+1].depUTC.diff(segment.arrUTC,'minutes').minutes));
+          totalLayoverMinutes += layover;
+        }
+
+        return {
+          ...segment,
+          duration,
+          durationText: formatMinutes(duration),
+          layover,
+          layoverText: layover ? formatMinutes(layover) : '—'
+        };
+      });
+
+      const totalTripMinutes = Math.max(0, Math.round(normalized[normalized.length-1].arrUTC.diff(normalized[0].depUTC,'minutes').minutes));
+
+      return {
+        totalAirMinutes,
+        totalLayoverMinutes,
+        totalTripMinutes,
+        stops: Math.max(0, normalized.length - 1),
+        enriched
+      };
+    }
+
+    function createFlightSegment(){
+      return {
+        uid: uid(),
+        grupo: 'ida',
+        aerolinea: '',
+        origen: '',
+        destino: '',
+        fecha_salida: '',
+        hora_salida: '',
+        fecha_llegada: '',
+        hora_llegada: '',
+        total: 0,
+        equipaje_carry_on: false,
+        equipaje_valija: false,
+        equipaje_articulo_personal: false
+      };
+    }
+
+    function createHotelOption(){
+      return {
+        uid: uid(),
+        hotel_nombre: '',
+        regimen: 'Desayuno',
+        habitacion: '',
+        check_in: '',
+        check_out: '',
+        noches: 0,
+        observaciones: '',
+        total: 0
+      };
+    }
+
+    function createService(){
+      return {
+        uid: uid(),
+        tipo: 'Traslado interno',
+        descripcion: '',
+        fecha: '',
+        observaciones: '',
+        total: 0
+      };
+    }
 
     function resetForm(){
-      $('budget-client-name').value=''; $('budget-destination').value=''; $('budget-passengers').value=2; $('budget-start-date').value=''; $('budget-end-date').value=''; $('budget-status').value='borrador'; $('budget-validity').value=''; $('budget-conditions').value=''; $('budget-final-price').value='0';
-      flightSegmentsState=[createFlightSegment()]; hotelOptionsState=[createHotelOption()]; servicesState=[createService()];
-      renderFlights(); renderHotels(); renderServices(); updateTotals();
+      $('budget-client-name').value = '';
+      $('budget-destination').value = '';
+      $('budget-passengers').value = 2;
+      $('budget-start-date').value = '';
+      $('budget-end-date').value = '';
+      $('budget-status').value = 'borrador';
+      $('budget-validity').value = '';
+      $('budget-conditions').value = '';
+      $('budget-final-price').value = '0';
+
+      flightSegmentsState = [createFlightSegment()];
+      hotelOptionsState = [createHotelOption()];
+      servicesState = [createService()];
+
+      renderFlights();
+      renderHotels();
+      renderServices();
+      updateTotals();
     }
 
     function updateTotals(){
-      const hotelsTotal=hotelOptionsState.reduce((acc,item)=>acc+parseNumber(item.total),0);
-      const flightsTotal=flightSegmentsState.reduce((acc,item)=>acc+parseNumber(item.total),0);
-      const servicesTotal=servicesState.reduce((acc,item)=>acc+parseNumber(item.total),0);
-      const calculatedTotal=hotelsTotal+flightsTotal+servicesTotal;
-      const finalPriceInput=parseNumber($('budget-final-price').value||0);
-      const finalPrice=finalPriceInput>0?finalPriceInput:calculatedTotal;
-      const passengers=parseNumber($('budget-passengers').value||1) || 1;
-      $('hotels-total').textContent=money(hotelsTotal);
-      $('flights-total').textContent=money(flightsTotal);
-      $('services-total').textContent=money(servicesTotal);
-      $('calculated-total').textContent=money(calculatedTotal);
-      $('grand-total').textContent=money(finalPrice);
-      $('price-per-person-box').textContent=money(Math.round(finalPrice/passengers));
+      const hotelsTotal = hotelOptionsState.reduce((acc,item) => acc + parseNumber(item.total), 0);
+      const flightsTotal = flightSegmentsState.reduce((acc,item) => acc + parseNumber(item.total), 0);
+      const servicesTotal = servicesState.reduce((acc,item) => acc + parseNumber(item.total), 0);
+      const calculatedTotal = hotelsTotal + flightsTotal + servicesTotal;
+      const finalPriceInput = parseNumber($('budget-final-price').value || 0);
+      const finalPrice = finalPriceInput > 0 ? finalPriceInput : calculatedTotal;
+      const passengers = parseNumber($('budget-passengers').value || 1) || 1;
 
-      const ida=calculateGroupSummary(flightSegmentsState,'ida');
-      const vuelta=calculateGroupSummary(flightSegmentsState,'vuelta');
-      const multi=calculateGroupSummary(flightSegmentsState,'multi');
-      const parts=[];
+      $('hotels-total').textContent = money(hotelsTotal);
+      $('flights-total').textContent = money(flightsTotal);
+      $('services-total').textContent = money(servicesTotal);
+      $('calculated-total').textContent = money(calculatedTotal);
+      $('grand-total').textContent = money(finalPrice);
+      $('price-per-person-box').textContent = money(Math.round(finalPrice / passengers));
+
+      const ida = calculateGroupSummary(flightSegmentsState,'ida');
+      const vuelta = calculateGroupSummary(flightSegmentsState,'vuelta');
+      const multi = calculateGroupSummary(flightSegmentsState,'multi');
+
+      const parts = [];
       if(ida.enriched.length) parts.push(`<span class="flight-strong">Ida:</span> ${ida.stops} escala(s), ${formatMinutes(ida.totalTripMinutes)}`);
       if(vuelta.enriched.length) parts.push(`<span class="flight-strong">Vuelta:</span> ${vuelta.stops} escala(s), ${formatMinutes(vuelta.totalTripMinutes)}`);
       if(multi.enriched.length) parts.push(`<span class="flight-strong">Multi:</span> ${multi.stops} escala(s), ${formatMinutes(multi.totalTripMinutes)}`);
-      $('flight-summary').innerHTML=parts.length?parts.join(' &nbsp;|&nbsp; '):'Sin tramos cargados.';
+
+      $('flight-summary').innerHTML = parts.length ? parts.join(' &nbsp;|&nbsp; ') : 'Sin tramos cargados.';
     }
 
     function renderFlights(){
-      const wrap=$('flights-wrap'); wrap.innerHTML='';
-      const summaries={ ida:calculateGroupSummary(flightSegmentsState,'ida'), vuelta:calculateGroupSummary(flightSegmentsState,'vuelta'), multi:calculateGroupSummary(flightSegmentsState,'multi') };
-      flightSegmentsState.forEach((segment)=>{
-        const info=(summaries[segment.grupo]?.enriched||[]).find(item=>item.uid===segment.uid);
-        const duration=info?info.durationText:'—';
-        const layover=info?info.layoverText:'—';
-        const card=document.createElement('div'); card.className='module-card';
-        card.innerHTML=`
-          <div class="module-top"><div class="module-title">Tramo de vuelo</div><div class="module-actions"><button class="remove-btn" type="button" data-remove-flight="${segment.uid}">Eliminar</button></div></div>
-          <div class="grid-4">
-            <div class="field"><label>Grupo</label><select data-flight-id="${segment.uid}" data-flight-field="grupo"><option value="ida" ${segment.grupo==='ida'?'selected':''}>Ida</option><option value="vuelta" ${segment.grupo==='vuelta'?'selected':''}>Vuelta</option><option value="multi" ${segment.grupo==='multi'?'selected':''}>Multi</option></select></div>
-            <div class="field"><label>Aerolínea</label><input type="text" value="${segment.aerolinea}" data-flight-id="${segment.uid}" data-flight-field="aerolinea" placeholder="Ej: LATAM" /></div>
-            <div class="field"><label>Origen</label><input list="airport-list" maxlength="3" value="${segment.origen}" data-flight-id="${segment.uid}" data-flight-field="origen" placeholder="Ej: EZE" /></div>
-            <div class="field"><label>Destino</label><input list="airport-list" maxlength="3" value="${segment.destino}" data-flight-id="${segment.uid}" data-flight-field="destino" placeholder="Ej: MAD" /></div>
-            <div class="field"><label>Fecha salida</label><input type="date" value="${segment.fecha_salida}" data-flight-id="${segment.uid}" data-flight-field="fecha_salida" /></div>
-            <div class="field"><label>Hora salida</label><input type="time" value="${segment.hora_salida}" data-flight-id="${segment.uid}" data-flight-field="hora_salida" /></div>
-            <div class="field"><label>Fecha llegada</label><input type="date" value="${segment.fecha_llegada}" data-flight-id="${segment.uid}" data-flight-field="fecha_llegada" /></div>
-            <div class="field"><label>Hora llegada</label><input type="time" value="${segment.hora_llegada}" data-flight-id="${segment.uid}" data-flight-field="hora_llegada" /></div>
-            <div class="field"><label>Total</label><input type="number" min="0" step="0.01" value="${segment.total}" data-flight-id="${segment.uid}" data-flight-field="total" /></div>
-            <div class="field full"><label>Equipaje</label><div class="checkbox-row"><label><input type="checkbox" ${segment.equipaje_articulo_personal?'checked':''} data-flight-id="${segment.uid}" data-flight-bag="equipaje_articulo_personal" /> Artículo personal</label><label><input type="checkbox" ${segment.equipaje_carry_on?'checked':''} data-flight-id="${segment.uid}" data-flight-bag="equipaje_carry_on" /> Carry on</label><label><input type="checkbox" ${segment.equipaje_valija?'checked':''} data-flight-id="${segment.uid}" data-flight-bag="equipaje_valija" /> Valija</label></div></div>
+      const wrap = $('flights-wrap');
+      wrap.innerHTML = '';
+
+      const summaries = {
+        ida: calculateGroupSummary(flightSegmentsState,'ida'),
+        vuelta: calculateGroupSummary(flightSegmentsState,'vuelta'),
+        multi: calculateGroupSummary(flightSegmentsState,'multi')
+      };
+
+      flightSegmentsState.forEach((segment) => {
+        const info = (summaries[segment.grupo]?.enriched || []).find(item => item.uid === segment.uid);
+        const duration = info ? info.durationText : '—';
+        const layover = info ? info.layoverText : '—';
+
+        const card = document.createElement('div');
+        card.className = 'module-card';
+        card.innerHTML = `
+          <div class="module-top">
+            <div class="module-title">Tramo de vuelo</div>
+            <div class="module-actions">
+              <button class="remove-btn" type="button" data-remove-flight="${segment.uid}">Eliminar</button>
+            </div>
           </div>
-          <div class="flight-bar"><span class="flight-strong">Duración del tramo:</span> ${duration} &nbsp;|&nbsp; <span class="flight-strong">Escala siguiente:</span> ${layover}</div>`;
+          <div class="grid-4">
+            <div class="field">
+              <label>Grupo</label>
+              <select data-flight-id="${segment.uid}" data-flight-field="grupo">
+                <option value="ida" ${segment.grupo==='ida'?'selected':''}>Ida</option>
+                <option value="vuelta" ${segment.grupo==='vuelta'?'selected':''}>Vuelta</option>
+                <option value="multi" ${segment.grupo==='multi'?'selected':''}>Multi</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Aerolínea</label>
+              <input type="text" value="${segment.aerolinea}" data-flight-id="${segment.uid}" data-flight-field="aerolinea" placeholder="Ej: LATAM" />
+            </div>
+            <div class="field">
+              <label>Origen</label>
+              <input list="airport-list" maxlength="3" value="${segment.origen}" data-flight-id="${segment.uid}" data-flight-field="origen" placeholder="Ej: EZE" />
+            </div>
+            <div class="field">
+              <label>Destino</label>
+              <input list="airport-list" maxlength="3" value="${segment.destino}" data-flight-id="${segment.uid}" data-flight-field="destino" placeholder="Ej: MAD" />
+            </div>
+            <div class="field">
+              <label>Fecha salida</label>
+              <input type="date" value="${segment.fecha_salida}" data-flight-id="${segment.uid}" data-flight-field="fecha_salida" />
+            </div>
+            <div class="field">
+              <label>Hora salida</label>
+              <input type="time" value="${segment.hora_salida}" data-flight-id="${segment.uid}" data-flight-field="hora_salida" />
+            </div>
+            <div class="field">
+              <label>Fecha llegada</label>
+              <input type="date" value="${segment.fecha_llegada}" data-flight-id="${segment.uid}" data-flight-field="fecha_llegada" />
+            </div>
+            <div class="field">
+              <label>Hora llegada</label>
+              <input type="time" value="${segment.hora_llegada}" data-flight-id="${segment.uid}" data-flight-field="hora_llegada" />
+            </div>
+            <div class="field">
+              <label>Total</label>
+              <input type="number" min="0" step="0.01" value="${segment.total}" data-flight-id="${segment.uid}" data-flight-field="total" />
+            </div>
+            <div class="field full">
+              <label>Equipaje</label>
+              <div class="checkbox-row">
+                <label><input type="checkbox" ${segment.equipaje_articulo_personal?'checked':''} data-flight-id="${segment.uid}" data-flight-bag="equipaje_articulo_personal" /> Artículo personal</label>
+                <label><input type="checkbox" ${segment.equipaje_carry_on?'checked':''} data-flight-id="${segment.uid}" data-flight-bag="equipaje_carry_on" /> Carry on</label>
+                <label><input type="checkbox" ${segment.equipaje_valija?'checked':''} data-flight-id="${segment.uid}" data-flight-bag="equipaje_valija" /> Valija</label>
+              </div>
+            </div>
+          </div>
+          <div class="flight-bar">
+            <span class="flight-strong">Duración del tramo:</span> ${duration}
+            &nbsp;|&nbsp;
+            <span class="flight-strong">Escala siguiente:</span> ${layover}
+          </div>
+        `;
         wrap.appendChild(card);
       });
 
-      wrap.querySelectorAll('[data-flight-field]').forEach((input)=>{
-        input.addEventListener('input',(e)=>{const item=flightSegmentsState.find(f=>f.uid===e.target.dataset.flightId); if(!item)return; const field=e.target.dataset.flightField; item[field]=e.target.type==='number'?parseNumber(e.target.value):(field==='origen'||field==='destino'?e.target.value.toUpperCase():e.target.value); updateTotals(); renderFlightsFieldOnly(field, item.uid)});
-        input.addEventListener('change',(e)=>{const item=flightSegmentsState.find(f=>f.uid===e.target.dataset.flightId); if(!item)return; const field=e.target.dataset.flightField; item[field]=e.target.type==='number'?parseNumber(e.target.value):(field==='origen'||field==='destino'?e.target.value.toUpperCase():e.target.value); renderFlights(); updateTotals();});
+      wrap.querySelectorAll('[data-flight-field]').forEach((input) => {
+        input.addEventListener('input',(e) => {
+          const item = flightSegmentsState.find(f => f.uid === e.target.dataset.flightId);
+          if(!item) return;
+          const field = e.target.dataset.flightField;
+          item[field] = e.target.type === 'number'
+            ? parseNumber(e.target.value)
+            : ((field === 'origen' || field === 'destino') ? e.target.value.toUpperCase() : e.target.value);
+          updateTotals();
+        });
+
+        input.addEventListener('change',(e) => {
+          const item = flightSegmentsState.find(f => f.uid === e.target.dataset.flightId);
+          if(!item) return;
+          const field = e.target.dataset.flightField;
+          item[field] = e.target.type === 'number'
+            ? parseNumber(e.target.value)
+            : ((field === 'origen' || field === 'destino') ? e.target.value.toUpperCase() : e.target.value);
+          renderFlights();
+          updateTotals();
+        });
       });
-      wrap.querySelectorAll('[data-flight-bag]').forEach((input)=>{input.addEventListener('change',(e)=>{const item=flightSegmentsState.find(f=>f.uid===e.target.dataset.flightId); if(!item)return; item[e.target.dataset.flightBag]=e.target.checked;})});
-      wrap.querySelectorAll('[data-remove-flight]').forEach((btn)=>{btn.addEventListener('click',()=>{flightSegmentsState=flightSegmentsState.filter(f=>f.uid!==btn.dataset.removeFlight); if(!flightSegmentsState.length)flightSegmentsState=[createFlightSegment()]; renderFlights(); updateTotals();})});
+
+      wrap.querySelectorAll('[data-flight-bag]').forEach((input) => {
+        input.addEventListener('change',(e) => {
+          const item = flightSegmentsState.find(f => f.uid === e.target.dataset.flightId);
+          if(!item) return;
+          item[e.target.dataset.flightBag] = e.target.checked;
+        });
+      });
+
+      wrap.querySelectorAll('[data-remove-flight]').forEach((btn) => {
+        btn.addEventListener('click',() => {
+          flightSegmentsState = flightSegmentsState.filter(f => f.uid !== btn.dataset.removeFlight);
+          if(!flightSegmentsState.length) flightSegmentsState = [createFlightSegment()];
+          renderFlights();
+          updateTotals();
+        });
+      });
     }
 
-    function renderFlightsFieldOnly(){ /* evita bloqueo al escribir; el rerender fuerte queda en change */ }
-
     function renderHotels(){
-      const wrap=$('hotels-wrap'); wrap.innerHTML='';
-      hotelOptionsState.forEach((hotel,index)=>{
-        const card=document.createElement('div'); card.className='module-card';
-        card.innerHTML=`
-          <div class="module-top"><div class="module-title">Hotel ${index+1}</div><div class="module-actions"><button class="duplicate-btn" type="button" data-dup-hotel="${hotel.uid}">Duplicar</button><button class="remove-btn" type="button" data-remove-hotel="${hotel.uid}">Eliminar</button></div></div>
+      const wrap = $('hotels-wrap');
+      wrap.innerHTML = '';
+
+      hotelOptionsState.forEach((hotel,index) => {
+        const card = document.createElement('div');
+        card.className = 'module-card';
+        card.innerHTML = `
+          <div class="module-top">
+            <div class="module-title">Hotel ${index+1}</div>
+            <div class="module-actions">
+              <button class="duplicate-btn" type="button" data-dup-hotel="${hotel.uid}">Duplicar</button>
+              <button class="remove-btn" type="button" data-remove-hotel="${hotel.uid}">Eliminar</button>
+            </div>
+          </div>
           <div class="grid-4">
-            <div class="field"><label>Hotel</label><input type="text" value="${hotel.hotel_nombre}" data-hotel-id="${hotel.uid}" data-hotel-field="hotel_nombre" placeholder="Nombre del hotel" /></div>
-            <div class="field"><label>Régimen</label><select data-hotel-id="${hotel.uid}" data-hotel-field="regimen">${HOTEL_REGIMENS.map((reg)=>`<option value="${reg}" ${hotel.regimen===reg?'selected':''}>${reg}</option>`).join('')}</select></div>
-            <div class="field"><label>Habitación</label><input type="text" value="${hotel.habitacion}" data-hotel-id="${hotel.uid}" data-hotel-field="habitacion" placeholder="Ej: Doble Deluxe" /></div>
-            <div class="field"><label>Total</label><input type="number" min="0" step="0.01" value="${hotel.total}" data-hotel-id="${hotel.uid}" data-hotel-field="total" /></div>
-            <div class="field"><label>Check-in</label><input type="date" value="${hotel.check_in}" data-hotel-id="${hotel.uid}" data-hotel-field="check_in" /></div>
-            <div class="field"><label>Check-out</label><input type="date" value="${hotel.check_out}" data-hotel-id="${hotel.uid}" data-hotel-field="check_out" /></div>
-            <div class="field"><label>Noches</label><div class="readonly-box" id="hotel-nights-${hotel.uid}">${hotel.noches}</div></div>
-            <div class="field full"><label>Observaciones</label><textarea data-hotel-id="${hotel.uid}" data-hotel-field="observaciones" placeholder="Notas del hotel">${hotel.observaciones}</textarea></div>
-          </div>`;
+            <div class="field">
+              <label>Hotel</label>
+              <input type="text" value="${hotel.hotel_nombre}" data-hotel-id="${hotel.uid}" data-hotel-field="hotel_nombre" placeholder="Nombre del hotel" />
+            </div>
+            <div class="field">
+              <label>Régimen</label>
+              <select data-hotel-id="${hotel.uid}" data-hotel-field="regimen">
+                ${HOTEL_REGIMENS.map((reg)=>`<option value="${reg}" ${hotel.regimen===reg?'selected':''}>${reg}</option>`).join('')}
+              </select>
+            </div>
+            <div class="field">
+              <label>Habitación</label>
+              <input type="text" value="${hotel.habitacion}" data-hotel-id="${hotel.uid}" data-hotel-field="habitacion" placeholder="Ej: Doble Deluxe" />
+            </div>
+            <div class="field">
+              <label>Total</label>
+              <input type="number" min="0" step="0.01" value="${hotel.total}" data-hotel-id="${hotel.uid}" data-hotel-field="total" />
+            </div>
+            <div class="field">
+              <label>Check-in</label>
+              <input type="date" value="${hotel.check_in}" data-hotel-id="${hotel.uid}" data-hotel-field="check_in" />
+            </div>
+            <div class="field">
+              <label>Check-out</label>
+              <input type="date" value="${hotel.check_out}" data-hotel-id="${hotel.uid}" data-hotel-field="check_out" />
+            </div>
+            <div class="field">
+              <label>Noches</label>
+              <div class="readonly-box" id="hotel-nights-${hotel.uid}">${hotel.noches}</div>
+            </div>
+            <div class="field full">
+              <label>Observaciones</label>
+              <textarea data-hotel-id="${hotel.uid}" data-hotel-field="observaciones" placeholder="Notas del hotel">${hotel.observaciones}</textarea>
+            </div>
+          </div>
+        `;
         wrap.appendChild(card);
       });
 
-      wrap.querySelectorAll('[data-hotel-field]').forEach((input)=>{
-        const handler=(e)=>{const item=hotelOptionsState.find(h=>h.uid===e.target.dataset.hotelId); if(!item)return; const field=e.target.dataset.hotelField; item[field]=e.target.type==='number'?parseNumber(e.target.value):e.target.value; item.noches=calculateNights(item.check_in,item.check_out); const nightsBox=$(`hotel-nights-${item.uid}`); if(nightsBox)nightsBox.textContent=item.noches; updateTotals();};
-        input.addEventListener('input',handler);
-        input.addEventListener('change',handler);
+      wrap.querySelectorAll('[data-hotel-field]').forEach((input) => {
+        const handler = (e) => {
+          const item = hotelOptionsState.find(h => h.uid === e.target.dataset.hotelId);
+          if(!item) return;
+          const field = e.target.dataset.hotelField;
+          item[field] = e.target.type === 'number' ? parseNumber(e.target.value) : e.target.value;
+          item.noches = calculateNights(item.check_in, item.check_out);
+          const nightsBox = $(`hotel-nights-${item.uid}`);
+          if(nightsBox) nightsBox.textContent = item.noches;
+          updateTotals();
+        };
+        input.addEventListener('input', handler);
+        input.addEventListener('change', handler);
       });
-      wrap.querySelectorAll('[data-remove-hotel]').forEach((btn)=>{btn.addEventListener('click',()=>{hotelOptionsState=hotelOptionsState.filter(h=>h.uid!==btn.dataset.removeHotel); if(!hotelOptionsState.length)hotelOptionsState=[createHotelOption()]; renderHotels(); updateTotals();})});
-      wrap.querySelectorAll('[data-dup-hotel]').forEach((btn)=>{btn.addEventListener('click',()=>{const original=hotelOptionsState.find(h=>h.uid===btn.dataset.dupHotel); if(!original)return; hotelOptionsState.push({...JSON.parse(JSON.stringify(original)),uid:uid()}); renderHotels(); updateTotals();})});
+
+      wrap.querySelectorAll('[data-remove-hotel]').forEach((btn) => {
+        btn.addEventListener('click',() => {
+          hotelOptionsState = hotelOptionsState.filter(h => h.uid !== btn.dataset.removeHotel);
+          if(!hotelOptionsState.length) hotelOptionsState = [createHotelOption()];
+          renderHotels();
+          updateTotals();
+        });
+      });
+
+      wrap.querySelectorAll('[data-dup-hotel]').forEach((btn) => {
+        btn.addEventListener('click',() => {
+          const original = hotelOptionsState.find(h => h.uid === btn.dataset.dupHotel);
+          if(!original) return;
+          hotelOptionsState.push({...JSON.parse(JSON.stringify(original)), uid: uid()});
+          renderHotels();
+          updateTotals();
+        });
+      });
     }
 
     function renderServices(){
-      const wrap=$('services-wrap'); wrap.innerHTML='';
-      servicesState.forEach((service)=>{const card=document.createElement('div'); card.className='module-card'; card.innerHTML=`<div class="module-top"><div class="module-title">Servicio</div><div class="module-actions"><button class="remove-btn" type="button" data-remove-service="${service.uid}">Eliminar</button></div></div><div class="grid-4"><div class="field"><label>Tipo</label><select data-service-id="${service.uid}" data-service-field="tipo">${SERVICE_TYPES.map((type)=>`<option value="${type}" ${service.tipo===type?'selected':''}>${type}</option>`).join('')}</select></div><div class="field"><label>Descripción</label><input type="text" value="${service.descripcion}" data-service-id="${service.uid}" data-service-field="descripcion" placeholder="Ej: traslado hotel-aeropuerto" /></div><div class="field"><label>Fecha</label><input type="date" value="${service.fecha}" data-service-id="${service.uid}" data-service-field="fecha" /></div><div class="field"><label>Total</label><input type="number" min="0" step="0.01" value="${service.total}" data-service-id="${service.uid}" data-service-field="total" /></div><div class="field full"><label>Observaciones</label><textarea data-service-id="${service.uid}" data-service-field="observaciones">${service.observaciones}</textarea></div></div>`; wrap.appendChild(card)});
-      wrap.querySelectorAll('[data-service-field]').forEach((input)=>{input.addEventListener('input',(e)=>{const item=servicesState.find(s=>s.uid===e.target.dataset.serviceId); if(!item)return; const field=e.target.dataset.serviceField; item[field]=e.target.type==='number'?parseNumber(e.target.value):e.target.value; updateTotals()})});
-      wrap.querySelectorAll('[data-remove-service]').forEach((btn)=>{btn.addEventListener('click',()=>{servicesState=servicesState.filter(s=>s.uid!==btn.dataset.removeService); if(!servicesState.length)servicesState=[createService()]; renderServices(); updateTotals();})});
+      const wrap = $('services-wrap');
+      wrap.innerHTML = '';
+
+      servicesState.forEach((service) => {
+        const card = document.createElement('div');
+        card.className = 'module-card';
+        card.innerHTML = `
+          <div class="module-top">
+            <div class="module-title">Servicio</div>
+            <div class="module-actions">
+              <button class="remove-btn" type="button" data-remove-service="${service.uid}">Eliminar</button>
+            </div>
+          </div>
+          <div class="grid-4">
+            <div class="field">
+              <label>Tipo</label>
+              <select data-service-id="${service.uid}" data-service-field="tipo">
+                ${SERVICE_TYPES.map((type)=>`<option value="${type}" ${service.tipo===type?'selected':''}>${type}</option>`).join('')}
+              </select>
+            </div>
+            <div class="field">
+              <label>Descripción</label>
+              <input type="text" value="${service.descripcion}" data-service-id="${service.uid}" data-service-field="descripcion" placeholder="Ej: traslado hotel-aeropuerto" />
+            </div>
+            <div class="field">
+              <label>Fecha</label>
+              <input type="date" value="${service.fecha}" data-service-id="${service.uid}" data-service-field="fecha" />
+            </div>
+            <div class="field">
+              <label>Total</label>
+              <input type="number" min="0" step="0.01" value="${service.total}" data-service-id="${service.uid}" data-service-field="total" />
+            </div>
+            <div class="field full">
+              <label>Observaciones</label>
+              <textarea data-service-id="${service.uid}" data-service-field="observaciones">${service.observaciones}</textarea>
+            </div>
+          </div>
+        `;
+        wrap.appendChild(card);
+      });
+
+      wrap.querySelectorAll('[data-service-field]').forEach((input) => {
+        input.addEventListener('input',(e) => {
+          const item = servicesState.find(s => s.uid === e.target.dataset.serviceId);
+          if(!item) return;
+          const field = e.target.dataset.serviceField;
+          item[field] = e.target.type === 'number' ? parseNumber(e.target.value) : e.target.value;
+          updateTotals();
+        });
+      });
+
+      wrap.querySelectorAll('[data-remove-service]').forEach((btn) => {
+        btn.addEventListener('click',() => {
+          servicesState = servicesState.filter(s => s.uid !== btn.dataset.removeService);
+          if(!servicesState.length) servicesState = [createService()];
+          renderServices();
+          updateTotals();
+        });
+      });
     }
 
-    async function getCurrentUser(){const {data,error}=await supabaseClient.auth.getUser(); if(error)throw error; return data.user}
-    function fillUserHeader(user){const email=user?.email||'agente@simplefly.com'; $('user-name').textContent=email; $('user-avatar').textContent=getInitials(email); $('stat-agent').textContent=email.split('@')[0]}
-    async function signIn(){clearMessage('login-message'); const email=$('login-email').value.trim(); const password=$('login-password').value; if(!email||!password){setMessage('login-message','error','Completá email y contraseña.'); return;} try{const {error}=await supabaseClient.auth.signInWithPassword({email,password}); if(error)throw error; showToast('Sesión iniciada')}catch(error){setMessage('login-message','error',error.message||'No se pudo iniciar sesión.')}}
-    async function signOut(){await supabaseClient.auth.signOut()}
+    async function getCurrentUser(){
+      const {data,error} = await supabaseClient.auth.getUser();
+      if(error) throw error;
+      return data.user;
+    }
+
+    function fillUserHeader(user){
+      const email = user?.email || 'agente@simplefly.com';
+      $('user-name').textContent = email;
+      $('user-avatar').textContent = getInitials(email);
+      $('stat-agent').textContent = email.split('@')[0];
+    }
+
+    async function signIn(){
+      clearMessage('login-message');
+      const email = $('login-email').value.trim();
+      const password = $('login-password').value;
+
+      if(!email || !password){
+        setMessage('login-message','error','Completá email y contraseña.');
+        return;
+      }
+
+      try{
+        const {error} = await supabaseClient.auth.signInWithPassword({email,password});
+        if(error) throw error;
+        showToast('Sesión iniciada');
+      }catch(error){
+        setMessage('login-message','error',error.message || 'No se pudo iniciar sesión.');
+      }
+    }
+
+    async function signOut(){
+      await supabaseClient.auth.signOut();
+    }
 
     async function loadBudgets(){
-      const list=$('budgets-list'); list.innerHTML='<div class="loading">Cargando presupuestos...</div>';
+      const list = $('budgets-list');
+      list.innerHTML = '<div class="loading">Cargando presupuestos...</div>';
+
       try{
-        const {data,error}=await supabaseClient.from('presupuestos').select('*').order('created_at',{ascending:false}); if(error)throw error;
-        $('stat-count').textContent=data?.length||0; $('stat-last').textContent=data?.[0]?.created_at?new Date(data[0].created_at).toLocaleDateString('es-AR'):'-';
-        if(!data||!data.length){list.innerHTML='<div class="loading">Todavía no hay presupuestos cargados.</div>'; return;}
-        list.innerHTML='';
-        data.forEach((item)=>{let clientName='Cliente'; try{const parsedHotels=item.hoteles_data?JSON.parse(item.hoteles_data):{}; if(parsedHotels?.client_name)clientName=parsedHotels.client_name;}catch{}
-          const row=document.createElement('div'); row.className='budget-row'; row.innerHTML=`<div><div class="budget-title">${clientName} · ${item.destino||'-'}</div><div class="budget-meta">${item.fecha_inicio||'Sin fecha'}${item.fecha_fin?` → ${item.fecha_fin}`:''} · ${item.pasajeros||1} pasajero(s) · ${item.estado||'borrador'}</div></div><div class="budget-total">${money(item.precio_total||0)}</div><div class="budget-actions"><button class="mini-btn" data-duplicate="${item.id}">Duplicar</button><button class="mini-btn" data-delete="${item.id}">Eliminar</button></div>`; list.appendChild(row);
+        const {data,error} = await supabaseClient.from('presupuestos').select('*').order('created_at',{ascending:false});
+        if(error) throw error;
+
+        $('stat-count').textContent = data?.length || 0;
+        $('stat-last').textContent = data?.[0]?.created_at ? new Date(data[0].created_at).toLocaleDateString('es-AR') : '-';
+
+        if(!data || !data.length){
+          list.innerHTML = '<div class="loading">Todavía no hay presupuestos cargados.</div>';
+          return;
+        }
+
+        list.innerHTML = '';
+
+        data.forEach((item) => {
+          let clientName = 'Cliente';
+          try{
+            const parsedHotels = item.hoteles_data ? JSON.parse(item.hoteles_data) : {};
+            if(parsedHotels?.client_name) clientName = parsedHotels.client_name;
+          }catch{}
+
+          const row = document.createElement('div');
+          row.className = 'budget-row';
+          row.innerHTML = `
+            <div>
+              <div class="budget-title">${clientName} · ${item.destino || '-'}</div>
+              <div class="budget-meta">${item.fecha_inicio || 'Sin fecha'}${item.fecha_fin ? ` → ${item.fecha_fin}` : ''} · ${item.pasajeros || 1} pasajero(s) · ${item.estado || 'borrador'}</div>
+            </div>
+            <div class="budget-total">${money(item.precio_total || 0)}</div>
+            <div class="budget-actions">
+              <button class="mini-btn" data-duplicate="${item.id}">Duplicar</button>
+              <button class="mini-btn" data-delete="${item.id}">Eliminar</button>
+            </div>
+          `;
+          list.appendChild(row);
         });
-        list.querySelectorAll('[data-delete]').forEach((btn)=>{btn.addEventListener('click',async()=>{if(!confirm('¿Eliminar este presupuesto?'))return; try{const {error}=await supabaseClient.from('presupuestos').delete().eq('id',btn.dataset.delete); if(error)throw error; showToast('Presupuesto eliminado'); await loadBudgets()}catch(error){alert(error.message||'No se pudo eliminar.')}})});
-        list.querySelectorAll('[data-duplicate]').forEach((btn)=>{btn.addEventListener('click',async()=>{try{await duplicateBudget(btn.dataset.duplicate); showToast('Presupuesto duplicado'); await loadBudgets()}catch(error){alert(error.message||'No se pudo duplicar.')}})});
-      }catch(error){list.innerHTML=`<div class="loading">Error al cargar presupuestos: ${error.message||error}</div>`}
+
+        list.querySelectorAll('[data-delete]').forEach((btn) => {
+          btn.addEventListener('click', async () => {
+            if(!confirm('¿Eliminar este presupuesto?')) return;
+            try{
+              const {error} = await supabaseClient.from('presupuestos').delete().eq('id',btn.dataset.delete);
+              if(error) throw error;
+              showToast('Presupuesto eliminado');
+              await loadBudgets();
+            }catch(error){
+              alert(error.message || 'No se pudo eliminar.');
+            }
+          });
+        });
+
+        list.querySelectorAll('[data-duplicate]').forEach((btn) => {
+          btn.addEventListener('click', async () => {
+            try{
+              await duplicateBudget(btn.dataset.duplicate);
+              showToast('Presupuesto duplicado');
+              await loadBudgets();
+            }catch(error){
+              alert(error.message || 'No se pudo duplicar.');
+            }
+          });
+        });
+
+      }catch(error){
+        list.innerHTML = `<div class="loading">Error al cargar presupuestos: ${error.message || error}</div>`;
+      }
     }
 
     async function duplicateBudget(id){
-      const user=await getCurrentUser(); if(!user)throw new Error('Sin sesión activa.');
-      const {data:original,error:originalError}=await supabaseClient.from('presupuestos').select('*').eq('id',id).single(); if(originalError)throw originalError;
-      const payload={cliente_id:crypto.randomUUID(),destino:original.destino,fecha_inicio:original.fecha_inicio,fecha_fin:original.fecha_fin,noches:original.noches,pasajeros:original.pasajeros,agente:user.email,precio_total:original.precio_total,precio_por_persona:original.precio_por_persona,estado:'borrador',validez:original.validez,condiciones:original.condiciones,vuelos_data:original.vuelos_data,hoteles_data:original.hoteles_data,actividades_data:original.actividades_data||'[]',otros_data:original.otros_data||'[]'};
-      const {error}=await supabaseClient.from('presupuestos').insert([payload]); if(error)throw error;
+      const user = await getCurrentUser();
+      if(!user) throw new Error('Sin sesión activa.');
+
+      const {data:original,error:originalError} = await supabaseClient.from('presupuestos').select('*').eq('id',id).single();
+      if(originalError) throw originalError;
+
+      const payload = {
+        cliente_id: crypto.randomUUID(),
+        destino: original.destino,
+        fecha_inicio: original.fecha_inicio,
+        fecha_fin: original.fecha_fin,
+        noches: original.noches,
+        pasajeros: original.pasajeros,
+        agente: user.email,
+        precio_total: original.precio_total,
+        precio_por_persona: original.precio_por_persona,
+        estado: 'borrador',
+        validez: original.validez,
+        condiciones: original.condiciones,
+        vuelos_data: original.vuelos_data,
+        hoteles_data: original.hoteles_data,
+        actividades_data: original.actividades_data || '[]',
+        otros_data: original.otros_data || '[]'
+      };
+
+      const {error} = await supabaseClient.from('presupuestos').insert([payload]);
+      if(error) throw error;
     }
 
     function getCurrentBudgetSnapshot(){
-      const clientName=$('budget-client-name').value.trim();
-      const destination=$('budget-destination').value.trim();
-      const passengers=parseNumber($('budget-passengers').value||1);
-      const startDate=$('budget-start-date').value||null;
-      const endDate=$('budget-end-date').value||null;
-      const status=$('budget-status').value||'borrador';
-      const validity=$('budget-validity').value||null;
-      const conditions=$('budget-conditions').value.trim();
-      const nights=calculateNights(startDate,endDate);
-      const hotelsTotal=hotelOptionsState.reduce((acc,item)=>acc+parseNumber(item.total),0);
-      const flightsTotal=flightSegmentsState.reduce((acc,item)=>acc+parseNumber(item.total),0);
-      const servicesTotal=servicesState.reduce((acc,item)=>acc+parseNumber(item.total),0);
-      const calculatedTotal=hotelsTotal+flightsTotal+servicesTotal;
-      const finalPriceInput=parseNumber($('budget-final-price').value||0);
-      const finalPrice=finalPriceInput>0?finalPriceInput:calculatedTotal;
-      const pricePerPerson=passengers>0?Math.round(finalPrice/passengers):Math.round(finalPrice);
-      return {clientName,destination,passengers,startDate,endDate,status,validity,conditions,nights,hotelsTotal,flightsTotal,servicesTotal,calculatedTotal,finalPrice,pricePerPerson};
+      const clientName = $('budget-client-name').value.trim();
+      const destination = $('budget-destination').value.trim();
+      const passengers = parseNumber($('budget-passengers').value || 1);
+      const startDate = $('budget-start-date').value || null;
+      const endDate = $('budget-end-date').value || null;
+      const status = $('budget-status').value || 'borrador';
+      const validity = $('budget-validity').value || null;
+      const conditions = $('budget-conditions').value.trim();
+      const nights = calculateNights(startDate,endDate);
+      const hotelsTotal = hotelOptionsState.reduce((acc,item) => acc + parseNumber(item.total), 0);
+      const flightsTotal = flightSegmentsState.reduce((acc,item) => acc + parseNumber(item.total), 0);
+      const servicesTotal = servicesState.reduce((acc,item) => acc + parseNumber(item.total), 0);
+      const calculatedTotal = hotelsTotal + flightsTotal + servicesTotal;
+      const finalPriceInput = parseNumber($('budget-final-price').value || 0);
+      const finalPrice = finalPriceInput > 0 ? finalPriceInput : calculatedTotal;
+      const pricePerPerson = passengers > 0 ? Math.round(finalPrice / passengers) : Math.round(finalPrice);
+
+      return {
+        clientName,destination,passengers,startDate,endDate,status,validity,conditions,nights,
+        hotelsTotal,flightsTotal,servicesTotal,calculatedTotal,finalPrice,pricePerPerson
+      };
     }
 
     function generatePdf(){
-      const snapshot=getCurrentBudgetSnapshot();
-      if(!snapshot.clientName||!snapshot.destination){alert('Completá cliente y destino antes de generar el PDF.'); return;}
-      const doc=new jsPDF();
-      let y=18;
-      const line=(text, size=10, bold=false)=>{doc.setFont('helvetica',bold?'bold':'normal'); doc.setFontSize(size); const lines=doc.splitTextToSize(String(text),180); doc.text(lines,15,y); y += lines.length*5 + 2; if(y>275){doc.addPage(); y=18;}};
+      const snapshot = getCurrentBudgetSnapshot();
+      if(!snapshot.clientName || !snapshot.destination){
+        alert('Completá cliente y destino antes de generar el PDF.');
+        return;
+      }
+
+      const doc = new jsPDF();
+      let y = 18;
+
+      const line = (text, size=10, bold=false) => {
+        doc.setFont('helvetica', bold ? 'bold' : 'normal');
+        doc.setFontSize(size);
+        const lines = doc.splitTextToSize(String(text), 180);
+        doc.text(lines, 15, y);
+        y += lines.length * 5 + 2;
+        if(y > 275){
+          doc.addPage();
+          y = 18;
+        }
+      };
+
       line('SIMPLEFLY',16,true);
       line(`Presupuesto para: ${snapshot.clientName}`,12,true);
       line(`Destino: ${snapshot.destination}`);
       line(`Pasajeros: ${snapshot.passengers}`);
-      line(`Fechas: ${snapshot.startDate||'-'} a ${snapshot.endDate||'-'}`);
+      line(`Fechas: ${snapshot.startDate || '-'} a ${snapshot.endDate || '-'}`);
       line(`Precio final: ${money(snapshot.finalPrice)}`,13,true);
+
       y += 3;
       line('Vuelos',12,true);
-      if(!flightSegmentsState.length){line('Sin vuelos cargados.');}
-      flightSegmentsState.forEach((seg,idx)=>{
-        const summary=calculateGroupSummary([seg], seg.grupo);
-        const duration=summary.enriched[0]?.durationText || '-';
-        const bags=[seg.equipaje_articulo_personal?'Artículo personal':null, seg.equipaje_carry_on?'Carry on':null, seg.equipaje_valija?'Valija':null].filter(Boolean).join(', ') || 'Sin detalle';
-        line(`${idx+1}. ${seg.grupo.toUpperCase()} · ${seg.origen} → ${seg.destino} · ${seg.fecha_salida||'-'} ${seg.hora_salida||''} / ${seg.fecha_llegada||'-'} ${seg.hora_llegada||''} · ${seg.aerolinea||'-'} · Duración ${duration} · Equipaje: ${bags} · Total ${money(seg.total)}`);
+      if(!flightSegmentsState.length) line('Sin vuelos cargados.');
+
+      flightSegmentsState.forEach((seg,idx) => {
+        const summary = calculateGroupSummary([seg], seg.grupo);
+        const duration = summary.enriched[0]?.durationText || '-';
+        const bags = [
+          seg.equipaje_articulo_personal ? 'Artículo personal' : null,
+          seg.equipaje_carry_on ? 'Carry on' : null,
+          seg.equipaje_valija ? 'Valija' : null
+        ].filter(Boolean).join(', ') || 'Sin detalle';
+
+        line(`${idx+1}. ${seg.grupo.toUpperCase()} · ${seg.origen} → ${seg.destino} · ${seg.fecha_salida || '-'} ${seg.hora_salida || ''} / ${seg.fecha_llegada || '-'} ${seg.hora_llegada || ''} · ${seg.aerolinea || '-'} · Duración ${duration} · Equipaje: ${bags} · Total ${money(seg.total)}`);
       });
+
       y += 3;
       line('Hoteles',12,true);
-      if(!hotelOptionsState.length){line('Sin hoteles cargados.');}
-      hotelOptionsState.forEach((hotel,idx)=>{line(`${idx+1}. ${hotel.hotel_nombre||'-'} · ${hotel.regimen} · ${hotel.habitacion||'-'} · ${hotel.check_in||'-'} al ${hotel.check_out||'-'} · ${hotel.noches} noches · Total ${money(hotel.total)}${hotel.observaciones?` · ${hotel.observaciones}`:''}`)});
+      if(!hotelOptionsState.length) line('Sin hoteles cargados.');
+
+      hotelOptionsState.forEach((hotel,idx) => {
+        line(`${idx+1}. ${hotel.hotel_nombre || '-'} · ${hotel.regimen} · ${hotel.habitacion || '-'} · ${hotel.check_in || '-'} al ${hotel.check_out || '-'} · ${hotel.noches} noches · Total ${money(hotel.total)}${hotel.observaciones ? ` · ${hotel.observaciones}` : ''}`);
+      });
+
       y += 3;
       line('Servicios',12,true);
-      if(!servicesState.length){line('Sin servicios adicionales.');}
-      servicesState.forEach((service,idx)=>{line(`${idx+1}. ${service.tipo} · ${service.descripcion||'-'} · ${service.fecha||'-'} · Total ${money(service.total)}${service.observaciones?` · ${service.observaciones}`:''}`)});
+      if(!servicesState.length) line('Sin servicios adicionales.');
+
+      servicesState.forEach((service,idx) => {
+        line(`${idx+1}. ${service.tipo} · ${service.descripcion || '-'} · ${service.fecha || '-'} · Total ${money(service.total)}${service.observaciones ? ` · ${service.observaciones}` : ''}`);
+      });
+
       y += 3;
-      if(snapshot.conditions){line('Condiciones',12,true); line(snapshot.conditions);}
-      doc.save(`presupuesto-${snapshot.clientName.replace(/\s+/g,'-').toLowerCase()}.pdf`);
+      if(snapshot.conditions){
+        line('Condiciones',12,true);
+        line(snapshot.conditions);
+      }
+
+      doc.save(`presupuesto-${snapshot.clientName.replace(/\\s+/g,'-').toLowerCase()}.pdf`);
     }
 
     async function saveBudget(){
-      const user=await getCurrentUser(); if(!user){alert('No hay sesión activa.'); return;}
-      const snapshot=getCurrentBudgetSnapshot();
-      if(!snapshot.clientName||!snapshot.destination){alert('Completá cliente y destino.'); return;}
-      const hotelsSnapshot={client_name:snapshot.clientName,items:hotelOptionsState};
-      const flightsSnapshot={segments:flightSegmentsState,ida:calculateGroupSummary(flightSegmentsState,'ida'),vuelta:calculateGroupSummary(flightSegmentsState,'vuelta'),multi:calculateGroupSummary(flightSegmentsState,'multi')};
-      const servicesSnapshot={services:servicesState,final_price_override:snapshot.finalPrice};
-      const payload={cliente_id:crypto.randomUUID(),destino:snapshot.destination,fecha_inicio:snapshot.startDate,fecha_fin:snapshot.endDate,noches:snapshot.nights,pasajeros:snapshot.passengers,agente:user.email,precio_total:String(Math.round(snapshot.finalPrice)),precio_por_persona:String(snapshot.pricePerPerson),estado:snapshot.status,validez:snapshot.validity,condiciones:snapshot.conditions,vuelos_data:JSON.stringify(flightsSnapshot),hoteles_data:JSON.stringify(hotelsSnapshot),actividades_data:'[]',otros_data:JSON.stringify(servicesSnapshot)};
-      const {error}=await supabaseClient.from('presupuestos').insert([payload]); if(error)throw error;
-      resetForm(); showListView(); showToast('Presupuesto guardado'); await loadBudgets();
+      const user = await getCurrentUser();
+      if(!user){
+        alert('No hay sesión activa.');
+        return;
+      }
+
+      const snapshot = getCurrentBudgetSnapshot();
+      if(!snapshot.clientName || !snapshot.destination){
+        alert('Completá cliente y destino.');
+        return;
+      }
+
+      const hotelsSnapshot = { client_name: snapshot.clientName, items: hotelOptionsState };
+      const flightsSnapshot = {
+        segments: flightSegmentsState,
+        ida: calculateGroupSummary(flightSegmentsState,'ida'),
+        vuelta: calculateGroupSummary(flightSegmentsState,'vuelta'),
+        multi: calculateGroupSummary(flightSegmentsState,'multi')
+      };
+      const servicesSnapshot = { services: servicesState, final_price_override: snapshot.finalPrice };
+
+      const payload = {
+        cliente_id: crypto.randomUUID(),
+        destino: snapshot.destination,
+        fecha_inicio: snapshot.startDate,
+        fecha_fin: snapshot.endDate,
+        noches: snapshot.nights,
+        pasajeros: snapshot.passengers,
+        agente: user.email,
+        precio_total: String(Math.round(snapshot.finalPrice)),
+        precio_por_persona: String(snapshot.pricePerPerson),
+        estado: snapshot.status,
+        validez: snapshot.validity,
+        condiciones: snapshot.conditions,
+        vuelos_data: JSON.stringify(flightsSnapshot),
+        hoteles_data: JSON.stringify(hotelsSnapshot),
+        actividades_data: '[]',
+        otros_data: JSON.stringify(servicesSnapshot)
+      };
+
+      const {error} = await supabaseClient.from('presupuestos').insert([payload]);
+      if(error) throw error;
+
+      resetForm();
+      showListView();
+      showToast('Presupuesto guardado');
+      await loadBudgets();
     }
 
     function bindEvents(){
-      $('login-btn').addEventListener('click',signIn); $('logout-btn').addEventListener('click',signOut); $('refresh-btn').addEventListener('click',loadBudgets); $('new-budget-btn').addEventListener('click',()=>{resetForm(); showFormView()}); $('cancel-btn').addEventListener('click',showListView);
-      $('save-btn').addEventListener('click',async()=>{try{await saveBudget()}catch(error){alert(error.message||'No se pudo guardar el presupuesto.')}});
+      $('login-btn').addEventListener('click',signIn);
+      $('logout-btn').addEventListener('click',signOut);
+      $('refresh-btn').addEventListener('click',loadBudgets);
+      $('new-budget-btn').addEventListener('click',() => { resetForm(); showFormView(); });
+      $('cancel-btn').addEventListener('click',showListView);
+
+      $('save-btn').addEventListener('click', async () => {
+        try{
+          await saveBudget();
+        }catch(error){
+          alert(error.message || 'No se pudo guardar el presupuesto.');
+        }
+      });
+
       $('pdf-btn').addEventListener('click',generatePdf);
-      $('add-flight-btn').addEventListener('click',()=>{flightSegmentsState.push(createFlightSegment()); renderFlights(); updateTotals()});
-      $('add-hotel-btn').addEventListener('click',()=>{hotelOptionsState.push(createHotelOption()); renderHotels(); updateTotals()});
-      $('add-service-btn').addEventListener('click',()=>{servicesState.push(createService()); renderServices(); updateTotals()});
+      $('add-flight-btn').addEventListener('click',() => { flightSegmentsState.push(createFlightSegment()); renderFlights(); updateTotals(); });
+      $('add-hotel-btn').addEventListener('click',() => { hotelOptionsState.push(createHotelOption()); renderHotels(); updateTotals(); });
+      $('add-service-btn').addEventListener('click',() => { servicesState.push(createService()); renderServices(); updateTotals(); });
       $('budget-passengers').addEventListener('input',updateTotals);
       $('budget-final-price').addEventListener('input',updateTotals);
     }
 
-    async function applySession(session){if(session?.user){$('auth-screen').classList.add('hidden'); $('app').classList.remove('hidden'); fillUserHeader(session.user); await loadBudgets()}else{$('app').classList.add('hidden'); $('auth-screen').classList.remove('hidden')}}
-    async function init(){buildAirportOptions(); bindEvents(); resetForm(); const {data}=await supabaseClient.auth.getSession(); await applySession(data.session); supabaseClient.auth.onAuthStateChange(async(_event,session)=>{await applySession(session)})}
+    async function applySession(session){
+      if(session?.user){
+        $('auth-screen').classList.add('hidden');
+        $('app').classList.remove('hidden');
+        fillUserHeader(session.user);
+        await loadBudgets();
+      }else{
+        $('app').classList.add('hidden');
+        $('auth-screen').classList.remove('hidden');
+      }
+    }
+
+    async function init(){
+      buildAirportOptions();
+      bindEvents();
+      resetForm();
+      const {data} = await supabaseClient.auth.getSession();
+      await applySession(data.session);
+      supabaseClient.auth.onAuthStateChange(async (_event,session) => {
+        await applySession(session);
+      });
+    }
+
     init();
   </script>
 </body>
